@@ -6,13 +6,13 @@ class Events(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_ready():
+    async def on_ready(self):
         # (activity=discord.Game(name="a game"))
         # (activity=discord.Streaming(name="My Stream", url=my_twitch_url))
         # (activity=discord.Activity(type=discord.ActivityType.listening, name="a song"))
         # (activity=discord.Activity(type=discord.ActivityType.watching, name="a movie"))
-        await client.change_presence(activity=discord.Game(type=0, name=f'with Code'), status=discord.Status.online)
-        print(f'"{client.user.name}" is ready to use.')
+        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='Support Questions | !new'), status=discord.Status.online)
+        print(f'"{self.bot.user.name}" is ready to use.')
 
     @commands.Cog.listener()
     async def on_command_error(ctx, error):

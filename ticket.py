@@ -21,29 +21,32 @@ def is_user(user_id):
     return commands.check(predicate)
 
 def ticket(rank):
-    ticket_owner = ctx.channel.topic
-    ticket_owner = ticket_owner.replace('USERID: ', '')
-    helper = ctx.guild.get_role(690239278277591043)
-    mod = ctx.guild.get_role(665423380207370240)
-    if rank == 'helper':
-        if helper in ctx_member.roles or ticket_owner == str(ctx.author.id):
-            return True
+    async def predicate(ctx):
+        ticket_owner = ctx.channel.topic
+        ticket_owner = ticket_owner.replace('USERID: ', '')
+        helper = ctx.guild.get_role(690239278277591043)
+        mod = ctx.guild.get_role(665423380207370240)
+        ctx_member = ctx.guild.get_member(ctx.author.id)
+        if rank == 'helper':
+            if helper in ctx_member.roles or ticket_owner == str(ctx.author.id):
+                return True
+            else:
+                return False
+        elif rank == 'mod':
+            if mod in ctx_member.roles or ticket_owner == str(ctx.author.id):
+                return True
+            else:
+                return False
+        elif rank == 'blacklist':
+            pass
+            # @todo Need to make a blacklist file for global and ticket blacklist via Quacky Support
+            # if mod in ctx_member.roles or ticket_owner == str(ctx.author.id):
+            #     return True
+            # else:
+            #     return False
         else:
             return False
-    elif rank == 'mod':
-        if mod in ctx_member.roles or ticket_owner == str(ctx.author.id):
-            return True
-        else:
-            return False
-    elif rank == 'blacklist':
-        pass
-        # @todo Need to make a blacklist file for global and ticket blacklist via Quacky Support
-        # if mod in ctx_member.roles or ticket_owner == str(ctx.author.id):
-        #     return True
-        # else:
-        #     return False
-    else:
-        return False
+    return commands.check(predicate)
 
 class Ticket(commands.Cog):# @todo NEed to update all the commands with the check above, proper emojis, and proper roles/categories
     def __init__(self, bot):
