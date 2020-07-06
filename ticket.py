@@ -38,17 +38,17 @@ def rank(rank):
             else:
                 return False
         elif rank == 'blacklist':
-            pass
-            # @todo Need to make a blacklist file for global and ticket blacklist via Quacky Support
-            # if mod in ctx_member.roles or ticket_owner == str(ctx.author.id):
-            #     return True
-            # else:
-            #     return False
+            File = open('/root/Support/Files/blacklist.json').read()
+            data = json.loads(File)
+            for x in data['ticket']:
+                if x['id'] == ctx.author.id:
+                    return False
+            return True
         else:
             return False
     return commands.check(predicate)
 
-class Ticket(commands.Cog):# @todo NEed to update all the commands with the check above, proper emojis, and proper roles/categories
+class Ticket(commands.Cog):# @todo Need to update all the commands with the check above, proper emojis, and proper roles/categories
     def __init__(self, bot):
         self.bot = bot
 
