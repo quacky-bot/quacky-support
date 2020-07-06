@@ -3,11 +3,12 @@ from discord.ext import commands
 error_icon = 'https://cdn.discordapp.com/emojis/678014140203401246.png?v=1'
 Client = discord.Client()
 TOKEN = open('/root/Support/token.txt', 'r').read()
+# TOKEN = open('/Users/duckmasteral/Documents/GitHub/quacky-support/token.txt').read()
 
-initial_extensions = ['admin', 'moderation', 'misc', 'special']
+initial_extensions = ['admin', 'moderation', 'misc', 'ticket', 'events']
 
 async def get_prefix(bot, message):
-  return !, f'<@!721865235413205014}> ', f'<@721865235413205014> ', f'<@721865235413205014>', f'<@!721865235413205014>']
+  return ['!', '<@!721865235413205014}> ', '<@721865235413205014> ', '<@721865235413205014>', '<@!721865235413205014>']
 
 client = commands.Bot(command_prefix=get_prefix, case_insensitive=True)
 

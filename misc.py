@@ -1,11 +1,13 @@
 import discord, json, time
 from discord.ext import commands
+from discord.ext.commands.cooldowns import BucketType
 
 class Misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
+    @commands.cooldown(1, 2.0, BucketType.user)
     async def ping(self, ctx):
         """ Ping Pong! Check the Bot's Latency. """
         start = time.perf_counter()
