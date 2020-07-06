@@ -1,5 +1,6 @@
-import discord, json
+import discord, json, asyncio
 from discord.ext import commands, tasks
+error_icon = 'https://cdn.discordapp.com/emojis/678014140203401246.png?v=1'
 
 class Events(commands.Cog):
     def __init__(self, bot):
@@ -18,32 +19,33 @@ class Events(commands.Cog):
     async def on_member_join(self, member):
         guild = member.guild
         if guild.id == 665378018310488065:
-            # Doing Rank Check -- @todo add roleid's
+            # Doing Rank Check
             File = open('/root/Quacky/Files/badges.json').read()
             data = json.loads(File)
             total = 0
             rank = 0
             for x in data['error']:
-                if x['id'] == user1.id:
+                if x['id'] == member.id:
                     total = x['total']
             for a in data['donator']:
-                if a['id'] == user1.id:
+                if a['id'] == member.id:
                     rank = a['rank']
             if member.id in data['special']:
-                special_role = guild.get_role()
-                member.add_roles(special, reason=f'Has Special Badge')
+                special = guild.get_role(689520201259417682)
+                await member.add_roles(special, reason=f'Has Special Badge')
+            donator = guild.get_role(690234363648016443)
             if rank == 3:
-                mega = guild.get_role()
-                member.add_roles(mega, reason=f'Has MEGA Badge')
+                mega = guild.get_role(690234610462097504)
+                await member.add_roles(mega, donator, reason=f'Has MEGA Badge')
             elif rank == 2:
-                mvp = guild.get_role()
-                member.add_roles(mvp, reason=f'Has MVP Badge')
+                mvp = guild.get_role(690234421294530657)
+                await member.add_roles(mvp, donator, reason=f'Has MVP Badge')
             elif rank == 1:
-                vip = guild.get_role()
-                member.add_roles(vip, reason=f'Has VIP Badge')
+                vip = guild.get_role(665423079454801930)
+                await member.add_roles(vip, donator, reason=f'Has VIP Badge')
             if total >= 5:
-                bug = guild.get_role()
-                member.add_roles(bug, reason=f'Has Found {total} Bugs with Quacky')
+                bug = guild.get_role(729501130723426334)
+                await member.add_roles(bug, reason=f'Has Found {total} Bugs with Quacky')
             # Sending Join Message
             if member.bot == True or member.id == 475117152106446849:
                 return
