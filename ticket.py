@@ -20,7 +20,7 @@ def is_user(user_id):
         return ctx.author.id == 443217277580738571 or ctx.author.id == user_id or ctx.author.id == 519482266473332736
     return commands.check(predicate)
 
-def ticket(rank):
+def rank(rank):
     async def predicate(ctx):
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
@@ -53,7 +53,7 @@ class Ticket(commands.Cog):# @todo NEed to update all the commands with the chec
         self.bot = bot
 
     @commands.command()
-    @ticket('blacklist')
+    @rank('blacklist')
     async def new(self, ctx, *, subject=None):
         """ Create a Ticket!
         Ticket Categories are Report, Question, and Other. """
