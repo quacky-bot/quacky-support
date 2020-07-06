@@ -1,3 +1,4 @@
 
 *.pyc
 token.txt
+*.json
