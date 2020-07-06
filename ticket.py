@@ -1,39 +1,32 @@
-import discord, random, logging, sys, traceback, os, asyncio
+import discord, random, logging, sys, traceback, os, asyncio, json
 from discord.ext import commands, tasks
-from discord.ext.commands import Bot
 from discord.ext.commands.cooldowns import BucketType
-from time import sleep
-from itertools import cycle
-
-def is_owner():
-    async def predicate(ctx):
-        return ctx.author.id == 443217277580738571 or ctx.author.id == 519482266473332736
-    return commands.check(predicate)
-
-def is_in_guild(guild_id):
-    async def predicate(ctx):
-        return ctx.guild and ctx.guild.id == guild_id or ctx.author.id == 443217277580738571 or ctx.author.id == 519482266473332736
-    return commands.check(predicate)
-
-def is_user(user_id):
-    async def predicate(ctx):
-        return ctx.author.id == 443217277580738571 or ctx.author.id == user_id or ctx.author.id == 519482266473332736
-    return commands.check(predicate)
 
 def rank(rank):
     async def predicate(ctx):
-        ticket_owner = ctx.channel.topic
+        try:
+            ticket_owner = ctx.channel.topic
+        except:
+            ticket_owner = ''
         ticket_owner = ticket_owner.replace('USERID: ', '')
-        helper = ctx.guild.get_role(690239278277591043)
-        mod = ctx.guild.get_role(665423380207370240)
-        ctx_member = ctx.guild.get_member(ctx.author.id)
+        bot = ctx.bot
+        guild = bot.get_guild(665378018310488065)
+        support = guild.get_role(729735292734406669)
+        mod = guild.get_role(665423380207370240)
+        admin = guild.get_role(665423523308634113)
+        ctx_member = guild.get_member(ctx.author.id)
         if rank == 'helper':
-            if helper in ctx_member.roles or ticket_owner == str(ctx.author.id):
+            if support in ctx_member.roles or ticket_owner == str(ctx.author.id) or mod in ctx_member.roles or admin in ctx_member.roles:
                 return True
             else:
                 return False
         elif rank == 'mod':
-            if mod in ctx_member.roles or ticket_owner == str(ctx.author.id):
+            if mod in ctx_member.roles or ticket_owner == str(ctx.author.id) or admin in ctx_member.roles:
+                return True
+            else:
+                return False
+        elif rank == 'admin':
+            if admin in ctx_member.roles or ticket_owner == str(ctx.author.id):
                 return True
             else:
                 return False
@@ -48,25 +41,24 @@ def rank(rank):
             return False
     return commands.check(predicate)
 
-class Ticket(commands.Cog):# @todo Need to update all the commands with the check above, proper emojis, and proper roles/categories
+class Ticket(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
     @rank('blacklist')
+    @commands.cooldown(1, 300.0, BucketType.user)
     async def new(self, ctx, *, subject=None):
         """ Create a Ticket!
-        Ticket Categories are Report, Question, and Other. """
-        ticket_blacklist = open('/root/Duckville/Files/ticket_blacklist.txt', 'r').read()
-        ticket_blacklist = ticket_blacklist.split('\n')
-        if str(ctx.author.id) in ticket_blacklist:
-            await ctx.send(f'<:fancyx:681610313485123602> You are Blacklisted from Making Tickets!')
-            return
-        guild = self.bot.get_guild(581696157529407519)
+        Ticket Categories are Report, Question, and Other.
+        To prevent spam, you can only make a ticket once every 5 minutes. """
+        guild = self.bot.get_guild(665378018310488065)
         await ctx.channel.last_message.delete()
-        duckville_helper = guild.get_role(671159224176345089)
+        mod = guild.get_role(665423380207370240)
+        support_role = guild.get_role(729735292734406669)
+        admin = guild.get_role(665423523308634113)
         member1 = guild.get_member(ctx.author.id)
-        category = self.bot.get_channel(702166396255338496)
+        category = self.bot.get_channel(723971770289488013)
         if subject == None:
             def check_msg(m):
                 if ctx.author == m.author and ctx.channel == m.channel:
@@ -77,20 +69,19 @@ class Ticket(commands.Cog):# @todo Need to update all the commands with the chec
             try:
                 msg = await self.bot.wait_for('message', check=check_msg, timeout=60.0)
             except asyncio.TimeoutError:
-                await ctx.send('<:fancyx:681610313485123602> You took too long to answer the question!')
+                await ctx.send('<:redx:678014058590502912> You took too long to answer the question!')
                 return
             subject = msg.content
             await m1.delete()
             await msg.delete()
             if subject.lower() == 'cancel':
-                await ctx.send('<:fancyx:681610313485123602> Canceled Creating the Support Ticket.')
+                await ctx.send('<:redx:678014058590502912> Canceled Creating the Support Ticket.')
                 return
-        react_msg = await ctx.send(f'**Identify Your Ticket\'s Topic:**\n:bangbang: - Report\n:grey_question: - Server Question\n:newspaper: - Other\n<:fancyx:681610313485123602> - Cancel Your Ticket Creation')
+        react_msg = await ctx.send(f'**Identify Your Ticket\'s Topic:**\n:bangbang: - Report\n:grey_question: - Question\n:newspaper: - Other\n<:redx:678014058590502912> - Cancel Your Ticket Creation')
         bangbang = '\U0000203c'
         news = '\U0001f4f0'
         question = '\U00002754'
-        bug = '\U0001f41b'
-        cancel_emoji = self.bot.get_emoji(681610313485123602)
+        cancel_emoji = self.bot.get_emoji(678014058590502912)
         await react_msg.add_reaction(bangbang)
         await react_msg.add_reaction(question)
         await react_msg.add_reaction(news)
@@ -106,13 +97,18 @@ class Ticket(commands.Cog):# @todo Need to update all the commands with the chec
         try:
             reaction, user_react = await self.bot.wait_for('reaction_add', timeout=60.0, check=check_react)
         except asyncio.TimeoutError:
-            await ctx.send('<:fancyx:681610313485123602> You took too long to react to the message!')
+            await ctx.send('<:redx:678014058590502912> You took too long to react to the message!')
             return
         else:
             if reaction.emoji == bangbang:
                 m = []
                 online = discord.Status.online
-                for member in duckville_helper.members:
+                for member in mod.members:
+                    if member.is_on_mobile():
+                        return
+                    if member.status == online:
+                        m.append(f'{member.mention}')
+                for member in admin.members:
                     if member.is_on_mobile():
                         return
                     if member.status == online:
@@ -130,32 +126,31 @@ class Ticket(commands.Cog):# @todo Need to update all the commands with the chec
                 ticket_prefix = 'ticket'
                 topic = 'Other'
             elif reaction.emoji == cancel_emoji:
-                await ctx.send(f'<:fancycheck:681610286444314668> Canceled the Ticket Making Process.', delete_after=10)
+                await ctx.send(f'<:check:678014104111284234> Canceled the Ticket Making Process.', delete_after=10)
                 await react_msg.delete()
                 return
             await react_msg.delete()
-        channel = await guild.create_text_channel(f'{ticket_prefix}-{member1.display_name}', category=category, reason=f'{ctx.author} - Ticket Creation', topic=f'USERID: {ctx.author.id}')
-        await channel.set_permissions(guild.default_role, read_messages=False, reason=f'{ctx.author} - Ticket Creation')
-        await channel.set_permissions(ctx.author, read_messages=True, send_messages=True, manage_messages=False, reason=f'{ctx.author} - Ticket Creation')
-        await channel.set_permissions(duckville_helper, read_messages=True, send_messages=True, reason=f'{ctx.author} - Ticket Creation')#, manage_channel=True)
-        embed = discord.Embed(title='Duckville Support', colour=discord.Colour(7506394), description=f'Hey {ctx.author.mention}! Thanks for making a support ticket.\nA duckville helper will respond to you as soon as possible.\nTopic: **{topic}**\nSubject: **{subject}**')
+        channel = await guild.create_text_channel(f'{ticket_prefix}-{member1.display_name}', category=category, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Creation', topic=f'USERID: {ctx.author.id}')
+        await channel.set_permissions(guild.default_role, read_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Creation')
+        await channel.set_permissions(ctx.author, read_messages=True, send_messages=True, manage_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Creation')
+        await channel.set_permissions(support_role, read_messages=True, send_messages=True, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Creation')
+        embed = discord.Embed(title='Quacky Support', colour=discord.Colour(7506394), description=f'Hey {ctx.author.mention}! Thanks for making a support ticket.\nA Quacky Staff Member will respond to you as soon as possible.\nTopic: **{topic}**\nSubject: **{subject}**')
         embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
         await channel.send(embed=embed)
         delcontent = await channel.send(f'{content}', delete_after=0.01)
-        await ctx.send(f'<:fancycheck:681610286444314668> Created your Support Ticket --> {channel.mention}', delete_after=10)
+        await ctx.send(f'<:check:678014104111284234> Created your Support Ticket --> {channel.mention}', delete_after=10)
 
     @commands.command()
     @commands.guild_only()
+    @rank('helper')
     async def close(self, ctx, *, reason=None):
         """ Close a Ticket """
-        if ctx.channel.category_id != 702166396255338496:
-            await ctx.send(f'<:fancyx:681610313485123602> You can only do this command in a Support Ticket.')
-            return
+        if ctx.channel.category_id != 723971770289488013:
+            return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Support Ticket.')
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
-        archive = ctx.guild.get_channel(711227298157953035)
+        archive = ctx.guild.get_channel(729813211704066169)
         tuser = self.bot.get_user(int(ticket_owner))
-        dvhelper = ctx.guild.get_role(671159224176345089)
         member = ctx.guild.get_member(ctx.author.id)
         overwrite = discord.PermissionOverwrite()
         overwrite.send_messages = False
@@ -171,300 +166,293 @@ class Ticket(commands.Cog):# @todo Need to update all the commands with the chec
             try:
                 m2 = await self.bot.wait_for('message', check=check_msg, timeout=60.0)
             except asyncio.TimeoutError:
-                await ctx.send('<:fancyx:681610313485123602> You took too long to answer the question!')
-                return
+                return await ctx.send('<:redx:678014058590502912> You took too long to answer the question!')
             reason = m2.content
             await m1.delete()
             await m2.delete()
             if reason.lower() == 'cancel':
-                await ctx.send('<:fancyx:681610313485123602> Canceled Closing the Support Ticket.')
-                return
-        if dvhelper in member.roles or ticket_owner == str(ctx.author.id):
-            msg = await ctx.send(f'<a:Loading:540153374763384852> Sending the Message and Updating Permissions...')
-            try:
-                await tuser.send(f'Your ticket has been closed by **{member.display_name}** with reason **{reason}**\nYou can read the chat history here: {msg.jump_url}')
-            except:
-                await ctx.send(f'{tuser.mention} your ticket has been closed by {member.display_name} with reason {reason}', delete_after=5)
-            await ctx.channel.edit(category=archive, reason=f'{ctx.author} - Ticket Close Command', sync_permissions=True, position=0)
-            await ctx.channel.set_permissions(tuser, overwrite=overwrite)
-            await msg.edit(content=f':lock: Ticket Closed by **{member.display_name}**\nReason: **{reason}**')
-        else:
-            await ctx.send('<:fancyx:681610313485123602> You don\'t have permission to do this command.')
+                return await ctx.send('<:redx:678014058590502912> Canceled Closing the Support Ticket.')
+        msg = await ctx.send(f'<a:Loading:540153374763384852> Sending the Message and Updating Permissions...')
+        try:
+            await tuser.send(f'Your ticket has been closed by **{member.display_name}** with reason **{reason}**\nYou can read the chat history here: {msg.jump_url}')
+        except:
+            await ctx.send(f'{tuser.mention} your ticket has been closed by {member.display_name} with reason {reason}', delete_after=5)
+        await ctx.channel.edit(category=archive, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Close Command', sync_permissions=True, position=0)
+        await ctx.channel.set_permissions(tuser, overwrite=overwrite)
+        await msg.edit(content=f':lock: Ticket Closed by **{member.display_name}**\nReason: **{reason}**')
 
     @commands.command()
     @commands.guild_only()
+    @rank('mod')
     async def add(self, ctx, *, user):
         """ Add Someone to a Ticket """
-        if ctx.channel.category_id != 702166396255338496:
-            await ctx.send(f'<:fancyx:681610313485123602> You can only do this command in a Support Ticket.')
-            return
-        ticket_owner = ctx.channel.topic
-        ticket_owner = ticket_owner.replace('USERID: ', '')
-        tuser = self.bot.get_user(int(ticket_owner))
-        dvhelper = ctx.guild.get_role(671159224176345089)
+        if ctx.channel.category_id != 723971770289488013:
+            return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Support Ticket.')
         ctx_member = ctx.guild.get_member(ctx.author.id)
         starting_msg = ctx.channel.last_message
-        if dvhelper in ctx_member.roles or ticket_owner == str(ctx.author.id):
-            user = user.lower()
-            user1 = None
-            embed_user = ctx.author
-            u = []
-            m = []
-            failn = []
-            faily = []
-            def check(m):
-                if ctx.author == m.author and ctx.channel == m.channel:
-                    try:
-                        m1 = int(m.content)
-                    except:
-                        faily.append('n')
-                        return True
-                    message_0 = m1 - 1
-                    if message_0 >= users_len or m1 <= 0:
-                        faily.append('n')
-                        return True
-                    else:
-                        failn.append('n')
-                        return True
-                else:
+        user = user.lower()
+        user1 = None
+        embed_user = ctx.author
+        u = []
+        m = []
+        failn = []
+        faily = []
+        def check(m):
+            if ctx.author == m.author and ctx.channel == m.channel:
+                try:
+                    m1 = int(m.content)
+                except:
                     faily.append('n')
-                    return False
-            guildmem = ctx.guild.members
-            for member in guildmem:
-                name = f'{member.name}#{member.discriminator}'
-                name = name.lower()
-                dname = member.display_name
-                dname = dname.lower()
-                oname = member.name
-                oname = oname.lower()
-                if dname.__contains__(f'{user}') or name == (f'{user}') or oname.__contains__(f'{user}'):
-                    u.append(f'{member.mention}')
-                    m.append(f'{member.id}')
-            if len(u) == 1:# If it returns only 1 member
-                pop = m.pop(0)
-                user1 = ctx.guild.get_member(int(pop))
-            elif len(u) == 0:# If it returns 0 members
-                if user.startswith('<@') and user.endswith('>'):
-                    user1 = user.replace('<', '')
-                    user1 = user1.replace('>', '')
-                    user1 = user1.replace('!', '')
-                    user1 = user1.replace('@', '')
-                    user1 = ctx.guild.get_member(int(user1))
+                    return True
+                message_0 = m1 - 1
+                if message_0 >= users_len or m1 <= 0:
+                    faily.append('n')
+                    return True
                 else:
-                    try:
-                        user1 = ctx.guild.get_member(int(user))
-                    except:
-                        user1 = None
-                        pass
-                if user1 == None:
-                    embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description='I can not find that user!')
-                    embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
-                    embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/678014140203401246.png?v=1")
-                    embed.set_footer(text='If you need help please do the -support command.')
-                    await ctx.send(embed=embed)
-                    return
-            elif len(u) >= 10:
-                embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description='Too many users found. Please be more specific.')
+                    failn.append('n')
+                    return True
+            else:
+                faily.append('n')
+                return False
+        guildmem = ctx.guild.members
+        for member in guildmem:
+            name = f'{member.name}#{member.discriminator}'
+            name = name.lower()
+            dname = member.display_name
+            dname = dname.lower()
+            oname = member.name
+            oname = oname.lower()
+            if dname.__contains__(f'{user}') or name == (f'{user}') or oname.__contains__(f'{user}'):
+                u.append(f'{member.mention}')
+                m.append(f'{member.id}')
+        if len(u) == 1:# If it returns only 1 member
+            pop = m.pop(0)
+            user1 = ctx.guild.get_member(int(pop))
+        elif len(u) == 0:# If it returns 0 members
+            if user.startswith('<@') and user.endswith('>'):
+                user1 = user.replace('<', '')
+                user1 = user1.replace('>', '')
+                user1 = user1.replace('!', '')
+                user1 = user1.replace('@', '')
+                user1 = ctx.guild.get_member(int(user1))
+            else:
+                try:
+                    user1 = ctx.guild.get_member(int(user))
+                except:
+                    user1 = None
+                    pass
+            if user1 == None:
+                embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description='I can not find that user!')
                 embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
                 embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/678014140203401246.png?v=1")
                 embed.set_footer(text='If you need help please do the -support command.')
                 await ctx.send(embed=embed)
                 return
-            else:# If it returns more than 1 member
-                a = ['1']
-                users_list = []
-                for item in u:
-                    num = len(a)
-                    a.append('f')
-                    users_list.append(f'{num}. {item}')
-                users_len = len(users_list)
-                users_list = '\n'.join(users_list)# -- -- -- ADD RESULT TEXT BELOW -- -- --
-                embed = discord.Embed(title='Multiple Members Found!', colour=discord.Colour(7506394), description=f'Please type the number that corresponds to the member you want to add to the ticket.\n{users_list}')
-                embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
-                msg2 = await ctx.send(embed=embed)
-                try:
-                    msg = await self.bot.wait_for('message', check=check, timeout=60.0)
-                except asyncio.TimeoutError:
-                    await ctx.send('<:fancyx:681610313485123602> You took too long to answer the question!')
-                    return
-                if len(failn) >= 1:
-                    msg1 = int(msg.content)
-                    popnum = msg1 - 1
-                    user2 = m.pop(popnum)
-                    user1 = ctx.guild.get_member(int(user2))
-                elif len(faily) >= 1:
-                    await ctx.send(f'<:fancyx:681610313485123602> Invalid Number.')
-                    return
-            if discord.PermissionOverwrite.is_empty(ctx.channel.overwrites_for(user1)) == False:
-                await ctx.send('<:fancyx:681610313485123602> You can\'t add someone to the ticket if they\'ve already been added!')
+        elif len(u) >= 10:
+            embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description='Too many users found. Please be more specific.')
+            embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
+            embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/678014140203401246.png?v=1")
+            embed.set_footer(text='If you need help please do the -support command.')
+            await ctx.send(embed=embed)
+            return
+        else:# If it returns more than 1 member
+            a = ['1']
+            users_list = []
+            for item in u:
+                num = len(a)
+                a.append('f')
+                users_list.append(f'{num}. {item}')
+            users_len = len(users_list)
+            users_list = '\n'.join(users_list)# -- -- -- ADD RESULT TEXT BELOW -- -- --
+            embed = discord.Embed(title='Multiple Members Found!', colour=discord.Colour(7506394), description=f'Please type the number that corresponds to the member you want to add to the ticket.\n{users_list}')
+            embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
+            msg2 = await ctx.send(embed=embed)
+            try:
+                msg = await self.bot.wait_for('message', check=check, timeout=60.0)
+            except asyncio.TimeoutError:
+                await ctx.send('<:redx:678014058590502912> You took too long to answer the question!')
                 return
-            try:
-                await user1.send(f'<:join:659881573012865084> You\'ve been added to **{ctx.channel.mention}** by **{ctx.author.display_name}.**')
-            except:
-                pass
-            await ctx.channel.set_permissions(user1, read_messages=True)
-            await starting_msg.delete()
-            try:
-                await msg2.delete()
-                await msg.delete()
-            except:
-                pass
-            await ctx.send(f'<:fancycheck:681610286444314668> **{ctx_member.display_name}** added **{user1.display_name}** to the channel.')
-        else:
-            await ctx.send('<:fancyx:681610313485123602> You don\'t have permission to do this command.')
+            if len(failn) >= 1:
+                msg1 = int(msg.content)
+                popnum = msg1 - 1
+                user2 = m.pop(popnum)
+                user1 = ctx.guild.get_member(int(user2))
+            elif len(faily) >= 1:
+                await ctx.send(f'<:redx:678014058590502912> Invalid Number.')
+                return
+        if discord.PermissionOverwrite.is_empty(ctx.channel.overwrites_for(user1)) == False:
+            return await ctx.send('<:redx:678014058590502912> You can\'t add someone to the ticket if they\'ve already been added!')
+        await ctx.channel.set_permissions(user1, read_messages=True)
+        try:
+            await user1.send(f'<:join:659881573012865084> You\'ve been added to **{ctx.channel.mention}** by **{ctx_member.display_name}.**')
+        except:
+            pass
+        await starting_msg.delete()
+        try:
+            await msg2.delete()
+            await msg.delete()
+        except:
+            pass
+        await ctx.send(f'<:check:678014104111284234> **{ctx_member.display_name}** added **{user1.display_name}** to the channel.')
 
     @commands.command()
     @commands.guild_only()
+    @rank('mod')
     async def remove(self, ctx, *, user):
         """ Remove Someone from a Ticket """
-        if ctx.channel.category_id != 702166396255338496:
-            await ctx.send(f'<:fancyx:681610313485123602> You can only do this command in a Support Ticket.')
-            return
+        if ctx.channel.category_id != 723971770289488013:
+            return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Support Ticket.')
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
         tuser = self.bot.get_user(int(ticket_owner))
         tmember = ctx.guild.get_member(int(ticket_owner))
-        dvhelper = ctx.guild.get_role(671159224176345089)
+        support = ctx.guild.get_role(729735292734406669)
+        quacky_bot_role = ctx.guild.get_role(665409797885263882)
         ctx_member = ctx.guild.get_member(ctx.author.id)
         starting_msg = ctx.channel.last_message
-        if dvhelper in ctx_member.roles or ticket_owner == str(ctx.author.id):
-            user = user.lower()
-            user1 = None
-            embed_user = ctx.author
-            u = []
-            m = []
-            failn = []
-            faily = []
-            def check(m):
-                if ctx.author == m.author and ctx.channel == m.channel:
-                    try:
-                        m1 = int(m.content)
-                    except:
-                        faily.append('n')
-                        return True
-                    message_0 = m1 - 1
-                    if message_0 >= users_len or m1 <= 0:
-                        faily.append('n')
-                        return True
-                    else:
-                        failn.append('n')
-                        return True
-                else:
+        user = user.lower()
+        user1 = None
+        embed_user = ctx.author
+        u = []
+        m = []
+        failn = []
+        faily = []
+        def check(m):
+            if ctx.author == m.author and ctx.channel == m.channel:
+                try:
+                    m1 = int(m.content)
+                except:
                     faily.append('n')
-                    return False
-            guildmem = ctx.guild.members
-            for member in guildmem:
-                name = f'{member.name}#{member.discriminator}'
-                name = name.lower()
-                dname = member.display_name
-                dname = dname.lower()
-                oname = member.name
-                oname = oname.lower()
-                if dname.__contains__(f'{user}') or name == (f'{user}') or oname.__contains__(f'{user}'):
-                    u.append(f'{member.mention}')
-                    m.append(f'{member.id}')
-            if len(u) == 1:# If it returns only 1 member
-                pop = m.pop(0)
-                user1 = ctx.guild.get_member(int(pop))
-            elif len(u) == 0:# If it returns 0 members
-                if user.startswith('<@') and user.endswith('>'):
-                    user1 = user.replace('<', '')
-                    user1 = user1.replace('>', '')
-                    user1 = user1.replace('!', '')
-                    user1 = user1.replace('@', '')
-                    user1 = ctx.guild.get_member(int(user1))
+                    return True
+                message_0 = m1 - 1
+                if message_0 >= users_len or m1 <= 0:
+                    faily.append('n')
+                    return True
                 else:
-                    try:
-                        user1 = ctx.guild.get_member(int(user))
-                    except:
-                        user1 = None
-                        pass
-                if user1 == None:
-                    embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description='I can not find that user!')
-                    embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
-                    embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/678014140203401246.png?v=1")
-                    embed.set_footer(text='If you need help please do the -support command.')
-                    await ctx.send(embed=embed)
-                    return
-            elif len(u) >= 10:
-                embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description='Too many users found. Please be more specific.')
+                    failn.append('n')
+                    return True
+            else:
+                faily.append('n')
+                return False
+        guildmem = ctx.guild.members
+        for member in guildmem:
+            name = f'{member.name}#{member.discriminator}'
+            name = name.lower()
+            dname = member.display_name
+            dname = dname.lower()
+            oname = member.name
+            oname = oname.lower()
+            if dname.__contains__(f'{user}') or name == (f'{user}') or oname.__contains__(f'{user}'):
+                u.append(f'{member.mention}')
+                m.append(f'{member.id}')
+        if len(u) == 1:# If it returns only 1 member
+            pop = m.pop(0)
+            user1 = ctx.guild.get_member(int(pop))
+        elif len(u) == 0:# If it returns 0 members
+            if user.startswith('<@') and user.endswith('>'):
+                user1 = user.replace('<', '')
+                user1 = user1.replace('>', '')
+                user1 = user1.replace('!', '')
+                user1 = user1.replace('@', '')
+                user1 = ctx.guild.get_member(int(user1))
+            else:
+                try:
+                    user1 = ctx.guild.get_member(int(user))
+                except:
+                    user1 = None
+                    pass
+            if user1 == None:
+                embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description='I can not find that user!')
                 embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
                 embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/678014140203401246.png?v=1")
                 embed.set_footer(text='If you need help please do the -support command.')
                 await ctx.send(embed=embed)
                 return
-            else:# If it returns more than 1 member
-                a = ['1']
-                users_list = []
-                for item in u:
-                    num = len(a)
-                    a.append('f')
-                    users_list.append(f'{num}. {item}')
-                users_len = len(users_list)
-                users_list = '\n'.join(users_list)# -- -- -- ADD RESULT TEXT BELOW -- -- --
-                embed = discord.Embed(title='Multiple Members Found!', colour=discord.Colour(7506394), description=f'Please type the number that corresponds to the member you want to remove from the ticket.\n{users_list}')
-                embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
-                msg2 = await ctx.send(embed=embed)
-                try:
-                    msg = await self.bot.wait_for('message', check=check, timeout=60.0)
-                except asyncio.TimeoutError:
-                    await ctx.send('<:fancyx:681610313485123602> You took too long to answer the question!')
-                    return
-                if len(failn) >= 1:
-                    msg1 = int(msg.content)
-                    popnum = msg1 - 1
-                    user2 = m.pop(popnum)
-                    user1 = ctx.guild.get_member(int(user2))
-                elif len(faily) >= 1:
-                    await ctx.send(f'<:fancyx:681610313485123602> Invalid Number.')
-                    return
-            if user1 == tmember:
-                return await ctx.send(f'<:fancyx:681610313485123602> You can\'t remove the Ticket Owner from the ticket!')
-            elif dvhelper in user1.roles:
-                return await ctx.send(f'<:fancyx:681610313485123602> You cannot remove a Duckville Helper from the Ticket!')
-            elif user1.id == 235148962103951360 or user1.id == 681598966399369341 or user1.id == 534589798267224065 or user1.id == 356950275044671499:
-                return await ctx.send(f'<:fancyx:681610313485123602> You cannot remove this bot. It has permission to see every channel.')
-            elif discord.PermissionOverwrite.is_empty(ctx.channel.overwrites_for(user1)):
-                return await ctx.send(f'<:fancyx:681610313485123602> {user1.display_name} hasn\'t been added to the Ticket!')
-            await ctx.channel.set_permissions(user1, overwrite=None)
-            await starting_msg.delete()
+        elif len(u) >= 10:
+            embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description='Too many users found. Please be more specific.')
+            embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
+            embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/678014140203401246.png?v=1")
+            embed.set_footer(text='If you need help please do the -support command.')
+            await ctx.send(embed=embed)
+            return
+        else:# If it returns more than 1 member
+            a = ['1']
+            users_list = []
+            for item in u:
+                num = len(a)
+                a.append('f')
+                users_list.append(f'{num}. {item}')
+            users_len = len(users_list)
+            users_list = '\n'.join(users_list)# -- -- -- ADD RESULT TEXT BELOW -- -- --
+            embed = discord.Embed(title='Multiple Members Found!', colour=discord.Colour(7506394), description=f'Please type the number that corresponds to the member you want to remove from the ticket.\n{users_list}')
+            embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
+            msg2 = await ctx.send(embed=embed)
             try:
-                await msg2.delete()
-                await msg.delete()
-            except:
-                pass
-            await ctx.send(f'<:fancycheck:681610286444314668> **{ctx_member.display_name}** removed **{user1.display_name}** from the channel.')
-        else:
-            await ctx.send('<:fancyx:681610313485123602> You don\'t have permission to do this command.')
+                msg = await self.bot.wait_for('message', check=check, timeout=60.0)
+            except asyncio.TimeoutError:
+                await ctx.send('<:redx:678014058590502912> You took too long to answer the question!')
+                return
+            if len(failn) >= 1:
+                msg1 = int(msg.content)
+                popnum = msg1 - 1
+                user2 = m.pop(popnum)
+                user1 = ctx.guild.get_member(int(user2))
+            elif len(faily) >= 1:
+                await ctx.send(f'<:redx:678014058590502912> Invalid Number.')
+                return
+        if user1 == tmember:
+            return await ctx.send(f'<:redx:678014058590502912> You can\'t remove the Ticket Owner from the ticket!')
+        elif support in user1.roles:
+            return await ctx.send(f'<:redx:678014058590502912> You cannot remove another Support Team Member from the Ticket!')
+        elif quacky_bot_role in user1.roles or user1.id == 235148962103951360:
+            return await ctx.send(f'<:redx:678014058590502912> You cannot remove this bot. It has permission to see every channel.')
+        elif discord.PermissionOverwrite.is_empty(ctx.channel.overwrites_for(user1)):
+            return await ctx.send(f'<:redx:678014058590502912> {user1.display_name} hasn\'t been added to the Ticket!')
+        await ctx.channel.set_permissions(user1, overwrite=None)
+        await starting_msg.delete()
+        try:
+            await msg2.delete()
+            await msg.delete()
+        except:
+            pass
+        await ctx.send(f'<:check:678014104111284234> **{ctx_member.display_name}** removed **{user1.display_name}** from the channel.')
 
     @commands.command()
     @commands.guild_only()
+    @rank('helper')
     async def rename(self, ctx, *, prefix):
         """ Rename a Ticket's Prefix """
-        if ctx.channel.category_id != 702166396255338496:
-            await ctx.send(f'<:fancyx:681610313485123602> You can only do this command in a Support Ticket.')
-            return
+        if ctx.channel.category_id != 723971770289488013:
+            return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Support Ticket.')
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
         tuser = self.bot.get_user(int(ticket_owner))
         tmember = ctx.guild.get_member(int(ticket_owner))
-        dvhelper = ctx.guild.get_role(671159224176345089)
         ctx_member = ctx.guild.get_member(ctx.author.id)
         starting_msg = ctx.channel.last_message
-        if dvhelper in ctx_member.roles:
-            await ctx.channel.edit(name=f'{prefix}-{tmember.display_name}')
-            await ctx.send(f'<:fancycheck:681610286444314668> **{ctx_member.display_name}** renamed the channel to **{ctx.channel.name}**')
-            await starting_msg.delete()
-        else:
-            await ctx.send('<:fancyx:681610313485123602> You don\'t have permission to do this command.')
+        await ctx.channel.edit(name=f'{prefix}-{tmember.display_name}')
+        await ctx.send(f'<:check:678014104111284234> **{ctx_member.display_name}** renamed the channel to **{ctx.channel.name}**')
+        await starting_msg.delete()
 
     @commands.command(aliases=['transferowner', 'ownertransfer'])
     @commands.guild_only()
+    @rank('mod')
     async def transfer(self, ctx, *, user):
         """ Make Someone Else the Ticket Owner of a Ticket """
+        File_ticket_blacklist = open('/root/Support/Files/blacklist.json').read()
+        data_ticket_blacklist = json.loads(File_ticket_blacklist)
+        ticket_blacklist = data_ticket_blacklist['ticket']
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
-        tuser = self.bot.get_user(int(ticket_owner))
+        tuser = ctx.guild.get_member(int(ticket_owner))
+        if tuser is None:
+            tuser = await self.bot.fetch_user(int(ticket_owner))
+            NotInServer = True
+        else:
+            NotInServer = False
+        ctx_member = ctx.guild.get_member(int(ctx.author.id))
+        admin = ctx.guild.get_role(665423523308634113)
+        starting_msg = ctx.channel.last_message
         user = user.lower()
         user1 = None
         embed_user = ctx.author
@@ -545,23 +533,26 @@ class Ticket(commands.Cog):# @todo Need to update all the commands with the chec
             try:
                 msg = await self.bot.wait_for('message', check=check, timeout=60.0)
             except asyncio.TimeoutError:
-                await ctx.send('<:fancyx:681610313485123602> You took too long to answer the question!')
-                return
+                return await ctx.send('<:redx:678014058590502912> You took too long to answer the question!')
             if len(failn) >= 1:
                 msg1 = int(msg.content)
                 popnum = msg1 - 1
                 user2 = m.pop(popnum)
                 user1 = ctx.guild.get_member(int(user2))
             elif len(faily) >= 1:
-                await ctx.send(f'<:fancyx:681610313485123602> Invalid Number.')
-                return
+                return await ctx.send(f'<:redx:678014058590502912> Invalid Number.')
+        # STARTING BLACKLIST CHECK
+        blacklisted = False
+        for x in ticket_blacklist:
+            if x['id'] == user1.id:
+                blacklisted = True
         if user1.bot == True:
-            return await ctx.send(f'<:fancyx:681610313485123602> You cannot transfer a Ticket to a Bot!')
+            return await ctx.send(f'<:redx:678014058590502912> You cannot transfer a Ticket to a Bot!')
         elif user1.id == tuser.id:
-            return await ctx.send(f'<:fancyx:681610313485123602> That Person is already the Ticket Owner!')
-        elif str(user1.id) in ticket_blacklist and dvhelper not in ctx_member.roles:
-            return await ctx.send(f'<:fancyx:681610313485123602> You cannot Transfer Ticket Ownership to a Blacklisted User!')
-        elif str(user1.id) in ticket_blacklist and dvhelper in ctx_member.roles:
+            return await ctx.send(f'<:redx:678014058590502912> That Person is already the Ticket Owner!')
+        elif blacklisted == True and admin not in ctx_member.roles:
+            return await ctx.send(f'<:redx:678014058590502912> You cannot Transfer Ticket Ownership to a Blacklisted User!')
+        elif blacklisted == True and admin in ctx_member.roles:
             redx = self.bot.get_emoji(681610313485123602)
             check = self.bot.get_emoji(681610286444314668)
             def check_react(reaction, user_react):
@@ -578,13 +569,12 @@ class Ticket(commands.Cog):# @todo Need to update all the commands with the chec
             try:
                 reaction, user_react = await self.bot.wait_for('reaction_add', timeout=120.0, check=check_react)
             except asyncio.TimeoutError:
-                await ctx.author.send('<:fancyx:681610313485123602> You took too long to react to the message!')
-                return
+                return await ctx.author.send('<:redx:678014058590502912> You took too long to react to the message!')
             else:
                 if reaction.emoji == check:
                     await confirm_msg.delete()
                 elif reaction.emoji == redx:
-                    await ctx.send('<:fancycheck:681610286444314668> Not adding them to the Ticket.', delete_after=5)
+                    await ctx.send('<:check:678014104111284234> Not adding them to the Ticket.', delete_after=5)
                     await confirm_msg.delete()
                     await starting_msg.delete()
                     try:
@@ -593,14 +583,15 @@ class Ticket(commands.Cog):# @todo Need to update all the commands with the chec
                     except:
                         pass
                     return
-        await ctx.channel.set_permissions(user1, read_messages=True, send_messages=True, manage_messages=False, reason=f'{ctx.author} - Transferring Ticket Ownership')
-        await ctx.channel.set_permissions(tmember, read_messages=True, send_messages=None, manage_messages=None, reason=f'{ctx.author} - Transferring Ticket Ownership')
-        if tuser.id != ctx.author.id:
-            await tuser.send(f'<a:NeonReachBlob:480163662263353376> Your Ticket ({ctx.channel.mention}) was transferred to **{user1.display_name}**')
+        await ctx.channel.set_permissions(user1, read_messages=True, send_messages=True, manage_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Transferring Ticket Ownership')
+        if NotInServer == False:
+            await ctx.channel.set_permissions(tuser, read_messages=True, send_messages=None, manage_messages=None, reason=f'{ctx.author} ({ctx.author.id}) - Transferring Ticket Ownership')
+            if tuser.id != ctx.author.id:
+                await tuser.send(f':pencil: Your Ticket ({ctx.channel.mention}) was transferred to **{user1.display_name}**')
         elif user1.id != ctx.author.id:
-            await user1.send(f'<a:WiggleBlob:500388529881219092> You\'ve are now the owner of {ctx.channel.mention}.')
-        await ctx.channel.edit(topic=f'USERID: {user1.id}', name=f'ticket-{user1.display_name}', reason=f'{ctx.author} - Transferring Ticket Ownership')
-        await ctx.send(f'<:fancycheck:681610286444314668> **{ctx_member.display_name}** Transferred Ticket Ownership from {tmember.display_name} to **{user1.display_name}**')
+            await user1.send(f'<:OwnerCrown:507003242249584641> You\'ve are now the owner of {ctx.channel.mention}!')
+        await ctx.channel.edit(topic=f'USERID: {user1.id}', name=f'ticket-{user1.display_name}', reason=f'{ctx.author} ({ctx.author.id}) - Transferring Ticket Ownership')
+        await ctx.send(f'<:check:678014104111284234> **{ctx_member.display_name}** Transferred Ticket Ownership from {tuser.display_name} to **{user1.display_name}**')
         await starting_msg.delete()
         try:
             await msg2.delete()
