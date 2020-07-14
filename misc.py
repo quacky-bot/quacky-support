@@ -80,6 +80,7 @@ class Misc(commands.Cog):
         error = data['error']
         donator = data['donator']
         special = data['special']
+        suggest = data['suggest']
         for x in error:
             if x['id'] == ctx.author.id:
                 error.remove(x)
@@ -88,6 +89,9 @@ class Misc(commands.Cog):
                 donator.remove(a)
         if ctx.author.id in special:
             special.remove(ctx.author.id)
+        if ctx.author.id in suggest:
+            suggest.remove(ctx.author.id)
+
         with open('/root/Quacky/Files/badges.json', 'w') as f:
             json.dump(data, f, indent=4)
         guild = self.bot.get_guild()
