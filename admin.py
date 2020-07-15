@@ -41,5 +41,13 @@ class Admin(commands.Cog):
     async def test(self, ctx):
         self.bot.load_extension('ticket')
 
+    @commands.command()
+    @admin()
+    async def shutdown(self, ctx):
+        """ Shutsdown the bot. """
+        await ctx.send('Shutting down... Goodbye!')
+        await self.bot.change_presence(activity=discord.Game(type=0, name='Shutting Down...'), status=discord.Status.dnd)
+        await self.bot.logout()
+
 def setup(bot):
     bot.add_cog(Admin(bot))
