@@ -5,7 +5,7 @@ Client = discord.Client()
 TOKEN = open('/root/Support/token.txt', 'r').read()
 # TOKEN = open('/Users/duckmasteral/Documents/GitHub/quacky-support/token.txt').read()
 
-initial_extensions = ['admin', 'moderation', 'misc', 'ticket', 'events']
+initial_extensions = ['admin', 'moderation', 'misc', 'ticket', 'events', 'jishaku']
 
 async def get_prefix(bot, message):
   return ['!', '<@!721865235413205014}> ', '<@721865235413205014> ', '<@721865235413205014>', '<@!721865235413205014>']
