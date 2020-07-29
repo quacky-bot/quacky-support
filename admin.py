@@ -44,5 +44,17 @@ class Admin(commands.Cog):
         await self.bot.change_presence(activity=discord.Game(type=0, name='Shutting Down...'), status=discord.Status.dnd)
         await self.bot.logout()
 
+    @commands.command()
+    @admin()
+    async def sadd(self, ctx, *, user: discord.Member):
+        """ Add Someone Permission to Apply for Support Team """
+        File = open('/root/Quacky/Files/misc.json').read()
+        data = json.loads(File)
+        if user.id in data['sapply']:
+            return await ctx.send('<:redx:678014058590502912> You\'re not eligible to apply for Support Team.')
+        data['sapply'].append(user.id)
+        with open('/root/Quacky/Files/misc.json', 'w') as f:
+            json.dump(data, f, indent=4)
+            
 def setup(bot):
     bot.add_cog(Admin(bot))
