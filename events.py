@@ -76,11 +76,6 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        File = open('/root/Quacky/Files/blacklist.json', 'r').read()
-        data = json.loads(File)
-        for x in data['user']:
-            if x['id'] == ctx.author.id:
-                return
         if isinstance(error, commands.CommandNotFound):
             pass
         elif isinstance(error, commands.MissingRequiredArgument):
