@@ -114,7 +114,7 @@ class Misc(commands.Cog):
     @commands.dm_only()
     @staff()
     async def sapply(self, ctx):
-        """ Apple for Support Team (Promotion of being Helper) """
+        """ Apple for Support Team (Promotion of Being Helper) """
         redx = self.bot.get_emoji(678014058590502912)
         check = self.bot.get_emoji(678014104111284234)
         guild = self.bot.get_guild(665378018310488065)
@@ -123,6 +123,10 @@ class Misc(commands.Cog):
         member = guild.get_member(ctx.author.id)
         if support_team_role in member.roles:
             return await ctx.send('<:redx:678014058590502912> You\'re already a Support Team Member!')
+        File = open('/root/Quacky/Files/misc.json').read()
+        data = json.loads(File)
+        if ctx.author.id not in data['sapply']:
+            return await ctx.send('<:redx:678014058590502912> You\'re not eligible to apply for Support Team.')
         def check_msg(m):
             if ctx.author == m.author and ctx.guild is None:
                 return True
