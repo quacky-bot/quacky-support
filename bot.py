@@ -7,10 +7,7 @@ TOKEN = open('/root/Support/token.txt', 'r').read()
 
 initial_extensions = ['admin', 'moderation', 'misc', 'ticket', 'events', 'jishaku']
 
-async def get_prefix(bot, message):
-  return ['!', '<@!721865235413205014}> ', '<@721865235413205014> ', '<@721865235413205014>', '<@!721865235413205014>']
-
-client = commands.Bot(command_prefix=get_prefix, case_insensitive=True)
+client = commands.Bot(command_prefix=commands.when_mentioned_or('!'), case_insensitive=True)
 
 if __name__ == '__main__':
     for extension in initial_extensions:
