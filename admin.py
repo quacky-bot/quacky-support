@@ -38,11 +38,6 @@ class Admin(commands.Cog):
 
     @commands.command()
     @admin()
-    async def test(self, ctx):
-        self.bot.load_extension('ticket')
-
-    @commands.command()
-    @admin()
     async def shutdown(self, ctx):
         """ Shutsdown the bot. """
         await ctx.send('Shutting down... Goodbye!')
