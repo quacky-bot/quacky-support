@@ -105,7 +105,7 @@ class Events(commands.Cog):
             embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/678014140203401246.png?v=1")
             embed.set_footer(text='If you need help please do the -support command.')
             await ctx.send(embed=embed)
-        elif isinstance(error, commands.ExtensionNotLoaded) or isinstance(error, commands.ExtensionAlreadyLoaded) or isinstance(error, commands.ExtensionFailed) or isinstance(error, commands.ExtensionNotFound):
+        elif isinstance(error, commands.ExtensionNotLoaded) or isinstance(error, commands.ExtensionAlreadyLoaded) or isinstance(error, commands.ExtensionFailed) or isinstance(error, commands.ExtensionNotFound) or isinstance(error, commands.BadArgument):
             embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description=f'{error}')
             embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
             embed.set_thumbnail(url=f'{error_icon}')
