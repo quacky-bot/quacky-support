@@ -37,10 +37,11 @@ class Admin(commands.Cog):
         File = open('/root/Quacky/Files/misc.json').read()
         data = json.loads(File)
         if user.id in data['sapply']:
-            return await ctx.send('<:redx:678014058590502912> You\'re not eligible to apply for Support Team.')
+            return await ctx.send('<:redx:678014058590502912> **{user.display_name}** was already eligible to be a Support Team member!')
         data['sapply'].append(user.id)
         with open('/root/Quacky/Files/misc.json', 'w') as f:
             json.dump(data, f, indent=4)
+        await ctx.send(f'<:check:678014104111284234> **{user.display_name}** can now apply to be a Support Team member!')
 
 def setup(bot):
     bot.add_cog(Admin(bot))
