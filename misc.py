@@ -247,6 +247,9 @@ class Misc(commands.Cog):
         await admin_msg.add_reaction(check)
         await admin_msg.add_reaction(redx)
         await ctx.author.send(f'<:check:678014104111284234> Submitted your Application!\nYou will be DM\'d if your application is approved or denied.')
+        data['sapply'].remove(ctx.author.id)
+        with open('/root/Quacky/Files/misc.json', 'w') as f:
+            json.dump(data, f, indent=4)
 
 def setup(bot):
     bot.add_cog(Misc(bot))
