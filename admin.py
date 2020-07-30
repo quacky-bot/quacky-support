@@ -1,26 +1,12 @@
 import discord
 from discord.ext import commands
 
-def admin():
-    async def predicate(ctx):
-        bot = ctx.bot
-        quacky_guild = bot.get_guild(665378018310488065)
-        quacky_member = quacky_guild.get_member(ctx.author.id)
-        quacky_adminrole = quacky_guild.get_role(665423523308634113)
-        if quacky_member is None:
-            return False
-        elif quacky_adminrole in quacky_member.roles:
-            return True
-        else:
-            return False
-    return commands.check(predicate)
-
 class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
-    @admin()
+    @commands.is_owner()
     async def reload(self, ctx, *, cog='all'):
         """ Reloads the bot's commands. """
         if cog == 'all':
@@ -37,7 +23,7 @@ class Admin(commands.Cog):
             print(f'+=+=+=+=+=+=+=+ Quacky Support: {ctx.author} has reloaded {cog} +=+=+=+=+=+=+=+')
 
     @commands.command()
-    @admin()
+    @commands.is_owner()
     async def shutdown(self, ctx):
         """ Shutsdown the bot. """
         await ctx.send('Shutting down... Goodbye!')
@@ -45,7 +31,7 @@ class Admin(commands.Cog):
         await self.bot.logout()
 
     @commands.command()
-    @admin()
+    @commands.is_owner()
     async def sadd(self, ctx, *, user: discord.Member):
         """ Add Someone Permission to Apply for Support Team """
         File = open('/root/Quacky/Files/misc.json').read()
@@ -55,6 +41,6 @@ class Admin(commands.Cog):
         data['sapply'].append(user.id)
         with open('/root/Quacky/Files/misc.json', 'w') as f:
             json.dump(data, f, indent=4)
-            
+
 def setup(bot):
     bot.add_cog(Admin(bot))
