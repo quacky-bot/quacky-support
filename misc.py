@@ -2,18 +2,6 @@ import discord, json, time, asyncio
 from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
 
-def staff():
-    async def predicate(ctx):
-        bot = ctx.bot
-        guild = bot.get_guild(665378018310488065)
-        member = guild.get_member(ctx.author.id)
-        role = guild.get_role(665423057430511626)
-        if member is None or role not in member.roles:
-            return False
-        else:
-            return True
-    return commands.check(predicate)
-
 class Misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -112,7 +100,7 @@ class Misc(commands.Cog):
 
     @commands.command()
     @commands.dm_only()
-    @staff()
+    @commands.cooldown(1, 300.0, BucketType.user)
     async def sapply(self, ctx):
         """ Apple for Support Team (Promotion of Being Helper) """
         redx = self.bot.get_emoji(678014058590502912)
