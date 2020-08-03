@@ -57,8 +57,10 @@ class Ticket(commands.Cog):
         mod = guild.get_role(665423380207370240)
         support_role = guild.get_role(729735292734406669)
         admin = guild.get_role(665423523308634113)
+        staff_role = guild.get_role(665423057430511626)
         member1 = guild.get_member(ctx.author.id)
         category = self.bot.get_channel(723971770289488013)
+        staff_request = False
         if subject == None:
             def check_msg(m):
                 if ctx.author == m.author and ctx.channel == m.channel:
@@ -77,18 +79,23 @@ class Ticket(commands.Cog):
             if subject.lower() == 'cancel':
                 await ctx.send('<:redx:678014058590502912> Canceled Creating the Support Ticket.')
                 return
-        react_msg = await ctx.send(f'**Identify Your Ticket\'s Topic:**\n:bangbang: - Report\n:grey_question: - Question\n:newspaper: - Other\n<:redx:678014058590502912> - Cancel Your Ticket Creation')
+        react_msg = await ctx.send(f'**Identify Your Ticket\'s Topic:**\n:bangbang: - Report\n:grey_question: - Question\n<:Staff:690664654736851014> - Staff Request\n:newspaper: - Other\n<:redx:678014058590502912> - Cancel Your Ticket Creation')
         bangbang = '\U0000203c'
         news = '\U0001f4f0'
         question = '\U00002754'
+        staff_emoji = self.bot.get_emoji(690664654736851014)
         cancel_emoji = self.bot.get_emoji(678014058590502912)
         await react_msg.add_reaction(bangbang)
         await react_msg.add_reaction(question)
+        if staff_role in member1.roles:
+            await react_msg.add_reaction(staff_emoji)
         await react_msg.add_reaction(news)
         await react_msg.add_reaction(cancel_emoji)
         def check_react(reaction, user_react):
             if ctx.author == user_react:
                 if reaction.emoji == bangbang or reaction.emoji == question or reaction.emoji == news or reaction.emoji == cancel_emoji:
+                    return True
+                elif reaction.emoji == staff_emoji and staff_role in member1.roles:
                     return True
                 else:
                     return False
@@ -125,16 +132,23 @@ class Ticket(commands.Cog):
                 content = ctx.author.mention
                 ticket_prefix = 'ticket'
                 topic = 'Other'
+            elif reaction.emoji == staff_emoji:
+                content = ctx.author.mention
+                ticket_prefix = 'staff'
+                topic = 'Staff Request'
+                staff_request = True
             elif reaction.emoji == cancel_emoji:
                 await ctx.send(f'<:check:678014104111284234> Canceled the Ticket Making Process.', delete_after=10)
-                await react_msg.delete()
-                return
+                return await react_msg.delete()
             await react_msg.delete()
         channel = await guild.create_text_channel(f'{ticket_prefix}-{member1.display_name}', category=category, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Creation', topic=f'USERID: {ctx.author.id}')
         await channel.set_permissions(guild.default_role, read_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Creation')
         await channel.set_permissions(ctx.author, read_messages=True, send_messages=True, manage_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Creation')
-        await channel.set_permissions(support_role, read_messages=True, send_messages=True, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Creation')
-        embed = discord.Embed(title='Quacky Support', colour=discord.Colour(7506394), description=f'Hey {ctx.author.mention}! Thanks for making a support ticket.\nA Quacky Staff Member will respond to you as soon as possible.\nTopic: **{topic}**\nSubject: **{subject}**')
+        if staff_request == False:
+            await channel.set_permissions(support_role, read_messages=True, send_messages=True, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Creation')
+            embed = discord.Embed(title='Quacky Support', colour=discord.Colour(7506394), description=f'Hey {ctx.author.mention}! Thanks for making a support ticket.\nA Quacky Staff Member will respond to you as soon as possible.\nTopic: **{topic}**\nSubject: **{subject}**')
+        elif staff_request == True:
+            embed = discord.Embed(title='Quacky Staff Request', colour=discord.Colour(7506394), description=f'Hey {ctx.author.mention}! Thanks for making a staff request ticket.\nA Quacky Admin will respond to you as soon as possible.\nTopic: **{topic}**\nSubject: **{subject}**')
         embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
         await channel.send(embed=embed)
         delcontent = await channel.send(f'{content}', delete_after=0.01)
@@ -177,7 +191,10 @@ class Ticket(commands.Cog):
             await tuser.send(f'Your ticket has been closed by **{member.display_name}** with reason **{reason}**\nYou can read the chat history here: {msg.jump_url}')
         except:
             await ctx.send(f'{tuser.mention} your ticket has been closed by {member.display_name} with reason {reason}', delete_after=5)
-        await ctx.channel.edit(category=archive, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Close Command', sync_permissions=True, position=0)
+        if ctx.channel.name.startswith('staff-'):
+            await ctx.channel.edit(category=archive, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Close Command', sync_permissions=False, position=0)
+        else:
+            await ctx.channel.edit(category=archive, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Close Command', sync_permissions=True, position=0)
         await ctx.channel.set_permissions(tuser, overwrite=overwrite)
         await msg.edit(content=f':lock: Ticket Closed by **{member.display_name}**\nReason: **{reason}**')
 
