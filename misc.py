@@ -116,7 +116,7 @@ class Misc(commands.Cog):
         if ctx.author.id not in data['sapply']:
             return await ctx.send('<:redx:678014058590502912> You\'re not eligible to apply for Support Team.')
         if ctx.guild is not None:
-            embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description=f'This command can not be used in DMs!')
+            embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description=f'This command must be used in DMs!')
             embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
             embed.set_thumbnail(url=f'{error_icon}')
             embed.set_footer(text='If you need help please do the -support command.')
