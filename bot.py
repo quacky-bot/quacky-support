@@ -5,9 +5,9 @@ Client = discord.Client()
 TOKEN = open('/root/Support/token.txt', 'r').read()
 # TOKEN = open('/Users/duckmasteral/Documents/GitHub/quacky-support/token.txt').read()
 
-initial_extensions = ['admin', 'moderation', 'misc', 'ticket', 'events', 'jishaku']
+initial_extensions = ['cogs.admin', 'cogs.moderation', 'cogs.misc', 'cogs.ticket', 'cogs.events', 'jishaku']
 
-client = commands.Bot(command_prefix=commands.when_mentioned_or('!'), case_insensitive=True)
+client = commands.Bot(command_prefix=commands.when_mentioned_or('!'), case_insensitive=True, allowed_mentions=discord.AllowedMentions(roles=False, everyone=False))
 
 if __name__ == '__main__':
     for extension in initial_extensions:
