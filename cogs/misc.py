@@ -45,7 +45,7 @@ class Misc(commands.Cog):
         elif rank == 1:
             vip = guild.get_role(665423079454801930)
             await member.add_roles(vip, donator, reason=f'Has VIP Badge')
-        if total >= 1 and ctx.author in data['suggest']:
+        if total >= 1 and ctx.author.id in data['suggest']:
             contributor = guild.get_role(729501130723426334)
             await member.add_roles(contributor, reason=f'Has found {total} Bugs with Quacky and has made a Quacky Suggestion')
         await ctx.send('<:check:678014104111284234> Updated your Roles in the Quacky Support Server.')
