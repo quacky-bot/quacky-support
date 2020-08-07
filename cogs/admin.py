@@ -10,11 +10,11 @@ class Admin(commands.Cog):
     async def reload(self, ctx, *, cog='all'):
         """ Reloads the bot's commands. """
         if cog == 'all':
-            self.bot.reload_extension('admin')
-            self.bot.reload_extension('misc')
-            self.bot.reload_extension('moderation')
-            self.bot.reload_extension('events')
-            self.bot.reload_extension('ticket')
+            self.bot.reload_extension('cogs.admin')
+            self.bot.reload_extension('cogs.misc')
+            self.bot.reload_extension('cogs.moderation')
+            self.bot.reload_extension('cogs.events')
+            self.bot.reload_extension('cogs.ticket')
             await ctx.send(f'<:check:678014104111284234> Reloaded all of the bot\'s commands successfully.')
             print(f'+=+=+=+=+=+=+=+ {ctx.author} has reloaded Quacky Support +=+=+=+=+=+=+=+')
         else:
