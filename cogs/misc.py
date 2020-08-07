@@ -53,6 +53,7 @@ class Misc(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 300.0, BucketType.user)
     async def cleardata(self, ctx):
+        """ Clear all of your Quacky Data! """
         msg = await ctx.send(f'Are you sure you want to do this, {ctx.author.mention}?\nThis will clear your error, donator, and special badge(s). __**THERE IS NO UNDO!**__')
         checkmark = self.bot.get_emoji(678014104111284234)
         redx = self.bot.get_emoji(678014058590502912)
@@ -101,7 +102,7 @@ class Misc(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 300.0, BucketType.user)
     async def sapply(self, ctx):
-        """ Apple for Support Team (Promotion of Being Helper) """
+        """ Apply for Support Team (Promotion of Being Helper) """
         redx = self.bot.get_emoji(678014058590502912)
         check = self.bot.get_emoji(678014104111284234)
         guild = self.bot.get_guild(665378018310488065)
