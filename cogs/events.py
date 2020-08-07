@@ -75,6 +75,24 @@ class Events(commands.Cog):
                 await msg.edit(content=f'~~{msg.content}~~ They left <:sadcat:647705878597730315>')
 
     @commands.Cog.listener()
+    async def on_member_update(self, before, after):
+        if after.guild.id != 665378018310488065:
+            return
+        guild = self.bot.get_guild(665378018310488065)
+        roles = after.roles
+        booster = guild.get_role(736007066556039170)
+        donators = guild.get_role(690234363648016443)
+        mega = guild.get_role(690234610462097504)
+        mvp = guild.get_role(690234421294530657)
+        vip = guild.get_role(665423079454801930)
+        donatorchat = guild.get_role(665426877841670166)
+        if booster in roles:
+            await after.add_roles(mvp, reason='Boosted the Quacky Support Server')
+        if vip in roles or mvp in roles or mega in roles:
+            await after.add_roles(donators, reason='Given a Donator Role')
+        await donatorchat.send(f'<:join:659881573012865084> {member.mention} is now a Donator!')
+
+    @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
             pass
