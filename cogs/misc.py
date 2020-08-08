@@ -257,14 +257,6 @@ class Misc(commands.Cog):
         pass
 
     @partner.command()
-    @commands.is_owner()
-    async def approve(self, ctx, *, member: discord.Member):
-        """ Perks for Becoming a Quacky Partner! """
-        msg = """Congradulations on Becoming a Quacky Partner :tada:"""
-        embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Bot Partner Perks')
-        await ctx.send(embed=embed)
-
-    @partner.command()
     async def bot(self, ctx):
         msg = """By Becoming a Quacky Partner you agree to the [Quacky Partner Terms.](https://quacky.js.org/partner-bterms)
         You Discord Bot also meet the following requirements:
@@ -335,17 +327,26 @@ class Misc(commands.Cog):
 
     @partner.command(aliases=['bapprove', 'bot-approve'])
     @commands.is_owner()
-    async def botapprove(self, ctx, botclientid: int, *, member: discord.Member):
+    async def botapprove(self, ctx, botuserid: int, *, member: discord.Member):
         quacky_guild = self.bot.get_guild(665378018310488065)
         partner_role = quacky_guild.get_role(741701822032379944)
         await member.add_roles(partner_role, reason=f'{ctx.author} ({ctx.author.id}) - Approved Bot Partnership')
         File = open('/root/Quacky/Files/partner.json').read()
         data = json.loads(File)
-        y = {"bot": botclientid, "owner": member.id}
+        y = {"bot": botuserid, "owner": member.id}
         data['bot'].append(y)
         with open('/root/Quacky/Files/partner.json', 'w') as f:
             json.dump(data, f, indent=4)
-        await ctx.send(f'<:check:678014104111284234> Added **{botclientid}** owned by {member.mention} to the Partner Program (Bot).')
+        await ctx.send(f'<:check:678014104111284234> Added **{botuserid}** owned by {member.mention} to the Partner Program (Bot).')
+
+    @partner.command(aliases=['msg'])
+    async def message(self, ctx):
+        msg = """To send your partner message you can either send it here in a codeblock (\`\`\`) or by uploading it to [pastebin](https://pastebin.com)
+        You can find our partner message to post in your server [here.](https://quacky.js.org/partner.txt)
+        Once you have done that, one of our admins will send your advertisement in our partner channel (<#741359245064405073>), give you the <@&741701822032379944> role, and close the ticket.
+        Thanks for Partnering with Quacky!"""
+        embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Partner Message')
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Misc(bot))
