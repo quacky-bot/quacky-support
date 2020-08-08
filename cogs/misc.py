@@ -335,7 +335,7 @@ class Misc(commands.Cog):
 
     @partner.command(aliases=['bapprove', 'bot-approve'])
     @commands.is_owner()
-    async def botapprove(self, ctx, botclientid: int *, member: discord.Member):
+    async def botapprove(self, ctx, botclientid: int, *, member: discord.Member):
         quacky_guild = self.bot.get_guild(665378018310488065)
         partner_role = quacky_guild.get_role(741701822032379944)
         await member.add_roles(partner_role, reason=f'{ctx.author} ({ctx.author.id}) - Approved Bot Partnership')

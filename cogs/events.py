@@ -92,7 +92,7 @@ class Events(commands.Cog):
             await after.remove_roles(mvp, reason='No longer Boosting the Quacky Support Server')
         if vip in roles or mvp in roles or mega in roles:
             await after.add_roles(donators, reason='Given a Donator Role')
-        await donatorchat.send(f'<:join:659881573012865084> {member.mention} is now a Donator!')
+        await donatorchat.send(f'<:join:659881573012865084> {after.mention} is now a Donator!')
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
