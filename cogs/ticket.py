@@ -79,7 +79,11 @@ class Ticket(commands.Cog):
             if subject.lower() == 'cancel':
                 await ctx.send('<:redx:678014058590502912> Canceled Creating the Support Ticket.')
                 return
-        react_msg = await ctx.send(f'**Identify Your Ticket\'s Topic:**\n:bangbang: - Report\n:grey_question: - Question\n<:Staff:690664654736851014> - Staff Request\n:newspaper: - Other\n<:redx:678014058590502912> - Cancel Your Ticket Creation')
+        if staff_role in member1.roles:
+            staff_msg_yes = '\n<:Staff:690664654736851014> - Staff Request'
+        else:
+            staff_msg_yes = ''
+        react_msg = await ctx.send(f'**Identify Your Ticket\'s Topic:**\n:bangbang: - Report\n:grey_question: - Question{staff_msg_yes}\n:newspaper: - Other\n<:redx:678014058590502912> - Cancel Your Ticket Creation')
         bangbang = '\U0000203c'
         news = '\U0001f4f0'
         question = '\U00002754'
