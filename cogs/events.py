@@ -61,6 +61,16 @@ class Events(commands.Cog):
     async def on_member_remove(self, member):
         guild = member.guild
         if guild.id == 665378018310488065:
+            File = open('/root/Quacky/Files/partner.json').read()
+            data = json.loads(File)
+            yes = []
+            for x in data['bot']:
+                if x['owner'] == member.id:
+                    data['bot'].remove(x)
+                    yes.append('1')
+            if yes != []:
+                with open('/root/Quacky/Files/partner.json', 'w') as f:
+                    json.dump(data, f, indent=4)
             if member.bot == True or member.id == 475117152106446849:
                 return
             channel = guild.get_channel(665378018809741324)
