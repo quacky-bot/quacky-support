@@ -76,7 +76,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
-        if after.guild.id != 665378018310488065:
+        if after.guild.id != 665378018310488065 or before.roles == after.roles:
             return
         guild = self.bot.get_guild(665378018310488065)
         roles = after.roles
@@ -88,6 +88,8 @@ class Events(commands.Cog):
         donatorchat = guild.get_role(665426877841670166)
         if booster in roles:
             await after.add_roles(mvp, reason='Boosted the Quacky Support Server')
+        elif booster in before.roles and booster not in after.roles:
+            await after.remove_roles(mvp, reason='No longer Boosting the Quacky Support Server')
         if vip in roles or mvp in roles or mega in roles:
             await after.add_roles(donators, reason='Given a Donator Role')
         await donatorchat.send(f'<:join:659881573012865084> {member.mention} is now a Donator!')
