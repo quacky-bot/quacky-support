@@ -251,5 +251,101 @@ class Misc(commands.Cog):
         with open('/root/Quacky/Files/misc.json', 'w') as f:
             json.dump(data, f, indent=4)
 
+    @commands.group()
+    async def partner(self, ctx):
+        """ A group of Partner Information Commands... """
+        pass
+
+    @partner.command()
+    @commands.is_owner()
+    async def approve(self, ctx, *, member: discord.Member):
+        """ Perks for Becoming a Quacky Partner! """
+        msg = """Congradulations on Becoming a Quacky Partner :tada:"""
+        embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Bot Partner Perks')
+        await ctx.send(embed=embed)
+
+    @partner.command()
+    async def bot(self, ctx):
+        msg = """By Becoming a Quacky Partner you agree to the [Quacky Partner Terms.](https://quacky.js.org/partner-bterms)
+        You Discord Bot also meet the following requirements:
+        > - Your Bot is in at least 50 Real Servers.
+        > - Your Bot is not mainly NSFW or has an NSFW Profile Picture/Name.
+        > - Your bot does not promote Harrassment, Hate Speech, Violence, or Illegal Activity and Follows the [Discord Developer Terms of Service.](https://discord.com/developers/docs/legal)
+        > - Your bot has a Support Server with a Rules Channel and Moderation Team.
+        > - Your bot is not a copy of a bot that's already been created.
+        If you do not agree to the terms, or do not meet the requirements please use the `!close` command to close this ticket."""
+        embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Partner - Bot Requirements')
+        await ctx.send(embed=embed)
+
+    @partner.command()
+    async def server(self, ctx):
+        msg = """By Becoming a Quacky Partner you agree to the [Quacky Partner Terms.](https://quacky.js.org/partner-sterms)
+        Your Discord Server also meet the following requirements:
+        > - Your Server has at least 100 Real Human Members.
+        > - Your Server Has and Uses Quacky Bot.
+        > - Your Server is not NSFW Related in any way.
+        > - Your server does not promote Harrassment, Hate Speech, Violence, or Illegal Activity and Follows the [Discord Server Guildelines.](https://discord.com/guidelines)
+        > - Your Server has a Rules Channel and Moderation Team.
+        > - Preferably, your server is a community server.
+        If you do not agree to the terms, or do not meet the requirements please use the `!close` command to close this ticket."""
+        embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Partner - Server Requirements')
+        await ctx.send(embed=embed)
+
+    @partner.command()
+    async def terms(self, ctx):
+        msg = """There are 2 Quacky Partner Terms, one for bots and one for servers.
+        You can read the Quacky Partner Terms for Discord Servers [here.](https://quacky.js.org/partner-sterms)
+        You can read the Quacky Partner Terms for Discord Bots [here.](https://quacky.js.org/partner-bterms)"""
+        embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Partner Terms')
+        await ctx.send(embed=embed)
+
+    @partner.command(aliases=['bot-perks', 'bperks'])
+    async def botperks(self, ctx):
+        msg = """Currently, as a Discord Bot Partner you get the following perks:
+        > - A Special Badge on your Profile
+        > - A Special Badge for your Bot's Profile
+        > - A Partner Role in the Support Server
+        > - Access to Private Partner only Channels in the Support Server"""
+        embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Partner - Bot Perks')
+        await ctx.send(embed=embed)
+
+    @partner.command(aliases=['server-perks', 'sperks'])
+    async def serverperks(self, ctx):
+        msg = """Currently, as a Discord Server Partner you get the following perks:
+        > - A Special Badge on your Profile
+        > - A Special Badge on your Server's -server command!
+        > - A Partner Role in the Support Server
+        > - Access to Private Partner only Channels in the Support Server"""
+        embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Partner - Server Perks')
+        await ctx.send(embed=embed)
+
+    @partner.command(aliases=['sapprove', 'server-approve'])
+    @commands.is_owner()
+    async def serverapprove(self, ctx, guildid: int, *, member: discord.Member):
+        quacky_guild = self.bot.get_guild(665378018310488065)
+        partner_role = quacky_guild.get_role(741701822032379944)
+        await member.add_roles(partner_role, reason=f'{ctx.author} ({ctx.author.id}) - Approved Server Partnership')
+        File = open('/root/Quacky/Files/partner.json').read()
+        data = json.loads(File)
+        y = {"guild": guildid, "owner": member.id}
+        data['server'].append(y)
+        with open('/root/Quacky/Files/partner.json', 'w') as f:
+            json.dump(data, f, indent=4)
+        await ctx.send(f'<:check:678014104111284234> Added **{guildid}** owned by {member.mention} to the Partner Program (Server).')
+
+    @partner.command(aliases=['bapprove', 'bot-approve'])
+    @commands.is_owner()
+    async def botapprove(self, ctx, botclientid: int *, member: discord.Member):
+        quacky_guild = self.bot.get_guild(665378018310488065)
+        partner_role = quacky_guild.get_role(741701822032379944)
+        await member.add_roles(partner_role, reason=f'{ctx.author} ({ctx.author.id}) - Approved Bot Partnership')
+        File = open('/root/Quacky/Files/partner.json').read()# @todo Setup the Partner Json File for Tracking (Also Tracking Events)
+        data = json.loads(File)
+        y = {"bot": botclientid, "owner": member.id}
+        data['bot'].append(y)
+        with open('/root/Quacky/Files/partner.json', 'w') as f:
+            json.dump(data, f, indent=4)
+        await ctx.send(f'<:check:678014104111284234> Added **{botclientid}** owned by {member.mention} to the Partner Program (Bot).')
+
 def setup(bot):
     bot.add_cog(Misc(bot))
