@@ -339,7 +339,7 @@ class Misc(commands.Cog):
         quacky_guild = self.bot.get_guild(665378018310488065)
         partner_role = quacky_guild.get_role(741701822032379944)
         await member.add_roles(partner_role, reason=f'{ctx.author} ({ctx.author.id}) - Approved Bot Partnership')
-        File = open('/root/Quacky/Files/partner.json').read()# @todo Setup the Partner Json File for Tracking (Also Tracking Events)
+        File = open('/root/Quacky/Files/partner.json').read()
         data = json.loads(File)
         y = {"bot": botclientid, "owner": member.id}
         data['bot'].append(y)
