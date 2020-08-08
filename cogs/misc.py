@@ -343,7 +343,7 @@ class Misc(commands.Cog):
     async def message(self, ctx):
         msg = """To send your partner message you can either send it here in a codeblock (\`\`\`) or by uploading it to [pastebin](https://pastebin.com)
         You can find our partner message to post in your server [here.](https://quacky.js.org/partner.txt)
-        Once you have done that, one of our admins will send your advertisement in our partner channel (<#741359245064405073>), give you the <@&741701822032379944> role, and close the ticket.
+        Once you post our partner message in your server, one of our admins will send your advertisement in our partner channel (<#741359245064405073>), give you the <@&741701822032379944> role, and close the ticket.
         Thanks for Partnering with Quacky!"""
         embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Partner Message')
         await ctx.send(embed=embed)
