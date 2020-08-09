@@ -348,5 +348,47 @@ class Misc(commands.Cog):
         embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Partner Message')
         await ctx.send(embed=embed)
 
+    @partner.command()
+    @commands.guild_only()
+    @commands.is_owner()
+    async def send(self, ctx, title, *, message):
+        embed = discord.Embed(colour=discord.Colour(16750848), description=message, title=title)
+        if ctx.message.attachments != []:
+            image = ctx.message.attachments.pop(0)
+            image = image.url
+            embed.set_image(url=image)
+        msg = await ctx.send(embed=embed, content='Please Confirm that this looks correct before I submit it to the Partner Channel.')
+        checkmark = self.bot.get_emoji(678014104111284234)
+        redx = self.bot.get_emoji(678014058590502912)
+        await msg.add_reaction(checkmark)
+        await msg.add_reaction(redx)
+        def check(reaction, user):
+            if ctx.author == user:
+                if reaction.emoji == checkmark:
+                    return True
+                elif reaction.emoji == redx:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+        try:
+            reaction, user = await self.bot.wait_for('reaction_add', timeout=300.0, check=check)
+        except asyncio.TimeoutError:
+            return await msg.send(content='You took too long to confirm...', embed=embed)
+        else:
+            if reaction.emoji == checkmark:
+                channel = ctx.guild.get_channel(741359245064405073)
+                await channel.send(embed=embed)
+                await msg.edit(content=f'This has been send to {channel.mention}.', embed=embed)
+                await ctx.send(f'The partner message has been posted in {channel.mention}!')
+            elif reaction.emoji == redx:
+                await msg.edit(content='This will not be sent to the partner channel...', embed=embed)
+                await msg.clear_reactions()
+
+    @partner.command()
+    async def link(self, ctx):
+        await ctx.send('You can find our partner message at: https://quacky.js.org/partner.txt')
+
 def setup(bot):
     bot.add_cog(Misc(bot))
