@@ -251,10 +251,10 @@ class Misc(commands.Cog):
         with open('/root/Quacky/Files/misc.json', 'w') as f:
             json.dump(data, f, indent=4)
 
-    @commands.group()
+    @commands.group(invoke_without_command=True)
     async def partner(self, ctx):
         """ A group of Partner Information Commands... """
-        pass
+        await ctx.send_help(ctx.command)
 
     @partner.command()
     async def bot(self, ctx):
