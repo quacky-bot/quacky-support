@@ -96,13 +96,26 @@ class Events(commands.Cog):
         mvp = guild.get_role(690234421294530657)
         vip = guild.get_role(665423079454801930)
         donatorchat = guild.get_role(665426877841670166)
+        File = open('/root/Quacky/Files/badges.json').read()
+        data = json.loads(File)
         if booster in roles:
+            y = {"id": after.id, "rank": 2}
+            data['donator'].append(y)
+            with open('/root/Quacky/Files/badges.json', 'w') as f:
+                json.dump(data, f, indent=4)
             await after.add_roles(mvp, reason='Boosted the Quacky Support Server')
+            await donatorchat.send(f'<:join:659881573012865084> {after.mention} is now a Booster!')
         elif booster in before.roles and booster not in after.roles:
+            for x in data['donator']:
+                if x.id == after.id:
+                    data['donator'].remove(x)
+            with open('/root/Quacky/Files/badges.json', 'w') as f:
+                json.dump(data, f, indent=4)
             await after.remove_roles(mvp, reason='No longer Boosting the Quacky Support Server')
+            await donatorchat.send(f'<a:RIPBlob:478001829397921824> {after.mention} is no longer a Booster!')
         if vip in roles or mvp in roles or mega in roles:
             await after.add_roles(donators, reason='Given a Donator Role')
-        await donatorchat.send(f'<:join:659881573012865084> {after.mention} is now a Donator!')
+            await donatorchat.send(f'<:join:659881573012865084> {after.mention} is now a Donator!')
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
