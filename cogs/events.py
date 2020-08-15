@@ -143,13 +143,13 @@ class Events(commands.Cog):
                 else:
                     final_params.append(f'<{a}>')
             arguments = ' '.join(final_params)
-            embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description=f'{error}\n**Command Usage:** `{ctx.prefix}{ctx.command.name} {arguments}`')
+            embed = discord.Embed(title='OOPS! An error has occurred >.<', colour=discord.Colour(0xff0000), description=f'{error}\n**Command Usage:** `{ctx.prefix}{ctx.command.name} {arguments}`')
             embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
             embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/678014140203401246.png?v=1")
             embed.set_footer(text='If you need help please do the -support command.')
             await ctx.send(embed=embed)
         elif isinstance(error, commands.ExtensionNotLoaded) or isinstance(error, commands.ExtensionAlreadyLoaded) or isinstance(error, commands.ExtensionFailed) or isinstance(error, commands.ExtensionNotFound) or isinstance(error, commands.BadArgument):
-            embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description=f'{error}')
+            embed = discord.Embed(title='OOPS! An error has occurred >.<', colour=discord.Colour(0xff0000), description=f'{error}')
             embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
             embed.set_thumbnail(url=f'{error_icon}')
             embed.set_footer(text='If you need help please do the -support command.')
@@ -157,7 +157,7 @@ class Events(commands.Cog):
                 await ctx.send(embed=embed)
             except:
                 try:
-                    await ctx.send(f':bangbang: An error has occured!\n{error}\n*Please give me the `Embed Links` Permission for more Information*')
+                    await ctx.send(f':bangbang: An error has occurred!\n{error}\n*Please give me the `Embed Links` Permission for more Information*')
                 except:
                     pass
         elif isinstance(error, commands.CommandOnCooldown):
@@ -178,7 +178,7 @@ class Events(commands.Cog):
                 except:
                     pass
         elif isinstance(error, commands.NoPrivateMessage):
-            embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description=f'This command can not be used in DMs!')
+            embed = discord.Embed(title='OOPS! An error has occurred >.<', colour=discord.Colour(0xff0000), description=f'This command can not be used in DMs!')
             embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
             embed.set_thumbnail(url=f'{error_icon}')
             embed.set_footer(text='If you need help please do the -support command.')
@@ -186,11 +186,11 @@ class Events(commands.Cog):
                 await ctx.send(embed=embed)
             except:
                 try:
-                    await ctx.send(f':bangbang: An error has occured!\nThis command can not be used in DMs!\n*Please give me the `Embed Links` Permission for more Information*')
+                    await ctx.send(f':bangbang: An error has occurred!\nThis command can not be used in DMs!\n*Please give me the `Embed Links` Permission for more Information*')
                 except:
                     pass
         elif isinstance(error, commands.PrivateMessageOnly):
-            embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description=f'This command must be used in DMs!')
+            embed = discord.Embed(title='OOPS! An error has occurred >.<', colour=discord.Colour(0xff0000), description=f'This command must be used in DMs!')
             embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
             embed.set_thumbnail(url=f'{error_icon}')
             embed.set_footer(text='If you need help please do the -support command.')
@@ -198,7 +198,7 @@ class Events(commands.Cog):
                 await ctx.send(embed=embed)
             except:
                 try:
-                    await ctx.send(f':bangbang: An error has occured!\nThis command must be used in DMs!\n*Please give me the `Embed Links` Permission for more Information*')
+                    await ctx.send(f':bangbang: An error has occurred!\nThis command must be used in DMs!\n*Please give me the `Embed Links` Permission for more Information*')
                 except:
                     pass
         elif isinstance(error, commands.MissingPermissions) or isinstance(error, commands.BotMissingPermissions):
@@ -257,7 +257,7 @@ class Events(commands.Cog):
                 who_error = 'I'
             elif isinstance(error, commands.MissingPermissions):
                 who_error = 'You'
-            embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description=f'{who_error} do not have permission to do this command!\nMissing Permission{s} `{missing_perms}`')
+            embed = discord.Embed(title='OOPS! An error has occurred >.<', colour=discord.Colour(0xff0000), description=f'{who_error} do not have permission to do this command!\nMissing Permission{s} `{missing_perms}`')
             embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
             embed.set_thumbnail(url=f'{error_icon}')
             embed.set_footer(text='If you need help please do the -support command.')
@@ -265,7 +265,7 @@ class Events(commands.Cog):
                 await ctx.send(embed=embed)
             except:
                 try:
-                    await ctx.send(f':bangbang: An error has occured!\n{who_error} do not have permission to do this command!\nMissing Permission{s} `{missing_perms}`\n*Please give me the `Embed Links` Permission for more Information*')
+                    await ctx.send(f':bangbang: An error has occurred!\n{who_error} do not have permission to do this command!\nMissing Permission{s} `{missing_perms}`\n*Please give me the `Embed Links` Permission for more Information*')
                 except:
                     pass
         elif isinstance(error, commands.DisabledCommand):
@@ -274,7 +274,7 @@ class Events(commands.Cog):
             return await ctx.send(f'<:redx:678014058590502912>  {ctx.author.mention}, you don\'t have permission to use this command!')
         else:
             if ctx.author.id == 443217277580738571 or ctx.author.id == 475117152106446849: # Owner (including alt)
-                embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description=f'{error}')
+                embed = discord.Embed(title='OOPS! An error has occurred >.<', colour=discord.Colour(0xff0000), description=f'{error}')
                 embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
                 embed.set_thumbnail(url=f'{error_icon}')
                 embed.set_footer(text='You are getting this message because you\'re a developer...', icon_url='https://cdn.discordapp.com/avatars/693075783220199514/bc15748197f8c6c3fbdd0d1779f11914.png')
@@ -290,9 +290,9 @@ class Events(commands.Cog):
                 quacky_guild = self.bot.get_guild(665378018310488065)
                 error_channel = quacky_guild.get_channel(693497754621706290)
                 if ctx.guild == None:
-                    embed = discord.Embed(title=f'An Error Has Occured!', description=f'Command: {ctx.prefix}{ctx.command}\nError Message: **{error}**\nUser: {ctx.author} ({ctx.author.id})\nGuild: DMs', color=16727552, timestamp=datetime.datetime.now())
+                    embed = discord.Embed(title=f'An Error Has Occurred!', description=f'Command: {ctx.prefix}{ctx.command}\nError Message: **{error}**\nUser: {ctx.author} ({ctx.author.id})\nGuild: DMs', color=16727552, timestamp=datetime.datetime.now())
                 else:
-                    embed = discord.Embed(title=f'An Error Has Occured!', description=f'Command: {ctx.prefix}{ctx.command}\nError Message: **{error}**\nUser: {ctx.author} ({ctx.author.id})\nGuild: {ctx.guild} ({ctx.guild.id})\nChannel: {ctx.channel} ({ctx.channel.id})\n[Jump to Message]({ctx.message.jump_url})', color=16727552, timestamp=datetime.datetime.now())
+                    embed = discord.Embed(title=f'An Error Has Occurred!', description=f'Command: {ctx.prefix}{ctx.command}\nError Message: **{error}**\nUser: {ctx.author} ({ctx.author.id})\nGuild: {ctx.guild} ({ctx.guild.id})\nChannel: {ctx.channel} ({ctx.channel.id})\n[Jump to Message]({ctx.message.jump_url})', color=16727552, timestamp=datetime.datetime.now())
                 embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
                 embed.set_footer(text=f'This bug was found')
                 embed_bug = discord.Embed(title='You just found an Bug!', colour=discord.Colour(0xff0000), description=f'Hey {ctx.author.name}, you just found a Bug with Quacky!\nThis bug has been reported to the developers and you may get a reward for finding the bug!\nWould you like a Developer to join the server in order to further investigate the bug?\nFor more information on your bug [join the official Quacky Bot Support Server.](https://discord.gg/DGpVppf)')
