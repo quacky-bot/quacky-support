@@ -263,14 +263,14 @@ class Ticket(commands.Cog):
                     user1 = None
                     pass
             if user1 == None:
-                embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description='I can not find that user!')
+                embed = discord.Embed(title='OOPS! An error has occurred >.<', colour=discord.Colour(0xff0000), description='I can not find that user!')
                 embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
                 embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/678014140203401246.png?v=1")
                 embed.set_footer(text='If you need help please do the -support command.')
                 await ctx.send(embed=embed)
                 return
         elif len(u) >= 10:
-            embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description='Too many users found. Please be more specific.')
+            embed = discord.Embed(title='OOPS! An error has occurred >.<', colour=discord.Colour(0xff0000), description='Too many users found. Please be more specific.')
             embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
             embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/678014140203401246.png?v=1")
             embed.set_footer(text='If you need help please do the -support command.')
@@ -383,14 +383,14 @@ class Ticket(commands.Cog):
                     user1 = None
                     pass
             if user1 == None:
-                embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description='I can not find that user!')
+                embed = discord.Embed(title='OOPS! An error has occurred >.<', colour=discord.Colour(0xff0000), description='I can not find that user!')
                 embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
                 embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/678014140203401246.png?v=1")
                 embed.set_footer(text='If you need help please do the -support command.')
                 await ctx.send(embed=embed)
                 return
         elif len(u) >= 10:
-            embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description='Too many users found. Please be more specific.')
+            embed = discord.Embed(title='OOPS! An error has occurred >.<', colour=discord.Colour(0xff0000), description='Too many users found. Please be more specific.')
             embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
             embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/678014140203401246.png?v=1")
             embed.set_footer(text='If you need help please do the -support command.')
@@ -526,14 +526,14 @@ class Ticket(commands.Cog):
                     user1 = None
                     pass
             if user1 == None:
-                embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description='I can not find that user!')
+                embed = discord.Embed(title='OOPS! An error has occurred >.<', colour=discord.Colour(0xff0000), description='I can not find that user!')
                 embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
                 embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/678014140203401246.png?v=1")
                 embed.set_footer(text='If you need help please do the -support command.')
                 await ctx.send(embed=embed)
                 return
         elif len(u) >= 10:
-            embed = discord.Embed(title='OOPS! An error has occured >.<', colour=discord.Colour(0xff0000), description='Too many users found. Please be more specific.')
+            embed = discord.Embed(title='OOPS! An error has occurred >.<', colour=discord.Colour(0xff0000), description='Too many users found. Please be more specific.')
             embed.set_author(name=f'{embed_user}', icon_url=f'{embed_user.avatar_url}')
             embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/678014140203401246.png?v=1")
             embed.set_footer(text='If you need help please do the -support command.')
