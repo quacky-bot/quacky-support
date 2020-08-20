@@ -63,14 +63,10 @@ class Events(commands.Cog):
         if guild.id == 665378018310488065:
             File = open('/root/Quacky/Files/partner.json').read()
             data = json.loads(File)
-            yes = []
+            adminchat = guild.get_channel(665427384899600395)
             for x in data['bot']:
                 if x['owner'] == member.id:
-                    data['bot'].remove(x)
-                    yes.append('1')
-            if yes != []:
-                with open('/root/Quacky/Files/partner.json', 'w') as f:
-                    json.dump(data, f, indent=4)
+                    await adminchat.send(f'<a:siren:493542252891734016> {member} ({member.id}) just left while under Bot Partnership.')
             if member.bot == True or member.id == 475117152106446849:
                 return
             channel = guild.get_channel(665378018809741324)
