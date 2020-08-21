@@ -379,7 +379,7 @@ class Misc(commands.Cog):
         else:
             if reaction.emoji == checkmark:
                 channel = ctx.guild.get_channel(741359245064405073)
-                await channel.send(embed=embed)
+                await channel.send(embed=embed, content='<@&746202010537295962>', allowed_mentions=discord.AllowedMentions(roles=True))
                 await msg.edit(content=f'This has been sent to {channel.mention}.', embed=embed)
                 await ctx.send(f'The partner message has been posted in {channel.mention}!')
             elif reaction.emoji == redx:
