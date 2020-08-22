@@ -191,7 +191,16 @@ class Ticket(commands.Cog):
             await m2.delete()
             if reason.lower() == 'cancel':
                 return await ctx.send('<:redx:678014058590502912> Canceled Closing the Support Ticket.')
-        msg = await ctx.send(f'<a:Loading:540153374763384852> Sending the Message and Updating Permissions...')
+        msg_history = []
+        async for message in ctx.channel.history():
+            if message.content == '':
+                content = 'Content Unavailable (Embed/File)'
+            else:
+                content = message.content
+            msg_history.append(f"[{message.created_at}] {message.author} - {content}")
+        msg_history.reverse()
+        file = discord.File(BytesIO(("\n".join(msg_history)).encode("utf-8")), filename=f"{ctx.channel.name}.txt")
+        msg = await ctx.send(f'<a:Loading:540153374763384852> Sending the Message and Updating Permissions...', file=file)
         try:
             await tuser.send(f'Your ticket has been closed by **{member.display_name}** with reason **{reason}**\nYou can read the chat history here: {msg.jump_url}')
         except:
