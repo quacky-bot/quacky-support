@@ -1,6 +1,7 @@
 import discord, json, asyncio
 from discord.ext import commands, tasks
 from discord.ext.commands.cooldowns import BucketType
+from io import BytesIO
 
 def rank(rank):
     async def predicate(ctx):
@@ -26,7 +27,7 @@ def rank(rank):
             else:
                 return False
         elif rank == 'admin':
-            if admin in ctx_member.roles or ticket_owner == str(ctx.author.id):
+            if admin in ctx_member.roles:
                 return True
             else:
                 return False
@@ -619,6 +620,52 @@ class Ticket(commands.Cog):
             await msg.delete()
         except:
             pass
+
+    @commands.command(aliases=['deletet', 'ticketdelete', 'deleteticket', 'dticket'])
+    @commands.guild_only()
+    @rank('admin')
+    async def tdelete(self, ctx, *, reason=None):
+        """ Delete a Ticket """
+        ticket_owner = ctx.channel.topic
+        ticket_owner = ticket_owner.replace('USERID: ', '')
+        archive = ctx.guild.get_channel(729813211704066169)
+        tuser = self.bot.get_user(int(ticket_owner))
+        member = ctx.guild.get_member(ctx.author.id)
+        await ctx.channel.last_message.delete()
+        if reason == None:
+            def check_msg(m):
+                if ctx.author == m.author and ctx.channel == m.channel:
+                    return True
+                else:
+                    return False
+            m1 = await ctx.send('What\'s the reason for deleting the ticket?')
+            try:
+                m2 = await self.bot.wait_for('message', check=check_msg, timeout=60.0)
+            except asyncio.TimeoutError:
+                return await ctx.send('<:redx:678014058590502912> You took too long to answer the question!')
+            reason = m2.content
+            await m1.delete()
+            await m2.delete()
+            if reason.lower() == 'cancel':
+                return await ctx.send('<:redx:678014058590502912> Canceled Deleting the Support Ticket.')
+        msg = []
+        async for message in ctx.channel.history():
+            if message.content == '':
+                content = 'Content Unavailable (Embed/File)'
+            else:
+                content = message.content
+            msg.append(f"[{message.created_at}] {message.author} - {content}")
+        msg.reverse()
+        file = discord.File(BytesIO(("\n".join(msg)).encode("utf-8")), filename=f"{ctx.channel.name}.txt")
+        try:
+            await tuser.send(f'Your ticket ({ctx.channel.name}) has been deleted by **{member.display_name}** with reason **{reason}**\nThe Chat Log is Attached Below.', file=file)
+        except:
+            await ctx.send(f'{tuser.mention} your ticket has been deleted by {member.display_name} with reason {reason}')
+            msg.append(f'{tuser.mention} your ticket has been deleted by {member.display_name} with reason {reason}')
+        file = discord.File(BytesIO(("\n".join(msg)).encode("utf-8")), filename=f"{ctx.channel.name}.txt")
+        logschat = ctx.guild.get_channel(665427079881555978)
+        await logschat.send(f'**{member.display_name}** Just Deleted **{ctx.channel.name}**!\n**Owner:** {tuser.mention} ({tuser.id})\n**Reason:** {reason}', file=file)
+        await ctx.channel.delete(reason=f'{member.display_name} - Deleted Ticket with Reason {reason}')
 
 def setup(bot):
     bot.add_cog(Ticket(bot))
