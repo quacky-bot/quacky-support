@@ -390,5 +390,9 @@ class Misc(commands.Cog):
     async def link(self, ctx):
         await ctx.send('You can find our partner message at: https://quacky.js.org/partner.txt')
 
+    @commands.command()
+    async def privacy(self, ctx):
+        await ctx.send('You can view Quacky Support\'s Privacy Policy at https://quacky.js.org/support-privacy')
+
 def setup(bot):
     bot.add_cog(Misc(bot))
