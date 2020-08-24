@@ -80,7 +80,7 @@ class Events(commands.Cog):
             if member.name == content:
                 await msg.edit(content=f'~~{msg.content}~~ They left <:sadcat:647705878597730315>')
 
-    @commands.Cog.listener()
+    """@commands.Cog.listener()
     async def on_member_update(self, before, after):
         if after.guild.id != 665378018310488065 or before.roles == after.roles:
             return
@@ -91,7 +91,7 @@ class Events(commands.Cog):
         mega = guild.get_role(690234610462097504)
         mvp = guild.get_role(690234421294530657)
         vip = guild.get_role(665423079454801930)
-        donatorchat = guild.get_role(665426877841670166)
+        donatorchat = guild.get_channel(665426877841670166)
         File = open('/root/Quacky/Files/badges.json').read()
         data = json.loads(File)
         if booster in roles:
@@ -111,7 +111,7 @@ class Events(commands.Cog):
             await donatorchat.send(f'<a:RIPBlob:478001829397921824> {after.mention} is no longer a Booster!')
         if vip in roles or mvp in roles or mega in roles:
             await after.add_roles(donators, reason='Given a Donator Role')
-            await donatorchat.send(f'<:join:659881573012865084> {after.mention} is now a Donator!')
+            await donatorchat.send(f'<:join:659881573012865084> {after.mention} is now a Donator!')"""
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
