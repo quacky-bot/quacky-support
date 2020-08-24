@@ -78,7 +78,7 @@ class Events(commands.Cog):
             content = content.replace('Welcome to the Official Quacky Support Server, **', '')
             content = content.replace('** <:Quacky:665378357021638656>', '')
             if member.name == content:
-                await msg.edit(content=f'~~{msg.content}~~ They left <:sadcat:647705878597730315>')
+                await msg.edit(content=f'~~{msg.content}~~ They left <a:RIPBlob:478001829397921824>')
 
     """@commands.Cog.listener()
     async def on_member_update(self, before, after):
