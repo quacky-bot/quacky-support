@@ -75,8 +75,8 @@ class Events(commands.Cog):
             File = data['member']
             msg = await channel.fetch_message(int(File))
             content = msg.content
-            content = content.replace('Welcome to the Official Quacky Support Server, **', '')
-            content = content.replace('** <:Quacky:665378357021638656>', '')
+            content = content.replace('<@&750436218755350568>, Welcome **', '')
+            content = content.replace('** to the Quacky Support Server <:Quacky:665378357021638656>', '')
             if member.name == content:
                 await msg.edit(content=f'~~{msg.content}~~ They left <a:RIPBlob:478001829397921824>')
 
