@@ -52,7 +52,7 @@ class Events(commands.Cog):
             File = open('/root/Quacky/Files/misc.json').read()
             data = json.loads(File)
             channel = guild.get_channel(665378018809741324)
-            msg = await channel.send(f'Welcome to the Official Quacky Support Server, **{member.name}** <:Quacky:665378357021638656>')
+            msg = await channel.send(f'<@&750436218755350568>, Welcome **{member.name}** to the Quacky Support Server <:Quacky:665378357021638656>', allowed_mentions=discord.AllowedMentions(roles=True))
             data['member'] = msg.id
             with open('/root/Quacky/Files/misc.json', 'w') as f:
                 json.dump(data, f, indent=4)
