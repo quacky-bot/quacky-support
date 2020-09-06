@@ -157,6 +157,9 @@ class Events(commands.Cog):
                 except:
                     pass
         elif isinstance(error, commands.CommandOnCooldown):
+            if ctx.author.id == 443217277580738571 or ctx.author.id == 344509223360659457:
+                ctx.command.reset_cooldown(ctx)
+                return await ctx.reinvoke()
             embed = discord.Embed(title='Slow Down!', colour=discord.Colour(0xff0000), description=f'{error}')
             embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
             embed.set_thumbnail(url=f'{error_icon}')
@@ -291,7 +294,7 @@ class Events(commands.Cog):
                     embed = discord.Embed(title=f'An Error Has Occurred!', description=f'Command: {ctx.prefix}{ctx.command}\nError Message: **{error}**\nUser: {ctx.author} ({ctx.author.id})\nGuild: {ctx.guild} ({ctx.guild.id})\nChannel: {ctx.channel} ({ctx.channel.id})\n[Jump to Message]({ctx.message.jump_url})', color=16727552, timestamp=datetime.datetime.now())
                 embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
                 embed.set_footer(text=f'This bug was found')
-                embed_bug = discord.Embed(title='You just found an Bug!', colour=discord.Colour(0xff0000), description=f'Hey {ctx.author.name}, you just found a Bug with Quacky!\nThis bug has been reported to the developers and you may get a reward for finding the bug!\nWould you like a Developer to join the server in order to further investigate the bug?\nFor more information on your bug [join the official Quacky Bot Support Server.](https://discord.gg/DGpVppf)')
+                embed_bug = discord.Embed(title='You just found an Bug!', colour=discord.Colour(0xff0000), description=f'Hey {ctx.author.name}, you just found a Bug with Quacky!\nThis bug has been reported to the developers and you may get a reward for finding the bug!')
                 embed_bug.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
                 embed_bug.set_thumbnail(url=f'{error_icon}')
                 embed_bug.set_footer(text='For more information please do the -support command.')
@@ -304,62 +307,7 @@ class Events(commands.Cog):
                         a = 0
                     except discord.Forbidden:
                         return
-                await error_channel.send(f'<@443217277580738571> a bug with the `{ctx.command}` command has been found :bug:', embed=embed)
-                if a == 0:
-                    return
-                try:
-                    checkmark = self.bot.get_emoji(678014104111284234)
-                    redx = self.bot.get_emoji(678014058590502912)
-                    await msg.add_reaction(checkmark)
-                    await msg.add_reaction(redx)
-                except discord.Forbidden:
-                    return
-                def check(reaction, user):
-                    if ctx.author == user:
-                        if reaction.emoji == checkmark:
-                            return True
-                        elif reaction.emoji == redx:
-                            return True
-                        else:
-                            return False
-                    else:
-                        return False
-                try:
-                    reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
-                except asyncio.TimeoutError:
-                    try:
-                        await msg.clear_reactions()
-                    except discord.Forbidden:
-                        pass
-                    embed_bug1 = discord.Embed(title='You just found an Bug!', colour=discord.Colour(0xff0000), description=f'Hey {ctx.author.name}, you just found a Bug with Quacky!\nThis bug has been reported to the developers and you may get a reward for finding the bug!\nYou took too long to answer the question!\nFor more information on your bug [join the official Quacky Bot Support Server.](https://discord.gg/DGpVppf)')
-                    embed_bug1.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
-                    embed_bug1.set_thumbnail(url=f'{error_icon}')
-                    embed_bug1.set_footer(text='For more information please do the -support command.')
-                    await msg.edit(embed=embed_bug1)
-                else:
-                    if reaction.emoji == checkmark:
-                        try:
-                            await msg.clear_reactions()
-                        except discord.Forbidden:
-                            pass
-                        embed_bug1 = discord.Embed(title='You just found an Bug!', colour=discord.Colour(0xff0000), description=f'Hey {ctx.author.name}, you just found a Bug with Quacky!\nThis bug has been reported to the developers and you may get a reward for finding the bug!\nA Developer will Join the Server to Investigate More (Requested by {ctx.author.mention})\nFor more information on your bug [join the official Quacky Bot Support Server.](https://discord.gg/DGpVppf)')
-                        embed_bug1.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
-                        embed_bug1.set_thumbnail(url=f'{error_icon}')
-                        embed_bug1.set_footer(text='For more information please do the -support command.')
-                        await msg.edit(embed=embed_bug1)
-                        await ctx.send('<:check:678014104111284234> Ok, a Developer will join when they can!')
-                        invite = await ctx.channel.create_invite(reason=f'{ctx.author} wanted a Developer to Join the Server due to a Bug Report', max_age=0, max_uses=1)
-                        await error_channel.send(f'{ctx.author} has requested a Developer to Join the Server due to the Bug Report!\nServer Invite: {invite}')
-                    elif reaction.emoji == redx:
-                        try:
-                            await msg.clear_reactions()
-                        except discord.Forbidden:
-                            pass
-                        embed_bug1 = discord.Embed(title='You just found an Bug!', colour=discord.Colour(0xff0000), description=f'Hey {ctx.author.name}, you just found a Bug with Quacky!\nThis bug has been reported to the developers and you may get a reward for finding the bug!\nA Developer will __NOT__ Join the Server to Investigate More (Requested by {ctx.author.mention})\nFor more information on your bug [join the official Quacky Bot Support Server.](https://discord.gg/DGpVppf)')
-                        embed_bug1.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
-                        embed_bug1.set_thumbnail(url=f'{error_icon}')
-                        embed_bug1.set_footer(text='For more information please do the -support command.')
-                        await msg.edit(embed=embed_bug1)
+                await error_channel.send(f'<@443217277580738571> a bug with the `{ctx.command}` command has been found :bug:', embed=embed, allowed_mentions=discord.AllowedMentions(users=True))
 
 def setup(bot):
     bot.add_cog(Events(bot))

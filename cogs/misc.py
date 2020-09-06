@@ -243,7 +243,7 @@ class Misc(commands.Cog):
         embed.add_field(name=f'Do you have any past expierence in managing support tickets? If so, where?', value=f'{msg2.content}')
         if noextrainfo == False:
             embed.add_field(name=f'Anything else you\'d like to add?', value=f'{msg8.content}', inline=False)
-        admin_msg = await application_channel.send(content=f'{ctx.author.name} just applied for Support Team (Promotion)!\n@everyone Vote using the reactions if {ctx.author.mention} should be promoted!', embed=embed)
+        admin_msg = await application_channel.send(content=f'{ctx.author.name} just applied for Support Team (Promotion)!\n@everyone Vote using the reactions if {ctx.author.mention} should be promoted!', embed=embed, allowed_mentions=discord.AllowedMentions(everyone=True))
         await admin_msg.add_reaction(check)
         await admin_msg.add_reaction(redx)
         await ctx.author.send(f'<:check:678014104111284234> Submitted your Application!\nYou will be DM\'d if your application is approved or denied.')
