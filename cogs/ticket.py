@@ -203,7 +203,7 @@ class Ticket(commands.Cog):
         msg = await ctx.send(f'<a:Loading:540153374763384852> Sending the Message and Updating Permissions...', file=file)
         try:
             await tuser.send(f'Your ticket has been closed by **{member.display_name}** with reason **{reason}**\nYou can read the chat history here: {msg.jump_url}')
-        except:
+        except discord.errors.HTTPException:
             await ctx.send(f'{tuser.mention} your ticket has been closed by {member.display_name} with reason {reason}', delete_after=5)
         if ctx.channel.name.startswith('staff-'):
             await ctx.channel.edit(category=archive, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Close Command', sync_permissions=False, position=0)
@@ -618,9 +618,15 @@ class Ticket(commands.Cog):
         if NotInServer == False:
             await ctx.channel.set_permissions(tuser, read_messages=True, send_messages=None, manage_messages=None, reason=f'{ctx.author} ({ctx.author.id}) - Transferring Ticket Ownership')
             if tuser.id != ctx.author.id:
-                await tuser.send(f':pencil: Your Ticket ({ctx.channel.mention}) was transferred to **{user1.display_name}**')
+                try:
+                    await tuser.send(f':pencil: Your Ticket ({ctx.channel.mention}) was transferred to **{user1.display_name}**')
+                except discord.errors.HTTPException:
+                    await ctx.send(f'{tuser.mention}, you no longer own {ctx.channel.name}. It was transfered to {user1.display_name}.', delete_after=5)
         elif user1.id != ctx.author.id:
-            await user1.send(f'<:OwnerCrown:507003242249584641> You\'ve are now the owner of {ctx.channel.mention}!')
+            try:
+                await user1.send(f'<:OwnerCrown:507003242249584641> You\'ve are now the owner of {ctx.channel.mention}!')
+            except discord.errors.HTTPException:
+                await ctx.send(f'{user1.mention}, you now own {ctx.channel.name}!', delete_after=5)
         await ctx.channel.edit(topic=f'USERID: {user1.id}', name=f'ticket-{user1.display_name}', reason=f'{ctx.author} ({ctx.author.id}) - Transferring Ticket Ownership')
         await ctx.send(f'<:check:678014104111284234> **{ctx_member.display_name}** Transferred Ticket Ownership from {tuser.display_name} to **{user1.display_name}**')
         await starting_msg.delete()
@@ -668,7 +674,7 @@ class Ticket(commands.Cog):
         file = discord.File(BytesIO(("\n".join(msg)).encode("utf-8")), filename=f"{ctx.channel.name}.txt")
         try:
             await tuser.send(f'Your ticket ({ctx.channel.name}) has been deleted by **{member.display_name}** with reason **{reason}**\nThe Chat Log is Attached Below.', file=file)
-        except:
+        except discord.errors.HTTPException:
             await ctx.send(f'{tuser.mention} your ticket has been deleted by {member.display_name} with reason {reason}')
             msg.append(f'{tuser.mention} your ticket has been deleted by {member.display_name} with reason {reason}')
         file = discord.File(BytesIO(("\n".join(msg)).encode("utf-8")), filename=f"{ctx.channel.name}.txt")
