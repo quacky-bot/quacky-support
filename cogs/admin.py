@@ -94,6 +94,39 @@ class Admin(commands.Cog):
             warn = f'\n:warning: I can\'t send DMs to {user.display_name}! Please make sure to notify them of their demotion.'
         await ctx.send(f'<:check:678014104111284234> Demoted **{user.display_name}** to {new_rank}.{warn}')
 
+    @commands.command()
+    @commands.is_owner()
+    @commands.guild_only()
+    async def spromote(self, ctx, *, user: discord.Member):
+        helper = ctx.guild.get_role(690239278277591043)
+        support = ctx.guild.get_role(729735292734406669)
+        mod = ctx.guild.get_role(665423380207370240)
+        staff = ctx.guild.get_role(665423057430511626)
+        warn = ''
+        if mod in user.roles:
+            return await ctx.send(f'<:redx:678014058590502912> I cannot promote {user.display_name} as they are already the highest rank!')
+        elif support in user.roles:
+            new_rank = 'Mod'
+            await user.add_roles(mod, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
+            await user.remove_roles(helper, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
+            embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Moderator Rank!\n[Pleaese Read about Being a Moderator.](https://quacky.js.org/staff/promoted)\nThanks and Congradulations :smiley:')
+        elif helper in user.roles:
+            new_rank = 'Support Team'
+            await user.add_roles(support, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
+            embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Support Team Rank!\n[Please Read about Managing Support Tickets](https://quacky.js.org/staff/tickets) and [Re-Read the Moderation Policy.](https://quacky.js.org/staff/moderation)\nThanks and Congradulations :smiley:')
+        elif staff in user.roles:
+            await user.add_roles(helper, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
+            return await ctx.send(f'<:check:678014104111284234> Added the Helper Role to **{user.display_name}**.')
+        else:
+            return await ctx.send(f'<:redx:678014058590502912> {user.display_name} is not a Staff Member!')
+        embed.set_author(name=f'Quacky Bot Administrators', icon_url=f'https://quacky.js.org/files/avatar.png')
+        embed.set_image(url=f'https://quacky.js.org/files/eevee-evolve.gif')
+        try:
+            await user.send(embed=embed)
+        except discord.errors.HTTPException:
+            warn = f'\n:warning: I can\'t send DMs to {user.display_name}! Please make sure to notify them of their promotion.'
+        await ctx.send(f'<:check:678014104111284234> Promoted **{user.display_name}** to {new_rank}.{warn}')
+
 
 def setup(bot):
     bot.add_cog(Admin(bot))
