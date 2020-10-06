@@ -7,7 +7,7 @@ TOKEN = open('/root/Support/token.txt', 'r').read()
 
 initial_extensions = ['cogs.admin', 'cogs.moderation', 'cogs.misc', 'cogs.ticket', 'cogs.events', 'jishaku']
 
-client = commands.Bot(command_prefix=commands.when_mentioned_or('!'), case_insensitive=True, allowed_mentions=discord.AllowedMentions(roles=False, everyone=False, users=False), intents=discord.Intents(members=True))
+client = commands.Bot(command_prefix=commands.when_mentioned_or('!'), case_insensitive=True, allowed_mentions=discord.AllowedMentions(roles=False, everyone=False, users=False), intents=discord.Intents.all())
 
 if __name__ == '__main__':
     for extension in initial_extensions:
