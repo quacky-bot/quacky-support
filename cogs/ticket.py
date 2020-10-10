@@ -15,7 +15,7 @@ def rank(rank):
         support = guild.get_role(729735292734406669)
         mod = guild.get_role(665423380207370240)
         admin = guild.get_role(665423523308634113)
-        ctx_member = guild.get_member(ctx.author.id)
+        ctx_member = await ctx.guild.fetch_member(ctx.author.id)
         if rank == 'helper':
             if support in ctx_member.roles or ticket_owner == str(ctx.author.id) or mod in ctx_member.roles or admin in ctx_member.roles:
                 return True
@@ -59,7 +59,7 @@ class Ticket(commands.Cog):
         support_role = guild.get_role(729735292734406669)
         admin = guild.get_role(665423523308634113)
         staff_role = guild.get_role(665423057430511626)
-        member1 = guild.get_member(ctx.author.id)
+        member1 = await ctx.guild.fetch_member(ctx.author.id)
         category = self.bot.get_channel(723971770289488013)
         staff_request = False
         if subject == None:
@@ -169,8 +169,8 @@ class Ticket(commands.Cog):
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
         archive = ctx.guild.get_channel(729813211704066169)
-        tuser = self.bot.get_user(int(ticket_owner))
-        member = ctx.guild.get_member(ctx.author.id)
+        tuser = await self.bot.fetch_user(int(ticket_owner))
+        member = await ctx.guild.fetch_member(ctx.author.id)
         overwrite = discord.PermissionOverwrite()
         overwrite.send_messages = False
         overwrite.read_messages = True
@@ -219,7 +219,7 @@ class Ticket(commands.Cog):
         """ Add Someone to a Ticket """
         if ctx.channel.category_id != 723971770289488013:
             return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Support Ticket.')
-        ctx_member = ctx.guild.get_member(ctx.author.id)
+        ctx_member = await ctx.guild.fetch_member(ctx.author.id)
         starting_msg = ctx.channel.last_message
         user = user.lower()
         user1 = None
@@ -258,17 +258,17 @@ class Ticket(commands.Cog):
                 m.append(f'{member.id}')
         if len(u) == 1:# If it returns only 1 member
             pop = m.pop(0)
-            user1 = ctx.guild.get_member(int(pop))
+            user1 = await ctx.guild.fetch_member(int(pop))
         elif len(u) == 0:# If it returns 0 members
             if user.startswith('<@') and user.endswith('>'):
                 user1 = user.replace('<', '')
                 user1 = user1.replace('>', '')
                 user1 = user1.replace('!', '')
                 user1 = user1.replace('@', '')
-                user1 = ctx.guild.get_member(int(user1))
+                user1 = await ctx.guild.fetch_member(int(user1))
             else:
                 try:
-                    user1 = ctx.guild.get_member(int(user))
+                    user1 = await ctx.guild.fetch_member(int(user))
                 except:
                     user1 = None
                     pass
@@ -307,7 +307,7 @@ class Ticket(commands.Cog):
                 msg1 = int(msg.content)
                 popnum = msg1 - 1
                 user2 = m.pop(popnum)
-                user1 = ctx.guild.get_member(int(user2))
+                user1 = await ctx.guild.fetch_member(int(user2))
             elif len(faily) >= 1:
                 await ctx.send(f'<:redx:678014058590502912> Invalid Number.')
                 return
@@ -335,11 +335,11 @@ class Ticket(commands.Cog):
             return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Support Ticket.')
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
-        tuser = self.bot.get_user(int(ticket_owner))
-        tmember = ctx.guild.get_member(int(ticket_owner))
+        tuser = await self.bot.fetch_user(int(ticket_owner))
+        tmember = await ctx.guild.fetch_member(int(ticket_owner))
         support = ctx.guild.get_role(729735292734406669)
         quacky_bot_role = ctx.guild.get_role(665409797885263882)
-        ctx_member = ctx.guild.get_member(ctx.author.id)
+        ctx_member = await ctx.guild.fetch_member(ctx.author.id)
         starting_msg = ctx.channel.last_message
         user = user.lower()
         user1 = None
@@ -378,17 +378,17 @@ class Ticket(commands.Cog):
                 m.append(f'{member.id}')
         if len(u) == 1:# If it returns only 1 member
             pop = m.pop(0)
-            user1 = ctx.guild.get_member(int(pop))
+            user1 = await ctx.guild.fetch_member(int(pop))
         elif len(u) == 0:# If it returns 0 members
             if user.startswith('<@') and user.endswith('>'):
                 user1 = user.replace('<', '')
                 user1 = user1.replace('>', '')
                 user1 = user1.replace('!', '')
                 user1 = user1.replace('@', '')
-                user1 = ctx.guild.get_member(int(user1))
+                user1 = await ctx.guild.fetch_member(int(user1))
             else:
                 try:
-                    user1 = ctx.guild.get_member(int(user))
+                    user1 = await ctx.guild.fetch_member(int(user))
                 except:
                     user1 = None
                     pass
@@ -427,7 +427,7 @@ class Ticket(commands.Cog):
                 msg1 = int(msg.content)
                 popnum = msg1 - 1
                 user2 = m.pop(popnum)
-                user1 = ctx.guild.get_member(int(user2))
+                user1 = await ctx.guild.fetch_member(int(user2))
             elif len(faily) >= 1:
                 await ctx.send(f'<:redx:678014058590502912> Invalid Number.')
                 return
@@ -457,9 +457,9 @@ class Ticket(commands.Cog):
             return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Support Ticket.')
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
-        tuser = self.bot.get_user(int(ticket_owner))
-        tmember = ctx.guild.get_member(int(ticket_owner))
-        ctx_member = ctx.guild.get_member(ctx.author.id)
+        tuser = await self.bot.fetch_user(int(ticket_owner))
+        tmember = await ctx.guild.fetch_member(int(ticket_owner))
+        ctx_member = await ctx.guild.fetch_member(ctx.author.id)
         starting_msg = ctx.channel.last_message
         await ctx.channel.edit(name=f'{prefix}-{tmember.display_name}')
         await ctx.send(f'<:check:678014104111284234> **{ctx_member.display_name}** renamed the channel to **{ctx.channel.name}**')
@@ -475,13 +475,13 @@ class Ticket(commands.Cog):
         ticket_blacklist = data_ticket_blacklist['ticket']
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
-        tuser = ctx.guild.get_member(int(ticket_owner))
+        tuser = await ctx.guild.fetch_member(int(ticket_owner))
         if tuser is None:
             tuser = await self.bot.fetch_user(int(ticket_owner))
             NotInServer = True
         else:
             NotInServer = False
-        ctx_member = ctx.guild.get_member(int(ctx.author.id))
+        ctx_member = await ctx.guild.fetch_member(int(ctx.author.id))
         admin = ctx.guild.get_role(665423523308634113)
         starting_msg = ctx.channel.last_message
         user = user.lower()
@@ -521,17 +521,17 @@ class Ticket(commands.Cog):
                 m.append(f'{member.id}')
         if len(u) == 1:# If it returns only 1 member
             pop = m.pop(0)
-            user1 = ctx.guild.get_member(int(pop))
+            user1 = await ctx.guild.fetch_member(int(pop))
         elif len(u) == 0:# If it returns 0 members
             if user.startswith('<@') and user.endswith('>'):
                 user1 = user.replace('<', '')
                 user1 = user1.replace('>', '')
                 user1 = user1.replace('!', '')
                 user1 = user1.replace('@', '')
-                user1 = ctx.guild.get_member(int(user1))
+                user1 = await ctx.guild.fetch_member(int(user1))
             else:
                 try:
-                    user1 = ctx.guild.get_member(int(user))
+                    user1 = await ctx.guild.fetch_member(int(user))
                 except:
                     user1 = None
                     pass
@@ -569,7 +569,7 @@ class Ticket(commands.Cog):
                 msg1 = int(msg.content)
                 popnum = msg1 - 1
                 user2 = m.pop(popnum)
-                user1 = ctx.guild.get_member(int(user2))
+                user1 = await ctx.guild.fetch_member(int(user2))
             elif len(faily) >= 1:
                 return await ctx.send(f'<:redx:678014058590502912> Invalid Number.')
         # STARTING BLACKLIST CHECK
@@ -644,8 +644,8 @@ class Ticket(commands.Cog):
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
         archive = ctx.guild.get_channel(729813211704066169)
-        tuser = self.bot.get_user(int(ticket_owner))
-        member = ctx.guild.get_member(ctx.author.id)
+        tuser = await self.bot.fetch_user(int(ticket_owner))
+        member = await ctx.guild.fetch_member(ctx.author.id)
         await ctx.channel.last_message.delete()
         if reason == None:
             def check_msg(m):

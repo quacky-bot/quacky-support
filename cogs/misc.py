@@ -21,33 +21,42 @@ class Misc(commands.Cog):
     async def rankupdate(self, ctx):
         """ Updates your Roles in the Quacky Support Server to Match your Quacky Badges. """
         guild = self.bot.get_guild(665378018310488065)
-        member = guild.get_member(ctx.author.id)
+        member = await guild.fetch_member(ctx.author.id)
         File = open('/root/Quacky/Files/badges.json').read()
         data = json.loads(File)
-        total = 0
         rank = 0
-        for x in data['error']:
-            if x['id'] == member.id:
-                total = x['total']
         for a in data['donator']:
             if a['id'] == member.id:
                 rank = a['rank']
+        PFile = open('/root/Quacky/Files/partner.json').read()
+        pdata = json.loads(PFile)
+        for x in pdata['server']:
+            if x['owner'] == user1.id:
+                partner = guild.get_role(741701822032379944)
+                await member.add_roles(partner, reason='Has Partner Badge')
+        for x in pdata['bot']:
+            if x['owner'] == user1.id:
+                partner = guild.get_role(741701822032379944)
+                await member.add_roles(partner, reason='Has Partner Badge')
+        if member.id in data['early_supporter']:
+            early_supporter = guild.get_role(764569252111187988)
+            await member.add_roles(early_supporter, reason='Has Early Supporter Badge')
+        if member.id in data['bug_hunter']:
+            bug_hunter = guild.get_role(761340790869065729)
+            await member.add_roles(bug_hunter, reason='Has Bug Hunter Badge')
         if member.id in data['special']:
             special = guild.get_role(689520201259417682)
-            await member.add_roles(special, reason=f'Has Special Badge')
+            await member.add_roles(special, reason='Has Special Badge')
         donator = guild.get_role(690234363648016443)
         if rank == 3:
             mega = guild.get_role(690234610462097504)
-            await member.add_roles(mega, donator, reason=f'Has MEGA Badge')
+            await member.add_roles(mega, donator, reason='Has MEGA Badge')
         elif rank == 2:
             mvp = guild.get_role(690234421294530657)
-            await member.add_roles(mvp, donator, reason=f'Has MVP Badge')
+            await member.add_roles(mvp, donator, reason='Has MVP Badge')
         elif rank == 1:
             vip = guild.get_role(665423079454801930)
-            await member.add_roles(vip, donator, reason=f'Has VIP Badge')
-        if total >= 1 and ctx.author.id in data['suggest']:
-            contributor = guild.get_role(729501130723426334)
-            await member.add_roles(contributor, reason=f'Has found {total} Bugs with Quacky and has made a Quacky Suggestion')
+            await member.add_roles(vip, donator, reason='Has VIP Badge')
         await ctx.send('<:check:678014104111284234> Updated your Roles in the Quacky Support Server.')
 
     @commands.command()
@@ -83,20 +92,25 @@ class Misc(commands.Cog):
         donator = data['donator']
         special = data['special']
         suggest = data['suggest']
-        for x in error:
-            if x['id'] == ctx.author.id:
-                error.remove(x)
+        early_supporter = data['early_supporter']
+        bug_hunter = data['bug_hunter']
         for a in donator:
             if a['id'] == ctx.author.id:
                 donator.remove(a)
+        if ctx.author.id in error:
+            error.remove(ctx.author.id)
         if ctx.author.id in special:
             special.remove(ctx.author.id)
         if ctx.author.id in suggest:
             suggest.remove(ctx.author.id)
+        if ctx.author.id in early_supporter:
+            early_supporter.remove(ctx.author.id)
+        if ctx.author.id in bug_hunter:
+            bug_hunter.remove(ctx.author.id)
         with open('/root/Quacky/Files/badges.json', 'w') as f:
             json.dump(data, f, indent=4)
         guild = self.bot.get_guild()
-        ctx_member = guild.get_member(ctx.author.id)
+        ctx_member = await guild.fetch_member(ctx.author.id)
         await ctx.send('<:check:678014104111284234> Cleared your Quacky Data!\nIf you would like to sync your roles with your badges do `!rankupdate`')
 
     @commands.command()
@@ -108,7 +122,7 @@ class Misc(commands.Cog):
         guild = self.bot.get_guild(665378018310488065)
         application_channel = guild.get_channel(693938487216308284)
         support_team_role = guild.get_role(729735292734406669)
-        member = guild.get_member(ctx.author.id)
+        member = await guild.fetch_member(ctx.author.id)
         if support_team_role in member.roles:
             return await ctx.send('<:redx:678014058590502912> You\'re already a Support Team Member!')
         File = open('/root/Quacky/Files/misc.json').read()
