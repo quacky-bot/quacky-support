@@ -8,7 +8,7 @@ TOKEN = open('/root/Support/token.txt', 'r').read()
 initial_extensions = ['cogs.admin', 'cogs.moderation', 'cogs.misc', 'cogs.ticket', 'cogs.events', 'jishaku']
 
 intents = discord.Intents.default()
-intents.member = True
+intents.members = True
 client = commands.Bot(command_prefix=commands.when_mentioned_or('!'), case_insensitive=True, allowed_mentions=discord.AllowedMentions(roles=False, everyone=False, users=False), intents=intents)
 
 if __name__ == '__main__':
