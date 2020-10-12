@@ -408,5 +408,38 @@ class Misc(commands.Cog):
     async def privacy(self, ctx):
         await ctx.send('You can view Quacky Support\'s Privacy Policy at https://quacky.js.org/support-privacy')
 
+    @commands.command()
+    async def crole(self, ctx, *, hexcode):
+        """ Get a Custom Color Role (Donator Only) """
+        await ctx.trigger_typing()
+        guild = self.bot.get_guild(665378018310488065)
+        member = await guild.fetch_member(ctx.author.id)
+        mega = guild.get_role(690234610462097504)
+        if mega not in member.roles:
+            return await ctx.send('<:redx:678014058590502912> You must be a MEGA Donator to use this command!\nYou can donate at: <https://quacky.js.org/donate>')
+        try:
+            hexcode = int(f'0x{hexcode}', 16)
+        except ValueError:
+            embed = discord.Embed(title='OOPS! An error has occurred >.<', colour=discord.Colour(0xff0000), description='That is not a Valid Hex Code!')
+            embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
+            embed.set_thumbnail(url=f"{error_icon}")
+            embed.set_footer(text='If you need help please do the -support command.')
+            return await ctx.send(embed=embed)
+        File = open('/root/Support/Files/misc.json').read()
+        data = json.loads(File)
+        for x in data['roles']:
+            if x['user'] == ctx.author.id:
+                role = guild.get_role(x['role'])
+                await role.edit(colour=discord.Colour(hexcode), reason=f'{ctx.author} ({ctx.author.id}) - Custom Donator Role')
+                return await ctx.send('<:check:678014104111284234> Updated your Donator Role!')
+        role = await guild.create_role(name=f'{ctx.author.name} Custom Role', colour=discord.Colour(hexcode), reason=f'{ctx.author} ({ctx.author.id}) - Custom Donator Role')
+        await member.add_roles(role, reason=f'{ctx.author} ({ctx.author.id}) - Custom Donator Role')
+        boost_role = guild.get_role(736007066556039170)
+        await role.edit(position=boost_role.position - 1, reason=f'{ctx.author} ({ctx.author.id}) - Custom Donator Role')
+        data['roles'].append({'user': ctx.author.id, 'role': role.id})
+        with open('/root/Support/Files/misc.json', 'w') as f:
+            json.dump(data, f, indent=2)
+        await ctx.send('<:check:678014104111284234> Created your Donator Role!')
+
 def setup(bot):
     bot.add_cog(Misc(bot))
