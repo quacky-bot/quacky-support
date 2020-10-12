@@ -29,11 +29,11 @@ class Events(commands.Cog):
             PFile = open('/root/Quacky/Files/partner.json').read()
             pdata = json.loads(PFile)
             for x in pdata['server']:
-                if x['owner'] == user1.id:
+                if x['owner'] == member.id:
                     partner = guild.get_role(741701822032379944)
                     await member.add_roles(partner, reason='Has Partner Badge')
             for x in pdata['bot']:
-                if x['owner'] == user1.id:
+                if x['owner'] == member.id:
                     partner = guild.get_role(741701822032379944)
                     await member.add_roles(partner, reason='Has Partner Badge')
             if member.id in data['early_supporter']:
