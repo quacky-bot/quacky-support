@@ -191,6 +191,7 @@ class Ticket(commands.Cog):
             await m2.delete()
             if reason.lower() == 'cancel':
                 return await ctx.send('<:redx:678014058590502912> Canceled Closing the Support Ticket.')
+        # I stole this from Moksej he's pretty cool --> https://github.com/TheMoksej
         msg_history = []
         async for message in ctx.channel.history():
             if message.content == '':
@@ -663,6 +664,7 @@ class Ticket(commands.Cog):
             await m2.delete()
             if reason.lower() == 'cancel':
                 return await ctx.send('<:redx:678014058590502912> Canceled Deleting the Support Ticket.')
+        # I stole this from Moksej he's pretty cool --> https://github.com/TheMoksej
         msg = []
         async for message in ctx.channel.history():
             if message.content == '':
