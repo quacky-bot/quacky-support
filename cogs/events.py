@@ -5,6 +5,10 @@ error_icon = 'https://cdn.discordapp.com/emojis/678014140203401246.png?v=1'
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.activity_test.start()
+
+    def cog_unload(self):
+        self.activity_test.cancel()
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -14,6 +18,44 @@ class Events(commands.Cog):
         # (activity=discord.Activity(type=discord.ActivityType.watching, name="a movie"))
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='Support Questions | !new'), status=discord.Status.online)
         print(f'"{self.bot.user.name}" is ready to use.')
+
+    @tasks.loop(minutes=30.0)
+    async def activity_test(self):
+        """ Sends the Results of Activity Tests """
+        await self.bot.wait_until_ready()
+        File = open('/root/Support/Files/misc.json').read()
+        data = json.loads(File)
+        if data['activity'] != []:
+            if datetime.datetime.strptime(data['activity'][1], "%m/%d %H:%M") <= datetime.datetime.strptime(datetime.datetime.now().strftime("%m/%d %H:%M"), "%m/%d %H:%M"):
+                guild = self.bot.get_guild(665378018310488065)
+                channel = guild.get_channel(665426967692181514)
+                msg = await channel.fetch_message(data['activity'][0])
+                reaction = msg.reactions.pop(0)
+                users = await reaction.users().flatten()
+                role = guild.get_role(665423057430511626)
+                role1 = guild.get_role(746145667029663785)
+                failed = []
+                for x in role.members:
+                    if x.id == 443217277580738571 or x in role1.members:
+                        pass
+                    elif x not in users:
+                        failed.append(f"{x.mention} ({x.id})")
+                if failed == []:
+                    embed = discord.Embed(title='Activity Test Results', description="Everyone Passed the [Activity Test]({msg.jump_url})", color=discord.Colour.blue())
+                    embed.set_thumbnail(url="https://bongo-duck.elixi.re/i/ey3x.png?raw=1")
+                else:
+                    failed = '\n> '.join(failed)
+                    embed = discord.Embed(title='Activity Test Results', description=f"The Following Staff Members Failed the [Activity Test:]({msg.jump_url})\n> {failed}", color=discord.Colour.red())
+                msg1 = await channel.send(embed=embed)
+
+                oembed = discord.Embed(title='Old Activity Test', description=f'This activity test has ended. [Results Message]({msg1.jump_url})', color=discord.Colour.dark_orange())
+                oembed.set_thumbnail(url="https://quacky.elixi.re/i/fhvc.png?raw=1")
+                await msg.edit(embed=oembed)
+                await msg.unpin()
+                await msg.clear_reactions()
+                data['activity'] = []
+                with open('/root/Support/Files/misc.json', 'w') as f:
+                    json.dump(data, f, indent=2)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):

@@ -1,4 +1,4 @@
-import discord, json
+import discord, json, datetime
 from discord.ext import commands
 
 class Admin(commands.Cog):
@@ -18,7 +18,7 @@ class Admin(commands.Cog):
             await ctx.send(f'<:check:678014104111284234> Reloaded all of the bot\'s commands successfully.')
             print(f'+=+=+=+=+=+=+=+ {ctx.author} has reloaded Quacky Support +=+=+=+=+=+=+=+')
         else:
-            self.bot.reload_extension(cog)
+            self.bot.reload_extension(f'cogs.{cog}')
             await ctx.send(f'<:check:678014104111284234> Reloaded the **{cog}** cog.')
             print(f'+=+=+=+=+=+=+=+ Quacky Support: {ctx.author} has reloaded {cog} +=+=+=+=+=+=+=+')
 
@@ -127,6 +127,25 @@ class Admin(commands.Cog):
             warn = f'\n:warning: I can\'t send DMs to {user.display_name}! Please make sure to notify them of their promotion.'
         await ctx.send(f'<:check:678014104111284234> Promoted **{user.display_name}** to {new_rank}.{warn}')
 
+    @commands.command(aliases=['activitytest'])
+    @commands.is_owner()
+    @commands.guild_only()
+    async def atest(self, ctx):
+        """ Runs a Staff Activity Test! """
+        channel = ctx.guild.get_channel(665426967692181514)
+        emoji = self.bot.get_emoji(678014104111284234)
+        embed = discord.Embed(title='Staff Activity Test', description=f"React with {emoji} to this message to show that you're active!\nYou have 2 days before you're demoted.", color=discord.Colour(0xFFB42B))
+        embed.set_thumbnail(url="https://quacky.elixi.re/i/5t4r.gif?raw=1")
+        msg = await channel.send(embed=embed)
+        await msg.pin()
+        await msg.add_reaction(emoji)
+        File = open('/root/Support/Files/misc.json').read()
+        data = json.loads(File)
+        data['activity'] = [msg.id, f'{(datetime.datetime.now() + datetime.timedelta(days=2)).strftime("%m/%d %H:%M")}']
+        with open('/root/Support/Files/misc.json', 'w') as f:
+            json.dump(data, f, indent=2)
+        if ctx.channel != channel:
+            await ctx.message.add_reaction(emoji)
 
 def setup(bot):
     bot.add_cog(Admin(bot))
