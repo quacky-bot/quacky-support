@@ -112,13 +112,24 @@ class Events(commands.Cog):
     async def on_member_remove(self, member):
         guild = member.guild
         if guild.id == 665378018310488065:
-            File = open('/root/Quacky/Files/partner.json').read()
+            File = open('/root/Quacky/Files/partner.json').read()# PARTNER ALERTS
             data = json.loads(File)
             adminchat = guild.get_channel(665427384899600395)
             for x in data['bot']:
                 if x['owner'] == member.id:
                     await adminchat.send(f'<a:siren:493542252891734016> {member} ({member.id}) just left while under Bot Partnership.')
-            if member.bot == True or member.id == 475117152106446849:
+
+            File = open('/root/Support/Files/misc.json').read()# DELETE CUSTOM ROLE
+            data = json.loads(File)
+            for x in data['roles']:
+                if x['user'] == member.id:
+                    role = guild.get_role(x['role'])
+                    await role.delete()
+                    data['roles'].remove(x)
+                    with open('/root/Support/Files/misc.json', 'w') as f:
+                        json.dump(data, f, indent=2)
+
+            if member.bot == True or member.id == 475117152106446849:# LEFT SERVER ALERTS
                 return
             channel = guild.get_channel(665378018809741324)
             File = open('/root/Quacky/Files/misc.json', 'r').read()
