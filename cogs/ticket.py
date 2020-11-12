@@ -278,11 +278,6 @@ class Ticket(commands.Cog):
         except:
             pass
         await starting_msg.delete()
-        try:
-            await msg2.delete()
-            await msg.delete()
-        except:
-            pass
         await ctx.send(f'<:check:678014104111284234> **{ctx_member.display_name}** added **{user.display_name}** to the channel.')
 
     @commands.command(usage='<user>')
@@ -310,11 +305,6 @@ class Ticket(commands.Cog):
             return await ctx.send(f'<:redx:678014058590502912> {user.display_name} hasn\'t been added to the Ticket!')
         await ctx.channel.set_permissions(user, overwrite=None)
         await starting_msg.delete()
-        try:
-            await msg2.delete()
-            await msg.delete()
-        except:
-            pass
         await ctx.send(f'<:check:678014104111284234> **{ctx_member.display_name}** removed **{user.display_name}** from the channel.')
 
     @commands.command()
@@ -388,13 +378,7 @@ class Ticket(commands.Cog):
                 elif reaction.emoji == redx:
                     await ctx.send('<:check:678014104111284234> Not adding them to the Ticket.', delete_after=5)
                     await confirm_msg.delete()
-                    await starting_msg.delete()
-                    try:
-                        await msg2.delete()
-                        await msg.delete()
-                    except:
-                        pass
-                    return
+                    return await starting_msg.delete()
         await ctx.channel.set_permissions(user, read_messages=True, send_messages=True, manage_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Transferring Ticket Ownership')
         if NotInServer == False:
             await ctx.channel.set_permissions(tuser, read_messages=True, send_messages=None, manage_messages=None, reason=f'{ctx.author} ({ctx.author.id}) - Transferring Ticket Ownership')
@@ -411,11 +395,6 @@ class Ticket(commands.Cog):
         await ctx.channel.edit(topic=f'USERID: {user.id}', name=f'ticket-{user.display_name}', reason=f'{ctx.author} ({ctx.author.id}) - Transferring Ticket Ownership')
         await ctx.send(f'<:check:678014104111284234> **{ctx_member.display_name}** Transferred Ticket Ownership from {tuser.display_name} to **{user.display_name}**')
         await starting_msg.delete()
-        try:
-            await msg2.delete()
-            await msg.delete()
-        except:
-            pass
 
     @commands.command(aliases=['deletet', 'ticketdelete', 'deleteticket', 'dticket'])
     @commands.guild_only()
