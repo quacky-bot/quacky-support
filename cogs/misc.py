@@ -1,4 +1,4 @@
-import discord, json, time, asyncio
+import discord, json, time, asyncio, searching
 from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
 error_icon = 'https://cdn.discordapp.com/emojis/678014140203401246.png?v=1'
@@ -334,7 +334,7 @@ class Misc(commands.Cog):
     @admin()
     async def serverapprove(self, ctx, guildid: int, *, member):
         member = await searching.user(self, ctx, 'approve for server parntership', member)
-        if isinstance(user1, discord.Message):
+        if isinstance(member, discord.Message):
             return
         quacky_guild = self.bot.get_guild(665378018310488065)
         partner_role = quacky_guild.get_role(741701822032379944)
@@ -351,7 +351,7 @@ class Misc(commands.Cog):
     @admin()
     async def botapprove(self, ctx, botuserid: int, *, member):
         member = await searching.user(self, ctx, 'approve for bot parntership', member)
-        if isinstance(user1, discord.Message):
+        if isinstance(member, discord.Message):
             return
         quacky_guild = self.bot.get_guild(665378018310488065)
         partner_role = quacky_guild.get_role(741701822032379944)
