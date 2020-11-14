@@ -33,8 +33,11 @@ class Admin(commands.Cog):
     @commands.command()
     @commands.is_owner()
     @commands.guild_only()
-    async def sadd(self, ctx, *, user: discord.Member):
+    async def sadd(self, ctx, *, user):
         """ Add Someone Permission to Apply for Support Team """
+        user = await searching.user(self, ctx, 'give access to apply for Support Team', user)
+        if isinstance(user1, discord.Message):
+            return
         File = open('/root/Quacky/Files/misc.json').read()
         data = json.loads(File)
         if user.id in data['sapply']:
@@ -54,8 +57,11 @@ class Admin(commands.Cog):
     @commands.command()
     @commands.is_owner()
     @commands.guild_only()
-    async def sdemote(self, ctx, user: discord.Member, *, reason):
+    async def sdemote(self, ctx, user, *, reason):
         """ Demote a Staff Member! """
+        user = await searching.user(self, ctx, 'demote', user)
+        if isinstance(user1, discord.Message):
+            return
         helper = ctx.guild.get_role(690239278277591043)
         support = ctx.guild.get_role(729735292734406669)
         mod = ctx.guild.get_role(665423380207370240)
@@ -97,7 +103,10 @@ class Admin(commands.Cog):
     @commands.command()
     @commands.is_owner()
     @commands.guild_only()
-    async def spromote(self, ctx, *, user: discord.Member):
+    async def spromote(self, ctx, *, user):
+        user = await searching.user(self, ctx, 'promote', user)
+        if isinstance(user1, discord.Message):
+            return
         helper = ctx.guild.get_role(690239278277591043)
         support = ctx.guild.get_role(729735292734406669)
         mod = ctx.guild.get_role(665423380207370240)

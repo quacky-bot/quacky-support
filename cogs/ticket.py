@@ -1,4 +1,4 @@
-import discord, json, asyncio
+import discord, json, asyncio, searching
 from discord.ext import commands, tasks
 from discord.ext.commands.cooldowns import BucketType
 from io import BytesIO
@@ -264,10 +264,13 @@ class Ticket(commands.Cog):
     @commands.command(usage='<user>')
     @commands.guild_only()
     @rank('mod')
-    async def add(self, ctx, *, user: discord.Member):
+    async def add(self, ctx, *, member):
         """ Add Someone to a Ticket """
         if ctx.channel.category_id != 723971770289488013:
             return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Support Ticket.')
+        user = await searching.user(self, ctx, 'add to the ticket', member)
+        if isinstance(user1, discord.Message):
+            return
         ctx_member = await ctx.guild.fetch_member(ctx.author.id)
         starting_msg = ctx.channel.last_message
         if discord.PermissionOverwrite.is_empty(ctx.channel.overwrites_for(user)) == False:
@@ -283,10 +286,13 @@ class Ticket(commands.Cog):
     @commands.command(usage='<user>')
     @commands.guild_only()
     @rank('mod')
-    async def remove(self, ctx, *, user: discord.Member):
+    async def remove(self, ctx, *, member):
         """ Remove Someone from a Ticket """
         if ctx.channel.category_id != 723971770289488013:
             return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Support Ticket.')
+        user = await searching.user(self, ctx, 'remove from the ticket', member)
+        if isinstance(user1, discord.Message):
+            return
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
         tuser = await self.bot.fetch_user(int(ticket_owner))
@@ -327,8 +333,11 @@ class Ticket(commands.Cog):
     @commands.command(aliases=['transferowner', 'ownertransfer'], usage='<user>')
     @commands.guild_only()
     @rank('mod')
-    async def transfer(self, ctx, *, user: discord.Member):
+    async def transfer(self, ctx, *, member):
         """ Make Someone Else the Ticket Owner of a Ticket """
+        user = await searching.user(self, ctx, 'transfer the ticket to', member)
+        if isinstance(user1, discord.Message):
+            return
         File_ticket_blacklist = open('/root/Support/Files/blacklist.json').read()
         data_ticket_blacklist = json.loads(File_ticket_blacklist)
         ticket_blacklist = data_ticket_blacklist['ticket']
