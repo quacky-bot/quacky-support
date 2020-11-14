@@ -1,4 +1,4 @@
-import discord, json, datetime
+import discord, json, datetime, searching
 from discord.ext import commands
 
 def admin():
@@ -41,7 +41,7 @@ class Admin(commands.Cog):
     async def sadd(self, ctx, *, user):
         """ Add Someone Permission to Apply for Support Team """
         user = await searching.user(self, ctx, 'give access to apply for Support Team', user)
-        if isinstance(user1, discord.Message):
+        if isinstance(user, discord.Message):
             return
         File = open('/root/Quacky/Files/misc.json').read()
         data = json.loads(File)
@@ -65,7 +65,7 @@ class Admin(commands.Cog):
     async def sdemote(self, ctx, user, *, reason):
         """ Demote a Staff Member! """
         user = await searching.user(self, ctx, 'demote', user)
-        if isinstance(user1, discord.Message):
+        if isinstance(user, discord.Message):
             return
         helper = ctx.guild.get_role(690239278277591043)
         support = ctx.guild.get_role(729735292734406669)
@@ -110,7 +110,7 @@ class Admin(commands.Cog):
     @commands.guild_only()
     async def spromote(self, ctx, *, user):
         user = await searching.user(self, ctx, 'promote', user)
-        if isinstance(user1, discord.Message):
+        if isinstance(user, discord.Message):
             return
         helper = ctx.guild.get_role(690239278277591043)
         support = ctx.guild.get_role(729735292734406669)

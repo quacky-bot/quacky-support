@@ -269,7 +269,7 @@ class Ticket(commands.Cog):
         if ctx.channel.category_id != 723971770289488013:
             return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Support Ticket.')
         user = await searching.user(self, ctx, 'add to the ticket', member)
-        if isinstance(user1, discord.Message):
+        if isinstance(user, discord.Message):
             return
         ctx_member = await ctx.guild.fetch_member(ctx.author.id)
         starting_msg = ctx.channel.last_message
@@ -291,7 +291,7 @@ class Ticket(commands.Cog):
         if ctx.channel.category_id != 723971770289488013:
             return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Support Ticket.')
         user = await searching.user(self, ctx, 'remove from the ticket', member)
-        if isinstance(user1, discord.Message):
+        if isinstance(user, discord.Message):
             return
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
@@ -336,7 +336,7 @@ class Ticket(commands.Cog):
     async def transfer(self, ctx, *, member):
         """ Make Someone Else the Ticket Owner of a Ticket """
         user = await searching.user(self, ctx, 'transfer the ticket to', member)
-        if isinstance(user1, discord.Message):
+        if isinstance(user, discord.Message):
             return
         File_ticket_blacklist = open('/root/Support/Files/blacklist.json').read()
         data_ticket_blacklist = json.loads(File_ticket_blacklist)
