@@ -1,12 +1,17 @@
 import discord, json, datetime
 from discord.ext import commands
 
+def admin():
+    async def predicate(ctx):
+        return ctx.author.id == 345457928972533773 or ctx.author.id == 443217277580738571
+    return commands.check(predicate)
+
 class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
-    @commands.is_owner()
+    @admin()
     async def reload(self, ctx, *, cog='all'):
         """ Reloads the bot's commands. """
         if cog == 'all':
@@ -23,7 +28,7 @@ class Admin(commands.Cog):
             print(f'+=+=+=+=+=+=+=+ Quacky Support: {ctx.author} has reloaded {cog} +=+=+=+=+=+=+=+')
 
     @commands.command()
-    @commands.is_owner()
+    @admin()
     async def shutdown(self, ctx):
         """ Shutsdown the bot. """
         await ctx.send('Shutting down... Goodbye!')
@@ -31,7 +36,7 @@ class Admin(commands.Cog):
         await self.bot.logout()
 
     @commands.command()
-    @commands.is_owner()
+    @admin()
     @commands.guild_only()
     async def sadd(self, ctx, *, user):
         """ Add Someone Permission to Apply for Support Team """
@@ -55,7 +60,7 @@ class Admin(commands.Cog):
         await ctx.send(f'<:check:678014104111284234> **{user.display_name}** can now apply to be a Support Team member!{warn}')
 
     @commands.command()
-    @commands.is_owner()
+    @admin()
     @commands.guild_only()
     async def sdemote(self, ctx, user, *, reason):
         """ Demote a Staff Member! """
@@ -101,7 +106,7 @@ class Admin(commands.Cog):
         await ctx.send(f'<:check:678014104111284234> Demoted **{user.display_name}** to {new_rank}.{warn}')
 
     @commands.command()
-    @commands.is_owner()
+    @admin()
     @commands.guild_only()
     async def spromote(self, ctx, *, user):
         user = await searching.user(self, ctx, 'promote', user)
@@ -137,7 +142,7 @@ class Admin(commands.Cog):
         await ctx.send(f'<:check:678014104111284234> Promoted **{user.display_name}** to {new_rank}.{warn}')
 
     @commands.command(aliases=['activitytest'])
-    @commands.is_owner()
+    @admin()
     @commands.guild_only()
     async def atest(self, ctx):
         """ Runs a Staff Activity Test! """

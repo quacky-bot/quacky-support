@@ -3,6 +3,11 @@ from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
 error_icon = 'https://cdn.discordapp.com/emojis/678014140203401246.png?v=1'
 
+def admin():
+    async def predicate(ctx):
+        return ctx.author.id == 345457928972533773 or ctx.author.id == 443217277580738571
+    return commands.check(predicate)
+
 class Misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -326,7 +331,7 @@ class Misc(commands.Cog):
         await ctx.send(embed=embed)
 
     @partner.command(aliases=['sapprove', 'server-approve'])
-    @commands.is_owner()
+    @admin()
     async def serverapprove(self, ctx, guildid: int, *, member):
         member = await searching.user(self, ctx, 'approve for server parntership', member)
         if isinstance(user1, discord.Message):
@@ -343,7 +348,7 @@ class Misc(commands.Cog):
         await ctx.send(f'<:check:678014104111284234> Added **{guildid}** owned by {member.mention} to the Partner Program (Server).')
 
     @partner.command(aliases=['bapprove', 'bot-approve'])
-    @commands.is_owner()
+    @admin()
     async def botapprove(self, ctx, botuserid: int, *, member):
         member = await searching.user(self, ctx, 'approve for bot parntership', member)
         if isinstance(user1, discord.Message):
@@ -370,7 +375,7 @@ class Misc(commands.Cog):
 
     @partner.command()
     @commands.guild_only()
-    @commands.is_owner()
+    @admin()
     async def send(self, ctx, title, *, message):
         embed = discord.Embed(colour=discord.Colour(16750848), description=message, title=title)
         if ctx.message.attachments != []:
