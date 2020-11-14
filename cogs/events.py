@@ -19,6 +19,16 @@ class Events(commands.Cog):
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='Support Questions | !new'), status=discord.Status.online)
         print(f'"{self.bot.user.name}" is ready to use.')
 
+    @commands.Cog.listener()
+    async def on_message_edit(self, before, after):
+        """ Runs Commands on Edit """
+        if after.author.bot is True:
+            return
+        prefixes = commands.when_mentioned_or('!')(self.bot, after)
+        if after.content.startswith(tuple(prefixes)):
+            ctx = await self.bot.get_context(after)
+            msg = await self.bot.invoke(ctx)
+
     @tasks.loop(minutes=30.0)
     async def activity_test(self):
         """ Sends the Results of Activity Tests """
