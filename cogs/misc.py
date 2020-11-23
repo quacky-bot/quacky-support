@@ -280,11 +280,11 @@ class Misc(commands.Cog):
         msg = """By Becoming a Quacky Partner you agree to the [Quacky Partner Terms.](https://quacky.js.org/partner-bterms)
         You Discord Bot also meet the following requirements:
         > - Your Bot is in at least 100 Real Servers.
-        > - Your Bot is verified by discord.
+        > - Your Bot is verified by Discord.
         > - Your Bot is not mainly NSFW or has an NSFW Profile Picture/Name.
-        > - Your bot does not promote Harrassment, Hate Speech, Violence, or Illegal Activity and Follows the [Discord Developer Terms of Service.](https://discord.com/developers/docs/legal)
-        > - Your bot has a Support Server with a Rules Channel and Moderation Team.
-        > - Your bot is not a copy of a bot that's already been created.
+        > - Your Bot does not promote Harrassment, Hate Speech, Violence, or Illegal Activity and Follows the [Discord Developer Terms of Service.](https://discord.com/developers/docs/legal)
+        > - Your Bot has a Support Server with a Rules Channel and Moderation Team.
+        > - Your Bot is not a copy of a bot that's already been created.
         If you do not agree to the terms, or do not meet the requirements please use the `!close` command to close this ticket."""
         embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Partner - Bot Requirements')
         await ctx.send(embed=embed)
@@ -296,7 +296,7 @@ class Misc(commands.Cog):
         > - Your Server has at least 250 Real Human Members.
         > - Your Server Has and Uses Quacky Bot.
         > - Your Server is not NSFW Related in any way.
-        > - Your server does not promote Harrassment, Hate Speech, Violence, or Illegal Activity and Follows the [Discord Server Guildelines.](https://discord.com/guidelines)
+        > - Your Server does not promote Harrassment, Hate Speech, Violence, or Illegal Activity and Follows the [Discord Server Guildelines.](https://discord.com/guidelines)
         > - Your Server has a Rules Channel and Moderation Team.
         > - Preferably, your server is a community server.
         If you do not agree to the terms, or do not meet the requirements please use the `!close` command to close this ticket."""
