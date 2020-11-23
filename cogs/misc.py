@@ -293,7 +293,7 @@ class Misc(commands.Cog):
     async def server(self, ctx):
         msg = """By Becoming a Quacky Partner you agree to the [Quacky Partner Terms.](https://quacky.js.org/partner-sterms)
         Your Discord Server also meet the following requirements:
-        > - Your Server has at least 100 Real Human Members.
+        > - Your Server has at least 250 Real Human Members.
         > - Your Server Has and Uses Quacky Bot.
         > - Your Server is not NSFW Related in any way.
         > - Your server does not promote Harrassment, Hate Speech, Violence, or Illegal Activity and Follows the [Discord Server Guildelines.](https://discord.com/guidelines)
