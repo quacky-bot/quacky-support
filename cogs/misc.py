@@ -279,7 +279,8 @@ class Misc(commands.Cog):
     async def bot(self, ctx):
         msg = """By Becoming a Quacky Partner you agree to the [Quacky Partner Terms.](https://quacky.js.org/partner-bterms)
         You Discord Bot also meet the following requirements:
-        > - Your Bot is in at least 50 Real Servers.
+        > - Your Bot is in at least 100 Real Servers.
+        > - Your Bot is verified by discord.
         > - Your Bot is not mainly NSFW or has an NSFW Profile Picture/Name.
         > - Your bot does not promote Harrassment, Hate Speech, Violence, or Illegal Activity and Follows the [Discord Developer Terms of Service.](https://discord.com/developers/docs/legal)
         > - Your bot has a Support Server with a Rules Channel and Moderation Team.
