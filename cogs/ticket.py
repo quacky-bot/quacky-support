@@ -15,7 +15,7 @@ def rank(rank):
         support = guild.get_role(729735292734406669)
         mod = guild.get_role(665423380207370240)
         admin = guild.get_role(665423523308634113)
-        ctx_member = await ctx.guild.fetch_member(ctx.author.id)
+        ctx_member = guild.get_member(ctx.author.id)
         if rank == 'helper':
             if support in ctx_member.roles or ticket_owner == str(ctx.author.id) or mod in ctx_member.roles or admin in ctx_member.roles:
                 return True
@@ -107,7 +107,7 @@ class Ticket(commands.Cog):
         support_role = guild.get_role(729735292734406669)
         admin = guild.get_role(665423523308634113)
         staff_role = guild.get_role(665423057430511626)
-        member1 = await ctx.guild.fetch_member(ctx.author.id)
+        member1 = guild.fetch_member(ctx.author.id)
         category = self.bot.get_channel(723971770289488013)
         staff_request = False
         if subject == None:
@@ -218,7 +218,7 @@ class Ticket(commands.Cog):
         ticket_owner = ticket_owner.replace('USERID: ', '')
         archive = ctx.guild.get_channel(729813211704066169)
         tuser = await self.bot.fetch_user(int(ticket_owner))
-        member = await ctx.guild.fetch_member(ctx.author.id)
+        member = ctx.guild.get_member(ctx.author.id)
         overwrite = discord.PermissionOverwrite()
         overwrite.send_messages = False
         overwrite.read_messages = True
@@ -271,7 +271,7 @@ class Ticket(commands.Cog):
         user = await searching.user(self, ctx, 'add to the ticket', member)
         if isinstance(user, discord.Message):
             return
-        ctx_member = await ctx.guild.fetch_member(ctx.author.id)
+        ctx_member = ctx.guild.get_member(ctx.author.id)
         starting_msg = ctx.channel.last_message
         if discord.PermissionOverwrite.is_empty(ctx.channel.overwrites_for(user)) == False:
             return await ctx.send('<:redx:678014058590502912> You can\'t add someone to the ticket if they\'ve already been added!')
@@ -296,10 +296,10 @@ class Ticket(commands.Cog):
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
         tuser = await self.bot.fetch_user(int(ticket_owner))
-        tmember = await ctx.guild.fetch_member(int(ticket_owner))
+        tmember = ctx.guild.get_member(int(ticket_owner))
         support = ctx.guild.get_role(729735292734406669)
         quacky_bot_role = ctx.guild.get_role(665409797885263882)
-        ctx_member = await ctx.guild.fetch_member(ctx.author.id)
+        ctx_member = ctx.guild.get_member(ctx.author.id)
         starting_msg = ctx.channel.last_message
         if user == tmember:
             return await ctx.send(f'<:redx:678014058590502912> You can\'t remove the Ticket Owner from the ticket!')
@@ -323,8 +323,8 @@ class Ticket(commands.Cog):
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
         tuser = await self.bot.fetch_user(int(ticket_owner))
-        tmember = await ctx.guild.fetch_member(int(ticket_owner))
-        ctx_member = await ctx.guild.fetch_member(ctx.author.id)
+        tmember = ctx.guild.get_member(int(ticket_owner))
+        ctx_member = ctx.guild.get_member(ctx.author.id)
         starting_msg = ctx.channel.last_message
         await ctx.channel.edit(name=f'{prefix}-{tmember.display_name}')
         await ctx.send(f'<:check:678014104111284234> **{ctx_member.display_name}** renamed the channel to **{ctx.channel.name}**')
@@ -414,7 +414,7 @@ class Ticket(commands.Cog):
         ticket_owner = ticket_owner.replace('USERID: ', '')
         archive = ctx.guild.get_channel(729813211704066169)
         tuser = await self.bot.fetch_user(int(ticket_owner))
-        member = await ctx.guild.fetch_member(ctx.author.id)
+        member = ctx.guild.get_member(ctx.author.id)
         await ctx.channel.last_message.delete()
         if reason == None:
             def check_msg(m):

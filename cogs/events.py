@@ -187,7 +187,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        await searching.error(self, ctx, error)
+        await searching.error_event(self, ctx, error)
 
 def setup(bot):
     bot.add_cog(Events(bot))
