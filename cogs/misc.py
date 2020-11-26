@@ -66,60 +66,6 @@ class Misc(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 300.0, BucketType.user)
-    async def cleardata(self, ctx):
-        """ Clear all of your Quacky Data! """
-        msg = await ctx.send(f'Are you sure you want to do this, {ctx.author.mention}?\nThis will clear your error, donator, and special badge(s). __**THERE IS NO UNDO!**__')
-        checkmark = self.bot.get_emoji(678014104111284234)
-        redx = self.bot.get_emoji(678014058590502912)
-        await msg.add_reaction(checkmark)
-        await msg.add_reaction(redx)
-        def check(reaction, user):
-            if ctx.author == user:
-                if reaction.emoji == checkmark:
-                    return True
-                elif reaction.emoji == redx:
-                    return True
-                else:
-                    return False
-            else:
-                return False
-        try:
-            reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
-        except asyncio.TimeoutError:
-            return await msg.edit(content=f'~~{msg.content}~~\n\nYou took too long to react to the message!')
-        else:
-            if reaction.emoji == redx:
-                return await ctx.send(f'Ok, I won\'t clear your data.')
-
-        File = open('/root/Quacky/Files/badges.json').read()
-        data = json.loads(File)
-        error = data['error']
-        donator = data['donator']
-        special = data['special']
-        suggest = data['suggest']
-        early_supporter = data['early_supporter']
-        bug_hunter = data['bug_hunter']
-        for a in donator:
-            if a['id'] == ctx.author.id:
-                donator.remove(a)
-        if ctx.author.id in error:
-            error.remove(ctx.author.id)
-        if ctx.author.id in special:
-            special.remove(ctx.author.id)
-        if ctx.author.id in suggest:
-            suggest.remove(ctx.author.id)
-        if ctx.author.id in early_supporter:
-            early_supporter.remove(ctx.author.id)
-        if ctx.author.id in bug_hunter:
-            bug_hunter.remove(ctx.author.id)
-        with open('/root/Quacky/Files/badges.json', 'w') as f:
-            json.dump(data, f, indent=4)
-        guild = self.bot.get_guild()
-        ctx_member = await guild.fetch_member(ctx.author.id)
-        await ctx.send('<:check:678014104111284234> Cleared your Quacky Data!\nIf you would like to sync your roles with your badges do `!rankupdate`')
-
-    @commands.command()
-    @commands.cooldown(1, 300.0, BucketType.user)
     async def sapply(self, ctx):
         """ Apply for Support Team (Promotion of Being Helper) """
         redx = self.bot.get_emoji(678014058590502912)
