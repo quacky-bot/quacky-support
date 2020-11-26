@@ -8,6 +8,19 @@ def admin():
         return ctx.author.id == 345457928972533773 or ctx.author.id == 443217277580738571
     return commands.check(predicate)
 
+def mod():
+    async def predicate(ctx):
+        bot = ctx.bot
+        guild = bot.get_guild(665378018310488065)
+        mod = guild.get_role(665423380207370240)
+        admin = guild.get_role(665423523308634113)
+        member = guild.get_member(ctx.author.id)
+        if mod in member.roles or admin in member.roles:
+            return True
+        else:
+            return False
+    return commands.check(predicate)
+
 class Misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -278,7 +291,7 @@ class Misc(commands.Cog):
         await ctx.send(embed=embed)
 
     @partner.command(aliases=['sapprove', 'server-approve'])
-    @admin()
+    @mod()
     async def serverapprove(self, ctx, guildid: int, *, member):
         member = await searching.user(self, ctx, 'approve for server parntership', member)
         if isinstance(member, discord.Message):
@@ -295,7 +308,7 @@ class Misc(commands.Cog):
         await ctx.send(f'<:check:678014104111284234> Added **{guildid}** owned by {member.mention} to the Partner Program (Server).')
 
     @partner.command(aliases=['bapprove', 'bot-approve'])
-    @admin()
+    @mod()
     async def botapprove(self, ctx, botuserid: int, *, member):
         member = await searching.user(self, ctx, 'approve for bot parntership', member)
         if isinstance(member, discord.Message):
@@ -322,7 +335,7 @@ class Misc(commands.Cog):
 
     @partner.command()
     @commands.guild_only()
-    @admin()
+    @mod()
     async def send(self, ctx, title, *, message):
         embed = discord.Embed(colour=discord.Colour(16750848), description=message, title=title)
         if ctx.message.attachments != []:
