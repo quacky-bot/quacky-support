@@ -67,23 +67,24 @@ class Admin(commands.Cog):
         user = await searching.user(self, ctx, 'demote', user)
         if isinstance(user, discord.Message):
             return
+        trial_staff = ctx.guild.get_role(780837048600625162)
         helper = ctx.guild.get_role(690239278277591043)
         support = ctx.guild.get_role(729735292734406669)
         mod = ctx.guild.get_role(665423380207370240)
         staff = ctx.guild.get_role(665423057430511626)
         warn = ''
         if mod in user.roles:
-            await user.remove_roles(mod, reason=f'{ctx.author} - Demote Command\nReason: {reason}')
-            await user.add_roles(support, reason=f'{ctx.author} - Demote Command\nReason: {reason}')
+            await user.remove_roles(mod, reason=f'{ctx.author} - Demote Command • Reason: {reason}')
+            await user.add_roles(support, reason=f'{ctx.author} - Demote Command • Reason: {reason}')
             old_rank = 'Moderator'
             new_rank = 'Support Team Member'
         elif support in user.roles:
-            await user.remove_roles(support, reason=f'{ctx.author} - Demote Command\nReason: {reason}')
-            await user.add_roles(helper, reason=f'{ctx.author} - Demote Command\nReason: {reason}')
+            await user.remove_roles(support, reason=f'{ctx.author} - Demote Command • Reason: {reason}')
+            await user.add_roles(helper, reason=f'{ctx.author} - Demote Command • Reason: {reason}')
             old_rank = 'Support Team Member'
             new_rank = 'Helper'
-        elif helper in user.roles:
-            await user.remove_roles(staff, helper, reason=f'{ctx.author} - Demote Command\nReason: {reason}')
+        elif helper in user.roles or trial_staff in user.roles:
+            await user.remove_roles(staff, helper, trial_staff, reason=f'{ctx.author} - Demote Command • Reason: {reason}')
             embed = discord.Embed(title='You\'ve Been Demoted', description=f'Hello {user.name},\nSadly, the Quacky Administrators have decided to remove you from the Staff Team.\n**Reason:** {reason}', color=discord.Colour(0xC70039))
             embed.set_author(name='Quacky Bot Administrators', icon_url='https://quacky.js.org/files/avatar.png')
             try:
@@ -92,7 +93,7 @@ class Admin(commands.Cog):
             except discord.errors.HTTPException:
                 return await ctx.send(f'<:check:678014104111284234> Removed **{user.display_name}** from the Staff Team.\n:warning: I can\'t send DMs to {user.display_name}! Please make sure to notify them of their demotion.')
         elif staff in user.roles:
-            await user.remove_roles(staff, reason=f'{ctx.author} - Demote Command\nReason: {reason}')
+            await user.remove_roles(staff, reason=f'{ctx.author} - Demote Command • Reason: {reason}')
             return await ctx.send(f'<:check:678014104111284234> Removed the Staff Role from **{user.display_name}**.')
         else:
             return await ctx.send(f'<:redx:678014058590502912> **{user.display_name}** is not a Staff Member and cannot be demoted!')
@@ -112,6 +113,7 @@ class Admin(commands.Cog):
         user = await searching.user(self, ctx, 'promote', user)
         if isinstance(user, discord.Message):
             return
+        trial_staff = ctx.guild.get_role(780837048600625162)
         helper = ctx.guild.get_role(690239278277591043)
         support = ctx.guild.get_role(729735292734406669)
         mod = ctx.guild.get_role(665423380207370240)
@@ -123,11 +125,15 @@ class Admin(commands.Cog):
             new_rank = 'Mod'
             await user.add_roles(mod, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
             await user.remove_roles(helper, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
-            embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Moderator Rank!\n[Pleaese Read about Being a Moderator.](https://quacky.js.org/staff/promoted)\nThanks and Congradulations :smiley:')
+            embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Moderator!\n[Please Read about Being How to be a Moderator.](https://quacky.js.org/staff/moderator)\nThanks and Congradulations :smiley:')
         elif helper in user.roles:
             new_rank = 'Support Team'
             await user.add_roles(support, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
-            embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Support Team Rank!\n[Please Read about Managing Support Tickets](https://quacky.js.org/staff/tickets) and [Re-Read the Moderation Policy.](https://quacky.js.org/staff/moderation)\nThanks and Congradulations :smiley:')
+            embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Support Team!\n[Please Read about Being How to be a Support Team Member.](https://quacky.js.org/staff/support-team)\nThanks and Congradulations :smiley:')
+        elif trial_staff in user.roles:
+            new_rank = 'Helper'
+            await user.add_roles(support, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
+            embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Helper!\n[Please Read about Being How to be a Helper.](https://quacky.js.org/staff/helper)\nThanks and Congradulations :smiley:')
         elif staff in user.roles:
             await user.add_roles(helper, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
             return await ctx.send(f'<:check:678014104111284234> Added the Helper Role to **{user.display_name}**.')
