@@ -375,6 +375,67 @@ class Misc(commands.Cog):
     async def link(self, ctx):
         await ctx.send('You can find our partner message at: https://quacky.js.org/partner.txt')
 
+    @partner.command(aliases=['new'])
+    @commands.guild_only()
+    async def apply(self, ctx):
+        def react_check(reaction, user):
+            if ctx.author == user and reaction.emoji in ['\U0001f916', '\U0001f4e2']:
+                return True
+            return False
+        try:
+            msg = await ctx.author.send('Are you Partnering a Bot (:robot:) or a Server (:loudspeaker:)?')
+            await msg.add_reaction('\U0001f916')
+            await msg.add_reaction('\U0001f4e2')
+            await ctx.send(':mailbox_with_mail: Check your DMs!')
+            try:
+                reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=react_check)
+            except asyncio.TimeoutError:
+                return await ctx.author.send('<:redx:678014058590502912> You took too long to react to the message!')
+        except:
+            return await ctx.send('<:redx:678014058590502912> I cannot DM You!')
+        def check_msg(m):
+            if ctx.author == m.author and ctx.author.dm_channel == m.channel:
+                return True
+            else:
+                return False
+        embed = discord.Embed(title='Quacky Partnership Request', description=f'Thanks for wanting to Partner with Quacky!\nPlease send your Partner Message Here and a Moderator will review your reqeuest soon.', color=discord.Colour.blurple())
+        embed.set_author(name=str(ctx.author), icon_url=str(ctx.author.avatar_url))
+        if reaction.emoji == '\U0001f916':
+            await ctx.author.send('What is your Bot\'s User ID?')
+            try:
+                bot = await self.bot.wait_for('message', check=check_msg, timeout=300.0)
+            except asyncio.TimeoutError:
+                return await ctx.author.send('<:redx:678014058590502912> You took too long to answer the question!')
+            try:
+                bot = await self.bot.fetch_user(int(bot.content))
+            except:
+                return await ctx.author.send(f'<:redx:678014058590502912> That\'s not a valid userid!')
+            if bot.bot is False:
+                return await ctx.author.send(f'<:redx:678014058590502912> That\'s not a bot\'s userid!')
+            embed.set_footer(text=str(f'{bot.name} | {bot.id}'), icon_url=str(bot.avatar_url))
+        elif reaction.emoji == '\U0001f4e2':
+            await ctx.author.send('What is your Server\'s Invite Link?')
+            try:
+                invite = await self.bot.wait_for('message', check=check_msg, timeout=300.0)
+            except asyncio.TimeoutError:
+                return await ctx.author.send('<:redx:678014058590502912> You took too long to answer the question!')
+            try:
+                invite = await self.bot.fetch_invite(invite.content)
+            except discord.NotFound:
+                return await ctx.author.send(f'<:redx:678014058590502912> That\'s not a valid invite!')
+            embed.set_footer(text=str(f'{invite.guild.name} | discord.gg/{invite.code} ({invite.approximate_member_count} members)'), icon_url=str(invite.guild.icon_url))
+        member = ctx.guild.get_member(ctx.author.id)
+        support_role = ctx.guild.get_role(665423380207370240)
+        category = ctx.guild.get_channel(723971770289488013)
+        channel = await ctx.guild.create_text_channel(f'partner-{member.display_name}', category=category, reason=f'{ctx.author} ({ctx.author.id}) - Partner Ticket Creation', topic=f'USERID: {ctx.author.id}')
+        await channel.set_permissions(ctx.guild.default_role, read_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Creation')
+        await channel.set_permissions(member, read_messages=True, send_messages=True, manage_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Partner Ticket Creation')
+        await channel.set_permissions(support_role, read_messages=True, send_messages=True, reason=f'{ctx.author} ({ctx.author.id}) - Partner Ticket Creation')
+        embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
+        msg1 = await channel.send(embed=embed)
+        await ctx.author.send(f'<:check:678014104111284234> Please send your Partner Message in {channel.mention}, and a moderator will review your application soon.')
+        await channel.send(ctx.author.mention, delete_after=0.01, allowed_mentions=discord.AllowedMentions(users=True))
+
     @commands.command()
     async def privacy(self, ctx):
         await ctx.send('You can view Quacky Support\'s Privacy Policy at https://quacky.js.org/support-privacy')
