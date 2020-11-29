@@ -98,6 +98,14 @@ class Admin(commands.Cog):
         else:
             return await ctx.send(f'<:redx:678014058590502912> **{user.display_name}** is not a Staff Member and cannot be demoted!')
 
+        File = open('/root/Quacky/Files/misc.json').read()
+        data = json.loads(File)
+        for x in data['trial_staff']:
+            if x['id'] == user.id:
+                data['trial_staff'].remove(x)
+        with open('/root/Quacky/Files/misc.json', 'w') as f:
+            json.dump(data, f, indent=2)
+
         embed = discord.Embed(title='You\'ve Been Demoted', description=f'Hello {user.name},\nSadly, the Quacky Administrators have decided to demote you from {old_rank} to {new_rank}.\n**Reason:** {reason}', color=discord.Colour(0xC70039))
         embed.set_author(name='Quacky Bot Administrators', icon_url='https://quacky.js.org/files/avatar.png')
         try:
@@ -132,6 +140,14 @@ class Admin(commands.Cog):
             await user.add_roles(support, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
             embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Support Team!\n[Please Read about Being How to be a Support Team Member.](https://quacky.js.org/staff/support-team)\nThanks and Congradulations :smiley:')
         elif trial_staff in user.roles:
+            File = open('/root/Quacky/Files/misc.json').read()
+            data = json.loads(File)
+            for x in data['trial_staff']:
+                if x['id'] == user.id:
+                    data['trial_staff'].remove(x)
+                    with open('/root/Quacky/Files/misc.json', 'w') as f:
+                        json.dump(data, f, indent=2)
+
             new_rank = 'Helper'
             await user.add_roles(helper, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
             embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Helper!\n[Please Read about Being How to be a Helper.](https://quacky.js.org/staff/helper)\nThanks and Congradulations :smiley:')
@@ -140,6 +156,7 @@ class Admin(commands.Cog):
             return await ctx.send(f'<:check:678014104111284234> Added the Trial Staff Role to **{user.display_name}**.')
         else:
             return await ctx.send(f'<:redx:678014058590502912> {user.display_name} is not a Staff Member!')
+
         embed.set_author(name=f'Quacky Bot Administrators', icon_url=f'https://quacky.js.org/files/avatar.png')
         embed.set_image(url=f'https://quacky.js.org/files/eevee-evolve.gif')
         try:

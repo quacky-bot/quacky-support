@@ -452,7 +452,7 @@ class Misc(commands.Cog):
         """ Get a Custom Color Role (Donator Only) """
         await ctx.trigger_typing()
         guild = self.bot.get_guild(665378018310488065)
-        member = await guild.fetch_member(ctx.author.id)
+        member = guild.get_member(ctx.author.id)
         mega = guild.get_role(690234610462097504)
         if mega not in member.roles:
             return await ctx.send('<:redx:678014058590502912> You must be a MEGA Donator to use this command!\nYou can donate at: <https://quacky.js.org/donate>')
@@ -479,6 +479,22 @@ class Misc(commands.Cog):
         with open('/root/Support/Files/misc.json', 'w') as f:
             json.dump(data, f, indent=2)
         await ctx.send('<:check:678014104111284234> Created your Donator Role!')
+
+    @commands.command()
+    async def quota(self, ctx):
+        """ Check your Suggestion Quota Status (Trial Staff Only) """
+        guild = self.bot.get_guild(665378018310488065)
+        member = guild.get_member(ctx.author.id)
+        trial_staff = guild.get_role()# id
+        if trial_staff not in member.roles:
+            return await ctx.send('<:redx:678014058590502912> You must be a Trial Staff Member to use this command!')
+
+        File = open('/root/Quacky/Files/misc.json').read()
+        data = json.loads(File)
+        for x in data['trial_staff']:
+            if x['id'] == user.id:
+                return await ctx.send(f'You have made **{x["suggestions"]}/5** suggestions.\n:notepad_spiral: Some of these suggestions may not be approved yet, so your suggestion count may lower.')
+        await ctx.send(':warning: You do not have a Staff Database File. Contact an administrator immediately.')
 
 def setup(bot):
     bot.add_cog(Misc(bot))
