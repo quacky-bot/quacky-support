@@ -3,11 +3,6 @@ from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
 error_icon = 'https://cdn.discordapp.com/emojis/678014140203401246.png?v=1'
 
-def admin():
-    async def predicate(ctx):
-        return ctx.author.id == 345457928972533773 or ctx.author.id == 443217277580738571
-    return commands.check(predicate)
-
 def mod():
     async def predicate(ctx):
         bot = ctx.bot
@@ -236,6 +231,7 @@ class Misc(commands.Cog):
 
     @partner.command()
     async def bot(self, ctx):
+        """ Bot Partnership Requirements and Terms """
         msg = """By Becoming a Quacky Partner you agree to the [Quacky Partner Terms.](https://quacky.js.org/partner-bterms)
         You Discord Bot also meet the following requirements:
         > - Your Bot is in at least 100 Real Servers.
@@ -250,6 +246,7 @@ class Misc(commands.Cog):
 
     @partner.command()
     async def server(self, ctx):
+        """ Server Partnership Requirements and Terms """
         msg = """By Becoming a Quacky Partner you agree to the [Quacky Partner Terms.](https://quacky.js.org/partner-sterms)
         Your Discord Server also meet the following requirements:
         > - Your Server has at least 250 Real Human Members.
@@ -264,6 +261,7 @@ class Misc(commands.Cog):
 
     @partner.command()
     async def terms(self, ctx):
+        """ Parntership Terms """
         msg = """There are 2 Quacky Partner Terms, one for bots and one for servers.
         You can read the Quacky Partner Terms for Discord Servers [here.](https://quacky.js.org/partner-sterms)
         You can read the Quacky Partner Terms for Discord Bots [here.](https://quacky.js.org/partner-bterms)"""
@@ -272,6 +270,7 @@ class Misc(commands.Cog):
 
     @partner.command(aliases=['bot-perks', 'bperks'])
     async def botperks(self, ctx):
+        """ Perks for Being a Bot Partner """
         msg = """Currently, as a Discord Bot Partner you get the following perks:
         > - A Special Badge on your Profile
         > - A Special Badge for your Bot's Profile
@@ -282,6 +281,7 @@ class Misc(commands.Cog):
 
     @partner.command(aliases=['server-perks', 'sperks'])
     async def serverperks(self, ctx):
+        """ Perks for Being a Server Partner """
         msg = """Currently, as a Discord Server Partner you get the following perks:
         > - A Special Badge on your Profile
         > - A Special Badge on your Server's -server command!
@@ -293,6 +293,7 @@ class Misc(commands.Cog):
     @partner.command(aliases=['sapprove', 'server-approve'])
     @mod()
     async def serverapprove(self, ctx, guildid: int, *, member):
+        """ Approve a Server Partnership """
         member = await searching.user(self, ctx, 'approve for server parntership', member)
         if isinstance(member, discord.Message):
             return
@@ -310,6 +311,7 @@ class Misc(commands.Cog):
     @partner.command(aliases=['bapprove', 'bot-approve'])
     @mod()
     async def botapprove(self, ctx, botuserid: int, *, member):
+        """ Approve a Bot Partnership """
         member = await searching.user(self, ctx, 'approve for bot parntership', member)
         if isinstance(member, discord.Message):
             return
@@ -326,6 +328,7 @@ class Misc(commands.Cog):
 
     @partner.command(aliases=['msg'])
     async def message(self, ctx):
+        """ How to Send your Partner Message """
         msg = """To send your partner message you can either send it here in a codeblock (\`\`\`) or by uploading it to [pastebin](https://pastebin.com)
         You can find our partner message to post in your server [here.](https://quacky.js.org/partner.txt)
         Once you post our partner message in your server, one of our admins will send your advertisement in our partner channel (<#741359245064405073>), give you the <@&741701822032379944> role, and close the ticket.
@@ -337,6 +340,7 @@ class Misc(commands.Cog):
     @commands.guild_only()
     @mod()
     async def send(self, ctx, title, *, message):
+        """ Send a Partnership Message in #partners """
         embed = discord.Embed(colour=discord.Colour(16750848), description=message, title=title)
         if ctx.message.attachments != []:
             image = ctx.message.attachments.pop(0)
@@ -373,11 +377,13 @@ class Misc(commands.Cog):
 
     @partner.command()
     async def link(self, ctx):
+        """ Show our Partnership Message """
         await ctx.send('You can find our partner message at: https://quacky.js.org/partner.txt')
 
     @partner.command(aliases=['new'])
     @commands.guild_only()
     async def apply(self, ctx):
+        """ Apply for a Server/Bot Partnership """
         def react_check(reaction, user):
             if ctx.author == user and reaction.emoji in ['\U0001f916', '\U0001f4e2']:
                 return True
@@ -438,6 +444,7 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def privacy(self, ctx):
+        """ Read Quacky Support's Privacy Policy """
         await ctx.send('You can view Quacky Support\'s Privacy Policy at https://quacky.js.org/support-privacy')
 
     @commands.command()

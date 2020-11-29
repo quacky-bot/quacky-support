@@ -110,6 +110,7 @@ class Admin(commands.Cog):
     @admin()
     @commands.guild_only()
     async def spromote(self, ctx, *, user):
+        """ Promote a Staff Member! """
         user = await searching.user(self, ctx, 'promote', user)
         if isinstance(user, discord.Message):
             return
@@ -132,11 +133,11 @@ class Admin(commands.Cog):
             embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Support Team!\n[Please Read about Being How to be a Support Team Member.](https://quacky.js.org/staff/support-team)\nThanks and Congradulations :smiley:')
         elif trial_staff in user.roles:
             new_rank = 'Helper'
-            await user.add_roles(support, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
+            await user.add_roles(helper, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
             embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Helper!\n[Please Read about Being How to be a Helper.](https://quacky.js.org/staff/helper)\nThanks and Congradulations :smiley:')
         elif staff in user.roles:
-            await user.add_roles(helper, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
-            return await ctx.send(f'<:check:678014104111284234> Added the Helper Role to **{user.display_name}**.')
+            await user.add_roles(trial_staff, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
+            return await ctx.send(f'<:check:678014104111284234> Added the Trial Staff Role to **{user.display_name}**.')
         else:
             return await ctx.send(f'<:redx:678014058590502912> {user.display_name} is not a Staff Member!')
         embed.set_author(name=f'Quacky Bot Administrators', icon_url=f'https://quacky.js.org/files/avatar.png')

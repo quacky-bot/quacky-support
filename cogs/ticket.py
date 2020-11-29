@@ -254,7 +254,7 @@ class Ticket(commands.Cog):
             await tuser.send(f'Your ticket has been closed by **{member.display_name}** with reason **{reason}**\nYou can read the chat history here: {msg.jump_url}')
         except discord.errors.HTTPException:
             await ctx.send(f'{tuser.mention} your ticket has been closed by {member.display_name} with reason {reason}', delete_after=5, allowed_mentions=discord.AllowedMentions(users=True))
-        if ctx.channel.name.startswith('staff-'):
+        if ctx.channel.name.startswith(('staff-', 'break-')):
             await ctx.channel.edit(category=archive, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Close Command', sync_permissions=False, position=0)
         else:
             await ctx.channel.edit(category=archive, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Close Command', sync_permissions=True, position=0)
@@ -335,6 +335,8 @@ class Ticket(commands.Cog):
     @rank('mod')
     async def transfer(self, ctx, *, member):
         """ Make Someone Else the Ticket Owner of a Ticket """
+        if ctx.channel.category_id != 723971770289488013:
+            return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Support Ticket.')
         user = await searching.user(self, ctx, 'transfer the ticket to', member)
         if isinstance(user, discord.Message):
             return
@@ -410,6 +412,8 @@ class Ticket(commands.Cog):
     @rank('admin')
     async def tdelete(self, ctx, *, reason=None):
         """ Delete a Ticket """
+        if ctx.channel.category_id != 723971770289488013:
+            return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Support Ticket.')
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
         archive = ctx.guild.get_channel(729813211704066169)
