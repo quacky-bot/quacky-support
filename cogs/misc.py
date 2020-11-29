@@ -492,7 +492,7 @@ class Misc(commands.Cog):
         File = open('/root/Quacky/Files/misc.json').read()
         data = json.loads(File)
         for x in data['trial_staff']:
-            if x['id'] == user.id:
+            if x['id'] == ctx.author.id:
                 return await ctx.send(f'You have made **{x["suggestions"]}/5** suggestions.\n:notepad_spiral: Some of these suggestions may not be approved yet, so your suggestion count may lower.')
         await ctx.send(':warning: You do not have a Staff Database File. Contact an administrator immediately.')
 

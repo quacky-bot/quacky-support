@@ -464,7 +464,7 @@ class Ticket(commands.Cog):
         category = ctx.guild.get_channel(723971770289488013)
         tuser = self.bot.get_user(int(ticket_owner))
         member = ctx.guild.get_member(ctx.author.id)
-        await channel.set_permissions(tuser, read_messages=True, send_messages=True, manage_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Reopen Ticket Command')
+        await ctx.channel.set_permissions(tuser, read_messages=True, send_messages=True, manage_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Reopen Ticket Command')
         await ctx.channel.edit(category=category, reason=f'{ctx.author} ({ctx.author.id}) - Reopen Ticket Command')
         await ctx.send(f':unlock: Ticket Reopened by **{member.display_name}**')
         await ctx.message.delete()
