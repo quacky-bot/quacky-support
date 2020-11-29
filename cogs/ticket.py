@@ -102,7 +102,7 @@ class Ticket(commands.Cog):
         Ticket Categories are Report, Question, and Other.
         To prevent spam, you can only make a ticket once every 5 minutes. """
         guild = self.bot.get_guild(665378018310488065)
-        await ctx.channel.last_message.delete()
+        await ctx.message.delete()
         mod = guild.get_role(665423380207370240)
         support_role = guild.get_role(729735292734406669)
         admin = guild.get_role(665423523308634113)
@@ -222,7 +222,7 @@ class Ticket(commands.Cog):
         overwrite = discord.PermissionOverwrite()
         overwrite.send_messages = False
         overwrite.read_messages = True
-        await ctx.channel.last_message.delete()
+        await ctx.message.delete()
         if reason == None:
             def check_msg(m):
                 if ctx.author == m.author and ctx.channel == m.channel:
@@ -272,7 +272,6 @@ class Ticket(commands.Cog):
         if isinstance(user, discord.Message):
             return
         ctx_member = ctx.guild.get_member(ctx.author.id)
-        starting_msg = ctx.channel.last_message
         if discord.PermissionOverwrite.is_empty(ctx.channel.overwrites_for(user)) == False:
             return await ctx.send('<:redx:678014058590502912> You can\'t add someone to the ticket if they\'ve already been added!')
         await ctx.channel.set_permissions(user, read_messages=True)
@@ -280,7 +279,7 @@ class Ticket(commands.Cog):
             await user.send(f'<:join:659881573012865084> You\'ve been added to **{ctx.channel.mention}** by **{ctx_member.display_name}.**')
         except:
             pass
-        await starting_msg.delete()
+        await ctx.message.delete()
         await ctx.send(f'<:check:678014104111284234> **{ctx_member.display_name}** added **{user.display_name}** to the channel.')
 
     @commands.command(usage='<user>')
@@ -300,7 +299,6 @@ class Ticket(commands.Cog):
         support = ctx.guild.get_role(729735292734406669)
         quacky_bot_role = ctx.guild.get_role(665409797885263882)
         ctx_member = ctx.guild.get_member(ctx.author.id)
-        starting_msg = ctx.channel.last_message
         if user == tmember:
             return await ctx.send(f'<:redx:678014058590502912> You can\'t remove the Ticket Owner from the ticket!')
         elif support in user.roles:
@@ -310,7 +308,7 @@ class Ticket(commands.Cog):
         elif discord.PermissionOverwrite.is_empty(ctx.channel.overwrites_for(user)):
             return await ctx.send(f'<:redx:678014058590502912> {user.display_name} hasn\'t been added to the Ticket!')
         await ctx.channel.set_permissions(user, overwrite=None)
-        await starting_msg.delete()
+        await ctx.message.delete()
         await ctx.send(f'<:check:678014104111284234> **{ctx_member.display_name}** removed **{user.display_name}** from the channel.')
 
     @commands.command()
@@ -325,10 +323,9 @@ class Ticket(commands.Cog):
         tuser = await self.bot.fetch_user(int(ticket_owner))
         tmember = ctx.guild.get_member(int(ticket_owner))
         ctx_member = ctx.guild.get_member(ctx.author.id)
-        starting_msg = ctx.channel.last_message
         await ctx.channel.edit(name=f'{prefix}-{tmember.display_name}')
         await ctx.send(f'<:check:678014104111284234> **{ctx_member.display_name}** renamed the channel to **{ctx.channel.name}**')
-        await starting_msg.delete()
+        await ctx.message.delete()
 
     @commands.command(aliases=['transferowner', 'ownertransfer'], usage='<user>')
     @commands.guild_only()
@@ -353,7 +350,6 @@ class Ticket(commands.Cog):
             NotInServer = False
         ctx_member = ctx.guild.get_member(int(ctx.author.id))
         admin = ctx.guild.get_role(665423523308634113)
-        starting_msg = ctx.channel.last_message
         # STARTING BLACKLIST CHECK
         blacklisted = False
         for x in ticket_blacklist:
@@ -389,7 +385,7 @@ class Ticket(commands.Cog):
                 elif reaction.emoji == redx:
                     await ctx.send('<:check:678014104111284234> Not adding them to the Ticket.', delete_after=5)
                     await confirm_msg.delete()
-                    return await starting_msg.delete()
+                    return await ctx.message.delete()
         await ctx.channel.set_permissions(user, read_messages=True, send_messages=True, manage_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Transferring Ticket Ownership')
         if NotInServer == False:
             await ctx.channel.set_permissions(tuser, read_messages=True, send_messages=None, manage_messages=None, reason=f'{ctx.author} ({ctx.author.id}) - Transferring Ticket Ownership')
@@ -405,7 +401,7 @@ class Ticket(commands.Cog):
                 await ctx.send(f'{user.mention}, you now own {ctx.channel.name}!', delete_after=5)
         await ctx.channel.edit(topic=f'USERID: {user.id}', name=f'ticket-{user.display_name}', reason=f'{ctx.author} ({ctx.author.id}) - Transferring Ticket Ownership')
         await ctx.send(f'<:check:678014104111284234> **{ctx_member.display_name}** Transferred Ticket Ownership from {tuser.display_name} to **{user.display_name}**')
-        await starting_msg.delete()
+        await ctx.message.delete()
 
     @commands.command(aliases=['deletet', 'ticketdelete', 'deleteticket', 'dticket'])
     @commands.guild_only()
@@ -419,7 +415,7 @@ class Ticket(commands.Cog):
         archive = ctx.guild.get_channel(729813211704066169)
         tuser = await self.bot.fetch_user(int(ticket_owner))
         member = ctx.guild.get_member(ctx.author.id)
-        await ctx.channel.last_message.delete()
+        await ctx.message.delete()
         if reason == None:
             def check_msg(m):
                 if ctx.author == m.author and ctx.channel == m.channel:
@@ -455,6 +451,23 @@ class Ticket(commands.Cog):
         logschat = ctx.guild.get_channel(665427079881555978)
         await logschat.send(f'**{member.display_name}** Just Deleted **{ctx.channel.name}**!\n**Owner:** {tuser.mention} ({tuser.id})\n**Reason:** {reason}', file=file)
         await ctx.channel.delete(reason=f'{member.display_name} - Deleted Ticket with Reason {reason}')
+
+    @commands.command()
+    @commands.guild_only()
+    @rank('admin')
+    async def reopen(self, ctx):
+        """ Reopen a Ticket """
+        if ctx.channel.category_id != 729813211704066169:
+            return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Closed Support Ticket.')
+        ticket_owner = ctx.channel.topic
+        ticket_owner = ticket_owner.replace('USERID: ', '')
+        category = ctx.guild.get_channel(723971770289488013)
+        tuser = self.bot.get_user(int(ticket_owner))
+        member = ctx.guild.get_member(ctx.author.id)
+        await channel.set_permissions(tuser, read_messages=True, send_messages=True, manage_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Reopen Ticket Command')
+        await ctx.channel.edit(category=category, reason=f'{ctx.author} ({ctx.author.id}) - Reopen Ticket Command')
+        await ctx.send(f':unlock: Ticket Reopened by **{member.display_name}**')
+        await ctx.message.delete()
 
 def setup(bot):
     bot.add_cog(Ticket(bot))
