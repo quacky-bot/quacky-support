@@ -485,7 +485,7 @@ class Misc(commands.Cog):
         """ Check your Suggestion Quota Status (Trial Staff Only) """
         guild = self.bot.get_guild(665378018310488065)
         member = guild.get_member(ctx.author.id)
-        trial_staff = guild.get_role()# id
+        trial_staff = guild.get_role(780837048600625162)
         if trial_staff not in member.roles:
             return await ctx.send('<:redx:678014058590502912> You must be a Trial Staff Member to use this command!')
 
