@@ -82,6 +82,9 @@ class Ticket(commands.Cog):
                 dm = True
                 subject = msg.content
 
+        if subject.lower() == 'cance':
+            await ctx.send(f'<:redx:678014058590502912> Cancelled your Support Ticket.')
+
         support_role = payload.member.guild.get_role(729735292734406669)
         category = payload.member.guild.get_channel(723971770289488013)
         channel = await payload.member.guild.create_text_channel(f'ticket-{payload.member.display_name}', category=category, reason=f'{payload.member} ({payload.member.id}) - Ticket Creation', topic=f'USERID: {payload.member.id}')
@@ -107,7 +110,7 @@ class Ticket(commands.Cog):
         support_role = guild.get_role(729735292734406669)
         admin = guild.get_role(665423523308634113)
         staff_role = guild.get_role(665423057430511626)
-        member1 = guild.fetch_member(ctx.author.id)
+        member1 = guild.get_member(ctx.author.id)
         category = self.bot.get_channel(723971770289488013)
         staff_request = False
         if subject == None:
