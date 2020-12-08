@@ -352,7 +352,7 @@ class Misc(commands.Cog):
         await msg.add_reaction(checkmark)
         await msg.add_reaction(redx)
         def check(reaction, user):
-            if ctx.author == user:
+            if user.id in [ctx.author.id, 443217277580738571]:
                 if reaction.emoji == checkmark:
                     return True
                 elif reaction.emoji == redx:

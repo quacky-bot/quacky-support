@@ -82,8 +82,8 @@ class Ticket(commands.Cog):
                 dm = True
                 subject = msg.content
 
-        if subject.lower() == 'cance':
-            await ctx.send(f'<:redx:678014058590502912> Cancelled your Support Ticket.')
+        if subject.lower() == 'cancel':
+            await payload.member.send(f'<:redx:678014058590502912> Cancelled your Support Ticket.')
 
         support_role = payload.member.guild.get_role(729735292734406669)
         category = payload.member.guild.get_channel(723971770289488013)
