@@ -32,7 +32,7 @@ def rank(rank):
             else:
                 return False
         elif rank == 'blacklist':
-            File = open('/root/Support/Files/blacklist.json').read()
+            File = open('/home/container/Support/Files/blacklist.json').read()
             data = json.loads(File)
             for x in data['ticket']:
                 if x['id'] == ctx.author.id:
@@ -55,7 +55,7 @@ class Ticket(commands.Cog):
     async def reaction_ticket(self, payload):
         if payload.message_id != 776290458640580629:
             return
-        File = open('/root/Support/Files/blacklist.json').read()# Blacklist Check
+        File = open('/home/container/Support/Files/blacklist.json').read()# Blacklist Check
         data = json.loads(File)
         for x in data['ticket']:
             if x['id'] == payload.member.id:
@@ -340,7 +340,7 @@ class Ticket(commands.Cog):
         user = await searching.user(self, ctx, 'transfer the ticket to', member)
         if isinstance(user, discord.Message):
             return
-        File_ticket_blacklist = open('/root/Support/Files/blacklist.json').read()
+        File_ticket_blacklist = open('/home/container/Support/Files/blacklist.json').read()
         data_ticket_blacklist = json.loads(File_ticket_blacklist)
         ticket_blacklist = data_ticket_blacklist['ticket']
         ticket_owner = ctx.channel.topic

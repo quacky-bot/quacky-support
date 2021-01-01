@@ -35,13 +35,13 @@ class Misc(commands.Cog):
         """ Updates your Roles in the Quacky Support Server to Match your Quacky Badges. """
         guild = self.bot.get_guild(665378018310488065)
         member = await guild.fetch_member(ctx.author.id)
-        File = open('/root/Quacky/Files/badges.json').read()
+        File = open('/home/container/Quacky/Files/badges.json').read()
         data = json.loads(File)
         rank = 0
         for a in data['donator']:
             if a['id'] == member.id:
                 rank = a['rank']
-        PFile = open('/root/Quacky/Files/partner.json').read()
+        PFile = open('/home/container/Quacky/Files/partner.json').read()
         pdata = json.loads(PFile)
         for x in pdata['server']:
             if x['owner'] == member.id:
@@ -84,7 +84,7 @@ class Misc(commands.Cog):
         member = await guild.fetch_member(ctx.author.id)
         if support_team_role in member.roles:
             return await ctx.send('<:redx:678014058590502912> You\'re already a Support Team Member!')
-        File = open('/root/Quacky/Files/misc.json').read()
+        File = open('/home/container/Quacky/Files/misc.json').read()
         data = json.loads(File)
         if ctx.author.id not in data['sapply']:
             return await ctx.send('<:redx:678014058590502912> You\'re not eligible to apply for Support Team.')
@@ -221,7 +221,7 @@ class Misc(commands.Cog):
         await admin_msg.add_reaction(redx)
         await ctx.author.send(f'<:check:678014104111284234> Submitted your Application!\nYou will be DM\'d if your application is approved or denied.')
         data['sapply'].remove(ctx.author.id)
-        with open('/root/Quacky/Files/misc.json', 'w') as f:
+        with open('/home/container/Quacky/Files/misc.json', 'w') as f:
             json.dump(data, f, indent=4)
 
     @commands.group(invoke_without_command=True)
@@ -300,11 +300,11 @@ class Misc(commands.Cog):
         quacky_guild = self.bot.get_guild(665378018310488065)
         partner_role = quacky_guild.get_role(741701822032379944)
         await member.add_roles(partner_role, reason=f'{ctx.author} ({ctx.author.id}) - Approved Server Partnership')
-        File = open('/root/Quacky/Files/partner.json').read()
+        File = open('/home/container/Quacky/Files/partner.json').read()
         data = json.loads(File)
         y = {"guild": guildid, "owner": member.id}
         data['server'].append(y)
-        with open('/root/Quacky/Files/partner.json', 'w') as f:
+        with open('/home/container/Quacky/Files/partner.json', 'w') as f:
             json.dump(data, f, indent=4)
         await ctx.send(f'<:check:678014104111284234> Added **{guildid}** owned by {member.mention} to the Partner Program (Server).')
 
@@ -318,11 +318,11 @@ class Misc(commands.Cog):
         quacky_guild = self.bot.get_guild(665378018310488065)
         partner_role = quacky_guild.get_role(741701822032379944)
         await member.add_roles(partner_role, reason=f'{ctx.author} ({ctx.author.id}) - Approved Bot Partnership')
-        File = open('/root/Quacky/Files/partner.json').read()
+        File = open('/home/container/Quacky/Files/partner.json').read()
         data = json.loads(File)
         y = {"bot": botuserid, "owner": member.id}
         data['bot'].append(y)
-        with open('/root/Quacky/Files/partner.json', 'w') as f:
+        with open('/home/container/Quacky/Files/partner.json', 'w') as f:
             json.dump(data, f, indent=4)
         await ctx.send(f'<:check:678014104111284234> Added **{botuserid}** owned by {member.mention} to the Partner Program (Bot).')
 
@@ -464,7 +464,7 @@ class Misc(commands.Cog):
             embed.set_thumbnail(url=f"{error_icon}")
             embed.set_footer(text='If you need help please do the -support command.')
             return await ctx.send(embed=embed)
-        File = open('/root/Support/Files/misc.json').read()
+        File = open('/home/container/Support/Files/misc.json').read()
         data = json.loads(File)
         for x in data['roles']:
             if x['user'] == ctx.author.id:
@@ -476,7 +476,7 @@ class Misc(commands.Cog):
         boost_role = guild.get_role(736007066556039170)
         await role.edit(position=boost_role.position - 1, reason=f'{ctx.author} ({ctx.author.id}) - Custom Donator Role')
         data['roles'].append({'user': ctx.author.id, 'role': role.id})
-        with open('/root/Support/Files/misc.json', 'w') as f:
+        with open('/home/container/Support/Files/misc.json', 'w') as f:
             json.dump(data, f, indent=2)
         await ctx.send('<:check:678014104111284234> Created your Donator Role!')
 
@@ -489,7 +489,7 @@ class Misc(commands.Cog):
         if trial_staff not in member.roles:
             return await ctx.send('<:redx:678014058590502912> You must be a Trial Staff Member to use this command!')
 
-        File = open('/root/Quacky/Files/misc.json').read()
+        File = open('/home/container/Quacky/Files/misc.json').read()
         data = json.loads(File)
         for x in data['trial_staff']:
             if x['id'] == ctx.author.id:

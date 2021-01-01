@@ -43,12 +43,12 @@ class Admin(commands.Cog):
         user = await searching.user(self, ctx, 'give access to apply for Support Team', user)
         if isinstance(user, discord.Message):
             return
-        File = open('/root/Quacky/Files/misc.json').read()
+        File = open('/home/container/Quacky/Files/misc.json').read()
         data = json.loads(File)
         if user.id in data['sapply']:
             return await ctx.send('<:redx:678014058590502912> **{user.display_name}** was already eligible to be a Support Team member!')
         data['sapply'].append(user.id)
-        with open('/root/Quacky/Files/misc.json', 'w') as f:
+        with open('/home/container/Quacky/Files/misc.json', 'w') as f:
             json.dump(data, f, indent=4)
         embed = discord.Embed(title='You\'ve Been Promoted!', description=f'Hello {user.name} :tada:\nYou now have the chance to Apply to be a Support Team Member!\nIf you would like to apply DM Me the `!sapply` command and we will begin the application process.', color=discord.Colour(0x00BDFF))
         embed.set_author(name='Quacky Bot Administrators', icon_url='https://quacky.js.org/files/avatar.png')
@@ -98,12 +98,12 @@ class Admin(commands.Cog):
         else:
             return await ctx.send(f'<:redx:678014058590502912> **{user.display_name}** is not a Staff Member and cannot be demoted!')
 
-        File = open('/root/Quacky/Files/misc.json').read()
+        File = open('/home/container/Quacky/Files/misc.json').read()
         data = json.loads(File)
         for x in data['trial_staff']:
             if x['id'] == user.id:
                 data['trial_staff'].remove(x)
-        with open('/root/Quacky/Files/misc.json', 'w') as f:
+        with open('/home/container/Quacky/Files/misc.json', 'w') as f:
             json.dump(data, f, indent=2)
 
         embed = discord.Embed(title='You\'ve Been Demoted', description=f'Hello {user.name},\nSadly, the Quacky Administrators have decided to demote you from {old_rank} to {new_rank}.\n**Reason:** {reason}', color=discord.Colour(0xC70039))
@@ -140,12 +140,12 @@ class Admin(commands.Cog):
             await user.add_roles(support, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
             embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Support Team!\n[Please Read about Being How to be a Support Team Member.](https://quacky.js.org/staff/support-team)\nThanks and Congradulations :smiley:')
         elif trial_staff in user.roles:
-            File = open('/root/Quacky/Files/misc.json').read()
+            File = open('/home/container/Quacky/Files/misc.json').read()
             data = json.loads(File)
             for x in data['trial_staff']:
                 if x['id'] == user.id:
                     data['trial_staff'].remove(x)
-                    with open('/root/Quacky/Files/misc.json', 'w') as f:
+                    with open('/home/container/Quacky/Files/misc.json', 'w') as f:
                         json.dump(data, f, indent=2)
 
             new_rank = 'Helper'
@@ -177,10 +177,10 @@ class Admin(commands.Cog):
         msg = await channel.send(embed=embed)
         await msg.pin()
         await msg.add_reaction(emoji)
-        File = open('/root/Support/Files/misc.json').read()
+        File = open('/home/container/Support/Files/misc.json').read()
         data = json.loads(File)
         data['activity'] = [msg.id, f'{(datetime.datetime.now() + datetime.timedelta(days=2)).strftime("%m/%d %H:%M")}']
-        with open('/root/Support/Files/misc.json', 'w') as f:
+        with open('/home/container/Support/Files/misc.json', 'w') as f:
             json.dump(data, f, indent=2)
         if ctx.channel != channel:
             await ctx.message.add_reaction(emoji)

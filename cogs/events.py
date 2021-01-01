@@ -33,7 +33,7 @@ class Events(commands.Cog):
     async def activity_test(self):
         """ Sends the Results of Activity Tests """
         await self.bot.wait_until_ready()
-        File = open('/root/Support/Files/misc.json').read()
+        File = open('/home/container/Support/Files/misc.json').read()
         data = json.loads(File)
         if data['activity'] != []:
             if datetime.datetime.strptime(data['activity'][1], "%m/%d %H:%M") <= datetime.datetime.strptime(datetime.datetime.now().strftime("%m/%d %H:%M"), "%m/%d %H:%M"):
@@ -64,7 +64,7 @@ class Events(commands.Cog):
                 await msg.unpin()
                 await msg.clear_reactions()
                 data['activity'] = []
-                with open('/root/Support/Files/misc.json', 'w') as f:
+                with open('/home/container/Support/Files/misc.json', 'w') as f:
                     json.dump(data, f, indent=2)
 
     @commands.Cog.listener()
@@ -72,13 +72,13 @@ class Events(commands.Cog):
         guild = member.guild
         if guild.id == 665378018310488065:
             # Doing Rank Check
-            File = open('/root/Quacky/Files/badges.json').read()
+            File = open('/home/container/Quacky/Files/badges.json').read()
             data = json.loads(File)
             rank = 0
             for a in data['donator']:
                 if a['id'] == member.id:
                     rank = a['rank']
-            PFile = open('/root/Quacky/Files/partner.json').read()
+            PFile = open('/home/container/Quacky/Files/partner.json').read()
             pdata = json.loads(PFile)
             for x in pdata['server']:
                 if x['owner'] == member.id:
@@ -110,39 +110,39 @@ class Events(commands.Cog):
             # Sending Join Message
             if member.bot == True or member.id == 475117152106446849:
                 return
-            File = open('/root/Quacky/Files/misc.json').read()
+            File = open('/home/container/Quacky/Files/misc.json').read()
             data = json.loads(File)
             channel = guild.get_channel(665378018809741324)
             msg = await channel.send(f'<@&750436218755350568>, Welcome **{member.name}** to the Quacky Support Server <:Quacky:665378357021638656>', allowed_mentions=discord.AllowedMentions(roles=True))
             data['member'] = msg.id
-            with open('/root/Quacky/Files/misc.json', 'w') as f:
+            with open('/home/container/Quacky/Files/misc.json', 'w') as f:
                 json.dump(data, f, indent=4)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         guild = member.guild
         if guild.id == 665378018310488065:
-            File = open('/root/Quacky/Files/partner.json').read()# PARTNER ALERTS
+            File = open('/home/container/Quacky/Files/partner.json').read()# PARTNER ALERTS
             data = json.loads(File)
             adminchat = guild.get_channel(665427384899600395)
             for x in data['bot']:
                 if x['owner'] == member.id:
                     await adminchat.send(f'<a:siren:493542252891734016> {member} ({member.id}) just left while under Bot Partnership.')
 
-            File = open('/root/Support/Files/misc.json').read()# DELETE CUSTOM ROLE
+            File = open('/home/container/Support/Files/misc.json').read()# DELETE CUSTOM ROLE
             data = json.loads(File)
             for x in data['roles']:
                 if x['user'] == member.id:
                     role = guild.get_role(x['role'])
                     await role.delete()
                     data['roles'].remove(x)
-                    with open('/root/Support/Files/misc.json', 'w') as f:
+                    with open('/home/container/Support/Files/misc.json', 'w') as f:
                         json.dump(data, f, indent=2)
 
             if member.bot == True or member.id == 475117152106446849:# LEFT SERVER ALERTS
                 return
             channel = guild.get_channel(665378018809741324)
-            File = open('/root/Quacky/Files/misc.json', 'r').read()
+            File = open('/home/container/Quacky/Files/misc.json', 'r').read()
             data = json.loads(File)
             File = data['member']
             msg = await channel.fetch_message(int(File))
@@ -164,12 +164,12 @@ class Events(commands.Cog):
         mvp = guild.get_role(690234421294530657)
         vip = guild.get_role(665423079454801930)
         donatorchat = guild.get_channel(665426877841670166)
-        File = open('/root/Quacky/Files/badges.json').read()
+        File = open('/home/container/Quacky/Files/badges.json').read()
         data = json.loads(File)
         if booster in roles:
             y = {"id": after.id, "rank": 2}
             data['donator'].append(y)
-            with open('/root/Quacky/Files/badges.json', 'w') as f:
+            with open('/home/container/Quacky/Files/badges.json', 'w') as f:
                 json.dump(data, f, indent=4)
             await after.add_roles(mvp, reason='Boosted the Quacky Support Server')
             await donatorchat.send(f'<:join:659881573012865084> {after.mention} is now a Booster!')
@@ -177,7 +177,7 @@ class Events(commands.Cog):
             for x in data['donator']:
                 if x.id == after.id:
                     data['donator'].remove(x)
-            with open('/root/Quacky/Files/badges.json', 'w') as f:
+            with open('/home/container/Quacky/Files/badges.json', 'w') as f:
                 json.dump(data, f, indent=4)
             await after.remove_roles(mvp, reason='No longer Boosting the Quacky Support Server')
             await donatorchat.send(f'<a:RIPBlob:478001829397921824> {after.mention} is no longer a Booster!')
