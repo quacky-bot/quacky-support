@@ -16,6 +16,11 @@ def mod():
             return False
     return commands.check(predicate)
 
+def admin():
+    async def predicate(ctx):
+        return ctx.author.id == 345457928972533773 or ctx.author.id == 443217277580738571
+    return commands.check(predicate)
+
 class Misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -157,7 +162,7 @@ class Misc(commands.Cog):
             await asyncio.sleep(2)
             await ctx.author.send('Sure, 1 second.')
             await asyncio.sleep(10)
-        await ctx.author.send(f'{ctx.author.mention} here you go https://quacky.js.org/files/support_example.png')
+        await ctx.author.send(f'{ctx.author.mention} here you go https://quacky.xyz/files/support_example.png')
         try:
             msg5 = await self.bot.wait_for('message', check=check_msg, timeout=300.0)
         except asyncio.TimeoutError:
@@ -185,7 +190,7 @@ class Misc(commands.Cog):
         except asyncio.TimeoutError:
             return await ctx.author.send('<:redx:678014058590502912>  You took too long to answer the question!')
         else:
-            embed_description = f'__**Question - Apply for Staff**__\n**Quacky:** how do i apply for staff\n**You:** {msg3.content}\n__**Report - DM Advertising**__\n**Quacky:** hi DuckMasterAl was dm advertising me\n**You:** {msg4.content}\n**Quacky:** Ok, here you go [Image](https://quacky.js.org/files/support_example.png)\n**You:** {msg5.content}\n__**Other - Your bot sucks**__\n**Quacky:** ur box sux\n**You:** {msg6.content}\n__**Question - How do I setup a mod-log?**__\n**You:** {msg7.content}'
+            embed_description = f'__**Question - Apply for Staff**__\n**Quacky:** how do i apply for staff\n**You:** {msg3.content}\n__**Report - DM Advertising**__\n**Quacky:** hi DuckMasterAl was dm advertising me\n**You:** {msg4.content}\n**Quacky:** Ok, here you go [Image](https://quacky.xyz/files/support_example.png)\n**You:** {msg5.content}\n__**Other - Your bot sucks**__\n**Quacky:** ur box sux\n**You:** {msg6.content}\n__**Question - How do I setup a mod-log?**__\n**You:** {msg7.content}'
             embed_confirm = discord.Embed(title='Quacky Staff Application', colour=discord.Colour(7506394), description=f'Your questions and answers are below.\n\n{embed_description}')
             embed_confirm.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
             embed_confirm.set_footer(text=f'Note: Making False Applications can get you Demoted and/or Blacklisted!')
@@ -230,155 +235,45 @@ class Misc(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @partner.command()
-    async def bot(self, ctx):
-        """ Bot Partnership Requirements and Terms """
-        msg = """By Becoming a Quacky Partner you agree to the [Quacky Partner Terms.](https://quacky.js.org/partner-bterms)
-        You Discord Bot also meet the following requirements:
-        > - Your Bot is in at least 125 Real Servers.
-        > - Your Bot is verified by Discord.
-        > - Your Bot is not mainly NSFW or has an NSFW Profile Picture/Name.
-        > - Your Bot does not promote Harrassment, Hate Speech, Violence, or Illegal Activity and Follows the [Discord Developer Terms of Service.](https://discord.com/developers/docs/legal)
-        > - Your Bot has a Support Server with a Rules Channel and Moderation Team.
-        > - Your Bot is not a copy of a bot that's already been created.
-        If you do not agree to the terms, or do not meet the requirements please use the `!close` command to close this ticket."""
-        embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Partner - Bot Requirements')
-        await ctx.send(embed=embed)
-
-    @partner.command()
-    async def server(self, ctx):
-        """ Server Partnership Requirements and Terms """
-        msg = """By Becoming a Quacky Partner you agree to the [Quacky Partner Terms.](https://quacky.js.org/partner-sterms)
-        Your Discord Server also meet the following requirements:
-        > - Your Server has at least 150 Real Human Members.
-        > - Your Server Has and Uses Quacky Bot.
-        > - Your Server is not NSFW Related in any way.
-        > - Your Server does not promote Harrassment, Hate Speech, Violence, or Illegal Activity and Follows the [Discord Server Guildelines.](https://discord.com/guidelines)
-        > - Your Server has a Rules Channel and Moderation Team.
-        > - Preferably, your server is a community server.
-        If you do not agree to the terms, or do not meet the requirements please use the `!close` command to close this ticket."""
-        embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Partner - Server Requirements')
-        await ctx.send(embed=embed)
-
-    @partner.command()
     async def terms(self, ctx):
         """ Parntership Terms """
-        msg = """There are 2 Quacky Partner Terms, one for bots and one for servers.
-        You can read the Quacky Partner Terms for Discord Servers [here.](https://quacky.js.org/partner-sterms)
-        You can read the Quacky Partner Terms for Discord Bots [here.](https://quacky.js.org/partner-bterms)"""
+        msg = """ Please confirm that you agree to following terms.
+        By Partnering with Quacky you agree to these terms:
+        > Bot Terms - https://quacky.xyz/partner-bterms
+        > Server/Other Product Terms - https://quacky.xyz/partner-sterms """
         embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Partner Terms')
         await ctx.send(embed=embed)
 
-    @partner.command(aliases=['bot-perks', 'bperks'])
-    async def botperks(self, ctx):
-        """ Perks for Being a Bot Partner """
-        msg = """Currently, as a Discord Bot Partner you get the following perks:
-        > - A Special Badge on your Profile
-        > - A Special Badge for your Bot's Profile
-        > - A Partner Role in the Support Server
-        > - Access to Private Partner only Channels in the Support Server"""
-        embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Partner - Bot Perks')
-        await ctx.send(embed=embed)
-
-    @partner.command(aliases=['server-perks', 'sperks'])
-    async def serverperks(self, ctx):
-        """ Perks for Being a Server Partner """
-        msg = """Currently, as a Discord Server Partner you get the following perks:
-        > - A Special Badge on your Profile
-        > - A Special Badge on your Server's -server command!
-        > - A Partner Role in the Support Server
-        > - Access to Private Partner only Channels in the Support Server"""
-        embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Partner - Server Perks')
-        await ctx.send(embed=embed)
-
-    @partner.command(aliases=['sapprove', 'server-approve'])
-    @mod()
-    async def serverapprove(self, ctx, guildid: int, *, member):
-        """ Approve a Server Partnership """
-        member = await searching.user(self, ctx, 'approve for server parntership', member)
-        if isinstance(member, discord.Message):
-            return
-        quacky_guild = self.bot.get_guild(665378018310488065)
-        partner_role = quacky_guild.get_role(741701822032379944)
-        await member.add_roles(partner_role, reason=f'{ctx.author} ({ctx.author.id}) - Approved Server Partnership')
-        File = open('/home/container/Quacky/Files/partner.json').read()
-        data = json.loads(File)
-        y = {"guild": guildid, "owner": member.id}
-        data['server'].append(y)
-        with open('/home/container/Quacky/Files/partner.json', 'w') as f:
-            json.dump(data, f, indent=4)
-        await ctx.send(f'<:check:678014104111284234> Added **{guildid}** owned by {member.mention} to the Partner Program (Server).')
-
     @partner.command(aliases=['bapprove', 'bot-approve'])
-    @mod()
-    async def botapprove(self, ctx, botuserid: int, *, member):
-        """ Approve a Bot Partnership """
+    @commands.guild_only()
+    @admin()
+    async def approve(self, ctx, *, member):
+        """ Approve a Partnership Request """
         member = await searching.user(self, ctx, 'approve for bot parntership', member)
         if isinstance(member, discord.Message):
             return
         quacky_guild = self.bot.get_guild(665378018310488065)
         partner_role = quacky_guild.get_role(741701822032379944)
-        await member.add_roles(partner_role, reason=f'{ctx.author} ({ctx.author.id}) - Approved Bot Partnership')
-        File = open('/home/container/Quacky/Files/partner.json').read()
+        await member.add_roles(partner_role, reason=f'{ctx.author} ({ctx.author.id}) - Approved Partnership')
+        File = open('/home/container/Quacky/Files/badges.json').read()
         data = json.loads(File)
-        y = {"bot": botuserid, "owner": member.id}
-        data['bot'].append(y)
-        with open('/home/container/Quacky/Files/partner.json', 'w') as f:
-            json.dump(data, f, indent=4)
-        await ctx.send(f'<:check:678014104111284234> Added **{botuserid}** owned by {member.mention} to the Partner Program (Bot).')
-
-    @partner.command(aliases=['msg'])
-    async def message(self, ctx):
-        """ How to Send your Partner Message """
-        msg = """To send your partner message you can either send it here in a codeblock (\`\`\`) or by uploading it to [pastebin](https://pastebin.com)
-        You can find our partner message to post in your server [here.](https://quacky.js.org/partner.txt)
-        Once you post our partner message in your server, one of our admins will send your advertisement in our partner channel (<#741359245064405073>), give you the <@&741701822032379944> role, and close the ticket.
-        Thanks for Partnering with Quacky!"""
-        embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Partner Message')
-        await ctx.send(embed=embed)
-
-    @partner.command()
-    @commands.guild_only()
-    @mod()
-    async def send(self, ctx, title, *, message):
-        """ Send a Partnership Message in #partners """
-        embed = discord.Embed(colour=discord.Colour(16750848), description=message, title=title)
-        if ctx.message.attachments != []:
-            image = ctx.message.attachments.pop(0)
-            image = image.url
-            embed.set_image(url=image)
-        msg = await ctx.send(embed=embed, content='Please Confirm that this looks correct before I submit it to the Partner Channel.')
-        checkmark = self.bot.get_emoji(678014104111284234)
-        redx = self.bot.get_emoji(678014058590502912)
-        await msg.add_reaction(checkmark)
-        await msg.add_reaction(redx)
-        def check(reaction, user):
-            if user.id in [ctx.author.id, 443217277580738571]:
-                if reaction.emoji == checkmark:
-                    return True
-                elif reaction.emoji == redx:
-                    return True
-                else:
-                    return False
-            else:
-                return False
-        try:
-            reaction, user = await self.bot.wait_for('reaction_add', timeout=300.0, check=check)
-        except asyncio.TimeoutError:
-            return await msg.send(content='You took too long to confirm...', embed=embed)
-        else:
-            if reaction.emoji == checkmark:
-                channel = ctx.guild.get_channel(741359245064405073)
-                await channel.send(embed=embed, content='<@&746202010537295962>', allowed_mentions=discord.AllowedMentions(roles=True))
-                await msg.edit(content=f'This has been sent to {channel.mention}.', embed=embed)
-                await ctx.send(f'The partner message has been posted in {channel.mention}!')
-            elif reaction.emoji == redx:
-                await msg.edit(content='This will not be sent to the partner channel...', embed=embed)
-                await msg.clear_reactions()
+        data['partner'].append(member.id)
+        with open('/home/container/Quacky/Files/badges.json', 'w') as f:
+            json.dump(data, f, indent=2)
+        await ctx.send(f'<:check:678014104111284234> Approved **{member.display_name}** as a Partner <a:atada:794605079616946197>')
 
     @partner.command()
     async def link(self, ctx):
         """ Show our Partnership Message """
-        await ctx.send('You can find our partner message at: https://quacky.js.org/partner.txt')
+        await ctx.send('You can find our partner message at: https://quacky.xyz/partner.txt')
+
+    @partner.command()
+    @commands.guild_only()
+    @mod()
+    async def done(self, ctx):
+        """ Mark a Partner as Meeting Requirements """
+        await ctx.message.delete()
+        await ctx.send(f':notepad_spiral: **{ctx.author.name}** has marked the partnership as __Meeting Requirements__')
 
     @partner.command(aliases=['new'])
     @commands.guild_only()
@@ -389,7 +284,7 @@ class Misc(commands.Cog):
                 return True
             return False
         try:
-            msg = await ctx.author.send('Are you Partnering a Bot (:robot:) or a Server (:loudspeaker:)?')
+            msg = await ctx.author.send('Are you Partnering a Bot (:robot:) or a Server/Other Product (:loudspeaker:)?')
             await msg.add_reaction('\U0001f916')
             await msg.add_reaction('\U0001f4e2')
             await ctx.send(':mailbox_with_mail: Check your DMs!')
@@ -404,7 +299,7 @@ class Misc(commands.Cog):
                 return True
             else:
                 return False
-        embed = discord.Embed(title='Quacky Partnership Request', description=f'Thanks for wanting to Partner with Quacky!\nPlease send your Partner Message Here and a Moderator will review your reqeuest soon.', color=discord.Colour.blurple())
+        embed = discord.Embed(title='Quacky Partnership Request', description=f'Thanks for wanting to Partner with Quacky!\nA Moderator will check if you meet the Partner Requirements soon.\nThen, an admin will review your product and approve/deny you.', color=discord.Colour.blurple())
         embed.set_author(name=str(ctx.author), icon_url=str(ctx.author.avatar_url))
         if reaction.emoji == '\U0001f916':
             await ctx.author.send('What is your Bot\'s User ID?')
@@ -434,18 +329,18 @@ class Misc(commands.Cog):
         support_role = ctx.guild.get_role(665423380207370240)
         category = ctx.guild.get_channel(723971770289488013)
         channel = await ctx.guild.create_text_channel(f'partner-{member.display_name}', category=category, reason=f'{ctx.author} ({ctx.author.id}) - Partner Ticket Creation', topic=f'USERID: {ctx.author.id}')
-        await channel.set_permissions(ctx.guild.default_role, read_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Creation')
+        await channel.set_permissions(ctx.guild.default_role, read_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Partner Ticket Creation')
         await channel.set_permissions(member, read_messages=True, send_messages=True, manage_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Partner Ticket Creation')
         await channel.set_permissions(support_role, read_messages=True, send_messages=True, reason=f'{ctx.author} ({ctx.author.id}) - Partner Ticket Creation')
         embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
         msg1 = await channel.send(embed=embed)
-        await ctx.author.send(f'<:check:678014104111284234> Please send your Partner Message in {channel.mention}, and a moderator will review your application soon.')
+        await ctx.author.send(f'<:check:678014104111284234> Please send your Invite Link (Bot Invite/Server Invite) in {channel.mention} for a Moderator to Review.')
         await channel.send(ctx.author.mention, delete_after=0.01, allowed_mentions=discord.AllowedMentions(users=True))
 
     @commands.command()
     async def privacy(self, ctx):
         """ Read Quacky Support's Privacy Policy """
-        await ctx.send('You can view Quacky Support\'s Privacy Policy at https://quacky.js.org/support-privacy')
+        await ctx.send('You can view Quacky Support\'s Privacy Policy at https://quacky.xyz/support-privacy')
 
     @commands.command()
     async def crole(self, ctx, *, hexcode):
@@ -455,7 +350,7 @@ class Misc(commands.Cog):
         member = guild.get_member(ctx.author.id)
         mega = guild.get_role(690234610462097504)
         if mega not in member.roles:
-            return await ctx.send('<:redx:678014058590502912> You must be a MEGA Donator to use this command!\nYou can donate at: <https://quacky.js.org/donate>')
+            return await ctx.send('<:redx:678014058590502912> You must be a MEGA Donator to use this command!\nYou can donate at: <https://quacky.xyz/donate>')
         try:
             hexcode = int(f'0x{hexcode}', 16)
         except ValueError:

@@ -78,16 +78,9 @@ class Events(commands.Cog):
             for a in data['donator']:
                 if a['id'] == member.id:
                     rank = a['rank']
-            PFile = open('/home/container/Quacky/Files/partner.json').read()
-            pdata = json.loads(PFile)
-            for x in pdata['server']:
-                if x['owner'] == member.id:
-                    partner = guild.get_role(741701822032379944)
-                    await member.add_roles(partner, reason='Has Partner Badge')
-            for x in pdata['bot']:
-                if x['owner'] == member.id:
-                    partner = guild.get_role(741701822032379944)
-                    await member.add_roles(partner, reason='Has Partner Badge')
+            if member.id in data['partner']:
+                partner = guild.get_role(741701822032379944)
+                await member.add_roles(partner, reason='Has Partner Badge')
             if member.id in data['early_supporter']:
                 early_supporter = guild.get_role(764569252111187988)
                 await member.add_roles(early_supporter, reason='Has Early Supporter Badge')
@@ -116,18 +109,17 @@ class Events(commands.Cog):
             msg = await channel.send(f'<@&750436218755350568>, Welcome **{member.name}** to the Quacky Support Server <:Quacky:665378357021638656>', allowed_mentions=discord.AllowedMentions(roles=True))
             data['member'] = msg.id
             with open('/home/container/Quacky/Files/misc.json', 'w') as f:
-                json.dump(data, f, indent=4)
+                json.dump(data, f, indent=2)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         guild = member.guild
         if guild.id == 665378018310488065:
-            File = open('/home/container/Quacky/Files/partner.json').read()# PARTNER ALERTS
+            File = open('/home/container/Quacky/Files/badges.json').read()# PARTNER ALERTS
             data = json.loads(File)
             adminchat = guild.get_channel(665427384899600395)
-            for x in data['bot']:
-                if x['owner'] == member.id:
-                    await adminchat.send(f'<a:siren:493542252891734016> {member} ({member.id}) just left while under Bot Partnership.')
+            if member.id in data['partner']:
+                await adminchat.send(f'<a:siren:493542252891734016> {member} ({member.id}) just left while under Partnership.')
 
             File = open('/home/container/Support/Files/misc.json').read()# DELETE CUSTOM ROLE
             data = json.loads(File)
