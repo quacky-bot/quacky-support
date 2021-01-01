@@ -2,7 +2,7 @@ import discord, json
 from discord.ext import commands
 error_icon = 'https://cdn.discordapp.com/emojis/678014140203401246.png?v=1'
 Client = discord.Client()
-TOKEN = open('/root/Support/token.txt', 'r').read()
+TOKEN = open('/home/container/Support/token.txt', 'r').read()
 # TOKEN = open('/Users/duckmasteral/Documents/GitHub/quacky-support/token.txt').read()
 
 initial_extensions = ['cogs.admin', 'cogs.moderation', 'cogs.misc', 'cogs.ticket', 'cogs.events', 'jishaku']
