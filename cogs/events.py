@@ -1,13 +1,15 @@
-import discord, json, asyncio, datetime, searching
+import discord, json, asyncio, datetime, searching, os, shutil
 from discord.ext import commands, tasks
 error_icon = 'https://cdn.discordapp.com/emojis/678014140203401246.png?v=1'
 
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.auto_backup.start()
         self.activity_test.start()
 
     def cog_unload(self):
+        self.auto_backup.cancel()
         self.activity_test.cancel()
 
     @commands.Cog.listener()
@@ -28,6 +30,39 @@ class Events(commands.Cog):
         if after.content.startswith(tuple(prefixes)):
             ctx = await self.bot.get_context(after)
             msg = await self.bot.invoke(ctx)
+
+    @tasks.loop(hours=1.0)
+    async def auto_backup(self):
+        """ Backup JSON Files in case of JSON Corruption """
+        await self.bot.wait_until_ready()
+        failed_files = []
+        directory = os.listdir('/home/container/Support/Files')
+        for x in directory:
+            if x.endswith('.json'):
+                with open(f'/home/container/Support/Files/{x}') as f:
+                    try:
+                        data = json.load(f)
+                    except json.decoder.JSONDecodeError:
+                        failed_files.append(x)
+
+        if failed_files != []:
+            guild = self.bot.get_guild(665378018310488065)
+            channel = guild.get_channel(693497754621706290)
+            corrupted_files = '\n> '.join(failed_files)
+            if os.path.exists("/home/container/Support/backup.zip"):
+                last_backup = os.path.getmtime("/home/container/Support/backup.zip")
+                dt_backup =  datetime.datetime.fromtimestamp(last_backup)
+            else:
+                dt_backup = discord.Embed.Empty
+
+            embed = discord.Embed(title=f"{len(failed_files)} File{' is' if failed_files == 1 else 's are'} Corrupted", description=f'Failed Backing up the Following Files:\n> {corrupted_files}', color=discord.Color.red(), timestamp=dt_backup)
+            embed.set_footer(text='There is no Previous Backup Found' if dt_backup == discord.Embed.Empty else 'The Last Successful Backup was Taken')
+            return await channel.send('<@443217277580738571> a Backup Fail has Occured <a:siren:689141551326035982>', embed=embed, allowed_mentions=discord.AllowedMentions(users=True))
+
+        if os.path.exists("/home/container/Support/backup.zip"):
+            os.remove("/home/container/Support/backup.zip")
+        shutil.make_archive('/home/container/Support/backup', 'zip', '/home/container/Support/Files')
+
 
     @tasks.loop(minutes=30.0)
     async def activity_test(self):
