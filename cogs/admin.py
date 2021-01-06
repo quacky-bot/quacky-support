@@ -96,7 +96,7 @@ class Admin(commands.Cog):
             try:
                 await user.send(embed=embed)
                 demotion_msg += "Normal User"
-            await staff_chat.send(demotion_msg)
+                await staff_chat.send(demotion_msg)
                 return await ctx.send(f'<:check:678014104111284234> Removed **{user.display_name}** from the Staff Team.')
             except discord.errors.HTTPException:
                 return await ctx.send(f'<:check:678014104111284234> Removed **{user.display_name}** from the Staff Team.\n:warning: I can\'t send DMs to {user.display_name}! Please make sure to notify them of their demotion.')
