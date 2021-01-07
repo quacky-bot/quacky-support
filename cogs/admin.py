@@ -72,23 +72,31 @@ class Admin(commands.Cog):
         support = ctx.guild.get_role(729735292734406669)
         mod = ctx.guild.get_role(665423380207370240)
         staff = ctx.guild.get_role(665423057430511626)
+        staff_chat = ctx.guild.get_channel(665426967692181514)
+        demotion_msg = f"Oh no! **{user.display_name}** has been demoted to: "
         warn = ''
         if mod in user.roles:
             await user.remove_roles(mod, reason=f'{ctx.author} - Demote Command • Reason: {reason}')
             await user.add_roles(support, reason=f'{ctx.author} - Demote Command • Reason: {reason}')
             old_rank = 'Moderator'
             new_rank = 'Support Team Member'
+            demotion_msg += new_rank
+            await staff_chat.send(demotion_msg)
         elif support in user.roles:
             await user.remove_roles(support, reason=f'{ctx.author} - Demote Command • Reason: {reason}')
             await user.add_roles(helper, reason=f'{ctx.author} - Demote Command • Reason: {reason}')
             old_rank = 'Support Team Member'
             new_rank = 'Helper'
+            demotion_msg += new_rank
+            await staff_chat.send(demotion_msg)
         elif helper in user.roles or trial_staff in user.roles:
             await user.remove_roles(staff, helper, trial_staff, reason=f'{ctx.author} - Demote Command • Reason: {reason}')
             embed = discord.Embed(title='You\'ve Been Demoted', description=f'Hello {user.name},\nSadly, the Quacky Administrators have decided to remove you from the Staff Team.\n**Reason:** {reason}', color=discord.Colour(0xC70039))
             embed.set_author(name='Quacky Bot Administrators', icon_url='https://quacky.js.org/files/avatar.png')
             try:
                 await user.send(embed=embed)
+                demotion_msg += "Normal User"
+                await staff_chat.send(demotion_msg)
                 return await ctx.send(f'<:check:678014104111284234> Removed **{user.display_name}** from the Staff Team.')
             except discord.errors.HTTPException:
                 return await ctx.send(f'<:check:678014104111284234> Removed **{user.display_name}** from the Staff Team.\n:warning: I can\'t send DMs to {user.display_name}! Please make sure to notify them of their demotion.')
@@ -127,16 +135,22 @@ class Admin(commands.Cog):
         support = ctx.guild.get_role(729735292734406669)
         mod = ctx.guild.get_role(665423380207370240)
         staff = ctx.guild.get_role(665423057430511626)
+        staff_chat = ctx.guild.get_channel(665426967692181514)
+        promotion_msg = f"Let's all congratulate **{user.display_name}**! They got promoted to: "
         warn = ''
         if mod in user.roles:
             return await ctx.send(f'<:redx:678014058590502912> I cannot promote {user.display_name} as they are already the highest rank!')
         elif support in user.roles:
             new_rank = 'Mod'
+            promotion_msg += new_rank
+            await staff_chat.send(promotion_msg)
             await user.add_roles(mod, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
             await user.remove_roles(helper, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
             embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Moderator!\n[Please Read about Being How to be a Moderator.](https://quacky.js.org/staff/moderator)\nThanks and Congradulations :smiley:')
         elif helper in user.roles:
             new_rank = 'Support Team'
+            promotion_msg += new_rank
+            await staff_chat.send(promotion_msg)
             await user.add_roles(support, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
             embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Support Team!\n[Please Read about Being How to be a Support Team Member.](https://quacky.js.org/staff/support-team)\nThanks and Congradulations :smiley:')
         elif trial_staff in user.roles:
@@ -149,6 +163,8 @@ class Admin(commands.Cog):
                         json.dump(data, f, indent=2)
 
             new_rank = 'Helper'
+            promotion_msg += new_rank
+            await staff_chat.send(promotion_msg)
             await user.add_roles(helper, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
             embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Helper!\n[Please Read about Being How to be a Helper.](https://quacky.js.org/staff/helper)\nThanks and Congradulations :smiley:')
         elif staff in user.roles:
