@@ -73,7 +73,7 @@ class Admin(commands.Cog):
         mod = ctx.guild.get_role(665423380207370240)
         staff = ctx.guild.get_role(665423057430511626)
         staff_chat = ctx.guild.get_channel(665426967692181514)
-        demotion_msg = f"**{user.display_name}** has been demoted to: "
+        demotion_msg = f"Oh no! **{user.display_name}** has been demoted to: "
         warn = ''
         if mod in user.roles:
             await user.remove_roles(mod, reason=f'{ctx.author} - Demote Command • Reason: {reason}')
@@ -136,7 +136,7 @@ class Admin(commands.Cog):
         mod = ctx.guild.get_role(665423380207370240)
         staff = ctx.guild.get_role(665423057430511626)
         staff_chat = ctx.guild.get_channel(665426967692181514)
-        promotion_msg = f"Eyo! Let's all congratulate **{user.display_time}** cause they got promoted to: "
+        promotion_msg = f"Let's all congratulate **{user.display_name}**! They got promoted to: "
         warn = ''
         if mod in user.roles:
             return await ctx.send(f'<:redx:678014058590502912> I cannot promote {user.display_name} as they are already the highest rank!')
