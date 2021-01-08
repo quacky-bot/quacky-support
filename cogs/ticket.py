@@ -76,6 +76,7 @@ async def channel_logging(self, ctx, reason):
                                 if r.status == 413:
                                     content = f"{content} (Large Attachment: {file.filename})"
                                 else:
+                                    js = await r.json()
                                     content = f"{content} (Attachment: {file.filename})"
                                     file_attachments.append(f"{file.filename} - {js['url']}")
                     else:
