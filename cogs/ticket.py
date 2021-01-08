@@ -1,4 +1,4 @@
-import discord, json, asyncio, searching
+import discord, json, asyncio, searching, tokens, aiohttp
 from discord.ext import commands, tasks
 from discord.ext.commands.cooldowns import BucketType
 from io import BytesIO
@@ -46,6 +46,76 @@ async def remove_reaction(payload):
     channel = payload.member.guild.get_channel(payload.channel_id)
     message = await channel.fetch_message(payload.message_id)
     await message.remove_reaction(payload.emoji, payload.member)
+
+async def channel_logging(self, ctx, reason):
+    msg_history = []
+    user_list = []
+    username_list = []
+    file_attachments = []
+    quacky_guild = self.bot.get_guild(665378018310488065)
+    async for message in ctx.channel.history(oldest_first=True):
+        if message.author.id not in user_list and message.author.id != self.bot.user.id:
+            user_list.append(message.author.id)
+
+        content = message.content
+        for file in message.attachments:
+            if file.filename.endswith(('.png', '.jpg', '.jpeg', '.gif', '.ico', '.bmp', '.tif', '.tiff', '.webp')) is False:
+                content = f"{content} (Unknown Attachment: {file.filename})"
+                continue
+
+            image = await file.read()
+            async with aiohttp.ClientSession() as session:
+                async with session.post('https://quacky.is-ne.at/upload', data={"token": tokens.sxcu, "image": image}) as r:
+                    if r.status == 413:
+                        content = f"{content} (Large Attachment: {file.filename})"
+                    elif r.status == 429:
+                        await ctx.send('Please wait... Uploading Images and Files (This can take up to a minute)')
+                        await asyncio.sleep(60)
+                        async with aiohttp.ClientSession() as session:
+                            async with session.post('https://quacky.is-ne.at/upload', data={"token": "39f9d496-6e90-4134-a726-6421eaedd1fa", "image": image}) as r:
+                                if r.status == 413:
+                                    content = f"{content} (Large Attachment: {file.filename})"
+                                else:
+                                    content = f"{content} (Attachment: {file.filename})"
+                                    file_attachments.append(f"{file.filename} - {js['url']}")
+                    else:
+                        js = await r.json()
+                        content = f"{content} (Attachment: {file.filename})"
+                        file_attachments.append(f"{file.filename} - {js['url']}")
+
+        if message.embeds != []:
+            content = f"{content}\nEmbed Title: {message.embeds[0].title}\nEmbed Description: {message.embeds[0].description}"
+
+        msg_history.append(f"[{message.created_at.strftime('%B %d %Y at %I:%M %p')}] {message.author.display_name}: {content}")
+    msg_history = "\n\n".join(msg_history)
+    if file_attachments == []:
+        file_attachments = ''
+    else:
+        file_attachments = "\n".join(file_attachments)
+        file_attachments = f"\n\nFiles Referenced:\n{file_attachments}"
+    for userid in user_list:
+        user = quacky_guild.get_member(int(userid))
+        if user is None:
+            try:
+                user = await self.bot.try_user(int(userid))
+            except discord.NotFound:
+                username_list.append(f"[None] Unknown User ({userid})")
+            else:
+                username_list.append(f"[None] {user} ({user.id})")
+        else:
+            username_list.append(f"[{user.top_role.name}] {user} ({user.id})")
+    username_list = "\n".join(username_list)
+    msg_file = f"{msg_history}\n\nUsers Mentioned:\n{discord.utils.escape_markdown(username_list)}{discord.utils.escape_markdown(file_attachments)}"
+    file = discord.File(BytesIO(msg_file.encode("utf-8")), filename=f"{ctx.channel.name}.txt")
+
+    ticket_owner = await self.bot.try_user(int(ctx.channel.topic.split(': ')[1]))
+    log_channel = quacky_guild.get_channel(794991285835399188)
+    embed = discord.Embed(title="Ticket Closed :lock:", description=f'Channel: {ctx.channel.name} ({ctx.channel.id})\nUser: {ticket_owner} ({ticket_owner.id})\nModerator: {ctx.author} ({ctx.author.id})\nReason: {reason}', color=discord.Color.blurple())
+    embed_message = await log_channel.send(embed=embed)
+    log_message = await log_channel.send(file=file)
+    embed.url = f"https://txt.discord.website/?txt={log_channel.id}/{log_message.attachments[0].id}/{log_message.attachments[0].filename[:-4]}"
+    await embed_message.edit(embed=embed)
+    return embed.url
 
 class Ticket(commands.Cog):
     def __init__(self, bot):
@@ -219,14 +289,12 @@ class Ticket(commands.Cog):
             return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Support Ticket.')
         ticket_owner = ctx.channel.topic
         ticket_owner = ticket_owner.replace('USERID: ', '')
-        archive = ctx.guild.get_channel(729813211704066169)
         tuser = await self.bot.fetch_user(int(ticket_owner))
         member = ctx.guild.get_member(ctx.author.id)
         overwrite = discord.PermissionOverwrite()
         overwrite.send_messages = False
         overwrite.read_messages = True
-        await ctx.message.delete()
-        if reason == None:
+        if reason is None:
             def check_msg(m):
                 if ctx.author == m.author and ctx.channel == m.channel:
                     return True
@@ -242,27 +310,15 @@ class Ticket(commands.Cog):
             await m2.delete()
             if reason.lower() == 'cancel':
                 return await ctx.send('<:redx:678014058590502912> Canceled Closing the Support Ticket.')
-        # I stole this from Moksej he's pretty cool --> https://github.com/TheMoksej
-        msg_history = []
-        async for message in ctx.channel.history():
-            if message.content == '':
-                content = 'Content Unavailable (Embed/File)'
-            else:
-                content = message.content
-            msg_history.append(f"[{message.created_at}] {message.author} - {content}")
-        msg_history.reverse()
-        file = discord.File(BytesIO(("\n".join(msg_history)).encode("utf-8")), filename=f"{ctx.channel.name}.txt")
-        msg = await ctx.send(f'<a:Loading:540153374763384852> Sending the Message and Updating Permissions...', file=file)
+
+        loading = self.bot.get_emoji(540153374763384852)
+        await ctx.message.add_reaction(loading)
+        transcript = await channel_logging(self, ctx, reason)
         try:
-            await tuser.send(f'Your ticket has been closed by **{member.display_name}** with reason **{reason}**\nYou can read the chat history here: {msg.jump_url}')
+            await tuser.send(f'Your ticket ({ctx.channel.name}) has been closed by **{member.display_name}** with reason **{reason}**\nYou can read the chat history here: {transcript}')
         except discord.errors.HTTPException:
             await ctx.send(f'{tuser.mention} your ticket has been closed by {member.display_name} with reason {reason}', delete_after=5, allowed_mentions=discord.AllowedMentions(users=True))
-        if ctx.channel.name.startswith(('staff-', 'break-')):
-            await ctx.channel.edit(category=archive, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Close Command', sync_permissions=False, position=0)
-        else:
-            await ctx.channel.edit(category=archive, reason=f'{ctx.author} ({ctx.author.id}) - Ticket Close Command', sync_permissions=True, position=0)
-        await ctx.channel.set_permissions(tuser, overwrite=overwrite)
-        await msg.edit(content=f':lock: Ticket Closed by **{member.display_name}**\nReason: **{reason}**')
+        await ctx.channel.delete()
 
     @commands.command(usage='<user>')
     @commands.guild_only()
@@ -404,72 +460,6 @@ class Ticket(commands.Cog):
                 await ctx.send(f'{user.mention}, you now own {ctx.channel.name}!', delete_after=5)
         await ctx.channel.edit(topic=f'USERID: {user.id}', name=f'ticket-{user.display_name}', reason=f'{ctx.author} ({ctx.author.id}) - Transferring Ticket Ownership')
         await ctx.send(f'<:check:678014104111284234> **{ctx_member.display_name}** Transferred Ticket Ownership from {tuser.display_name} to **{user.display_name}**')
-        await ctx.message.delete()
-
-    @commands.command(aliases=['deletet', 'ticketdelete', 'deleteticket', 'dticket'])
-    @commands.guild_only()
-    @rank('admin')
-    async def tdelete(self, ctx, *, reason=None):
-        """ Delete a Ticket """
-        if ctx.channel.category_id != 723971770289488013:
-            return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Support Ticket.')
-        ticket_owner = ctx.channel.topic
-        ticket_owner = ticket_owner.replace('USERID: ', '')
-        archive = ctx.guild.get_channel(729813211704066169)
-        tuser = await self.bot.fetch_user(int(ticket_owner))
-        member = ctx.guild.get_member(ctx.author.id)
-        await ctx.message.delete()
-        if reason == None:
-            def check_msg(m):
-                if ctx.author == m.author and ctx.channel == m.channel:
-                    return True
-                else:
-                    return False
-            m1 = await ctx.send('What\'s the reason for deleting the ticket?')
-            try:
-                m2 = await self.bot.wait_for('message', check=check_msg, timeout=60.0)
-            except asyncio.TimeoutError:
-                return await ctx.send('<:redx:678014058590502912> You took too long to answer the question!')
-            reason = m2.content
-            await m1.delete()
-            await m2.delete()
-            if reason.lower() == 'cancel':
-                return await ctx.send('<:redx:678014058590502912> Canceled Deleting the Support Ticket.')
-        # I stole this from Moksej he's pretty cool --> https://github.com/TheMoksej
-        msg = []
-        async for message in ctx.channel.history():
-            if message.content == '':
-                content = 'Content Unavailable (Embed/File)'
-            else:
-                content = message.content
-            msg.append(f"[{message.created_at}] {message.author} - {content}")
-        msg.reverse()
-        file = discord.File(BytesIO(("\n".join(msg)).encode("utf-8")), filename=f"{ctx.channel.name}.txt")
-        try:
-            await tuser.send(f'Your ticket ({ctx.channel.name}) has been deleted by **{member.display_name}** with reason **{reason}**\nThe Chat Log is Attached Below.', file=file)
-        except discord.errors.HTTPException:
-            await ctx.send(f'{tuser.mention} your ticket has been deleted by {member.display_name} with reason {reason}')
-            msg.append(f'{tuser.mention} your ticket has been deleted by {member.display_name} with reason {reason}')
-        file = discord.File(BytesIO(("\n".join(msg)).encode("utf-8")), filename=f"{ctx.channel.name}.txt")
-        logschat = ctx.guild.get_channel(665427079881555978)
-        await logschat.send(f'**{member.display_name}** Just Deleted **{ctx.channel.name}**!\n**Owner:** {tuser.mention} ({tuser.id})\n**Reason:** {reason}', file=file)
-        await ctx.channel.delete(reason=f'{member.display_name} - Deleted Ticket with Reason {reason}')
-
-    @commands.command()
-    @commands.guild_only()
-    @rank('admin')
-    async def reopen(self, ctx):
-        """ Reopen a Ticket """
-        if ctx.channel.category_id != 729813211704066169:
-            return await ctx.send(f'<:redx:678014058590502912> You can only do this command in a Closed Support Ticket.')
-        ticket_owner = ctx.channel.topic
-        ticket_owner = ticket_owner.replace('USERID: ', '')
-        category = ctx.guild.get_channel(723971770289488013)
-        tuser = self.bot.get_user(int(ticket_owner))
-        member = ctx.guild.get_member(ctx.author.id)
-        await ctx.channel.set_permissions(tuser, read_messages=True, send_messages=True, manage_messages=False, reason=f'{ctx.author} ({ctx.author.id}) - Reopen Ticket Command')
-        await ctx.channel.edit(category=category, reason=f'{ctx.author} ({ctx.author.id}) - Reopen Ticket Command')
-        await ctx.send(f':unlock: Ticket Reopened by **{member.display_name}**')
         await ctx.message.delete()
 
 def setup(bot):

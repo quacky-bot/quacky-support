@@ -1,5 +1,5 @@
 
 *.pyc
-token.txt
+tokens.py
 *.json
 searching.py
