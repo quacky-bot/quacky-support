@@ -7,10 +7,12 @@ class Events(commands.Cog):
         self.bot = bot
         self.auto_backup.start()
         self.activity_test.start()
+        self.take_vote_role.start()
 
     def cog_unload(self):
         self.auto_backup.cancel()
         self.activity_test.cancel()
+        self.take_vote_role.cancel()
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -24,7 +26,7 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
         """ Runs Commands on Edit """
-        if after.author.bot is True:
+        if after.author.bot is True or before.content == after.content:
             return
         prefixes = commands.when_mentioned_or('!')(self.bot, after)
         if after.content.startswith(tuple(prefixes)):
@@ -63,7 +65,6 @@ class Events(commands.Cog):
             os.remove("/home/container/Support/backup.zip")
         shutil.make_archive('/home/container/Support/backup', 'zip', '/home/container/Support/Files')
 
-
     @tasks.loop(minutes=30.0)
     async def activity_test(self):
         """ Sends the Results of Activity Tests """
@@ -101,6 +102,43 @@ class Events(commands.Cog):
                 data['activity'] = []
                 with open('/home/container/Support/Files/misc.json', 'w') as f:
                     json.dump(data, f, indent=2)
+
+    @commands.Cog.listener('on_message')
+    async def give_vote_role(self, message):
+        if message.channel.id == 688562690221670456 and message.author.bot is True and message.author.discriminator == '0000' and message.embeds != []:
+            userid = message.embeds[0].description.split(' ')[0].replace('<@', '').replace('>', '')
+            guild = self.bot.get_guild(665378018310488065)
+            vote_role = guild.get_role(665422896813834292)
+            member = guild.get_member(int(userid))
+            if member is None:
+                return
+            await member.add_roles(vote_role, reason='Voted for Quacky Bot')
+            File = open('/home/container/Support/Files/vote.json').read()
+            data = json.loads(File)
+            for x in data:
+                if x['id'] == member.id:
+                    x['dt'] = (datetime.datetime.now() + datetime.timedelta(days=1, hours=12)).strftime("%m/%d %H:%M")
+                    with open('/home/container/Support/Files/vote.json', 'w') as f:
+                        return json.dump(data, f, indent=2)
+
+            data.append({"id": member.id, "dt": (datetime.datetime.now() + datetime.timedelta(days=1, hours=12)).strftime("%m/%d %H:%M")})
+            with open('/home/container/Support/Files/vote.json', 'w') as f:
+                json.dump(data, f, indent=2)
+
+    @tasks.loop(minutes=30.0)
+    async def take_vote_role(self):
+        File = open('/home/container/Support/Files/vote.json').read()
+        data = json.loads(File)
+        for x in data:
+            if datetime.datetime.strptime(x['dt'], "%m/%d %H:%M") <= datetime.datetime.strptime(datetime.datetime.now().strftime("%m/%d %H:%M"), "%m/%d %H:%M"):
+                guild = self.bot.get_guild(665378018310488065)
+                vote_role = guild.get_role(665422896813834292)
+                member = guild.get_member(int(x['id']))
+                if member is not None:
+                    await member.remove_roles(vote_role, reason='Vote Role Time Expired')
+                data.remove(x)
+        with open('/home/container/Support/Files/vote.json', 'w') as f:
+            json.dump(data, f, indent=2)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):

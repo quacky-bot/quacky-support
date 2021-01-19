@@ -72,7 +72,7 @@ async def channel_logging(self, ctx, reason):
                         await ctx.send('Please wait... Uploading Images and Files (This can take up to a minute)')
                         await asyncio.sleep(60)
                         async with aiohttp.ClientSession() as session:
-                            async with session.post('https://quacky.is-ne.at/upload', data={"token": "39f9d496-6e90-4134-a726-6421eaedd1fa", "image": image}) as r:
+                            async with session.post('https://quacky.is-ne.at/upload', data={"token": tokens.sxcu, "image": image}) as r:
                                 if r.status == 413:
                                     content = f"{content} (Large Attachment: {file.filename})"
                                 else:
