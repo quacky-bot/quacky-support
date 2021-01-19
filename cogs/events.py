@@ -33,6 +33,37 @@ class Events(commands.Cog):
             ctx = await self.bot.get_context(after)
             msg = await self.bot.invoke(ctx)
 
+    @commands.Cog.listener()
+    async def on_raw_reaction_add(self, payload):
+        if payload.message_id == 800881558881566731 and isinstance(payload.member, discord.Member) and payload.member.bot is False:
+            guild = self.bot.get_guild(665378018310488065)
+            if payload.emoji.name == '\U0001f4e3':
+                role = guild.get_role(689611998345822212)
+            elif payload.emoji.name == '\U0001f480':
+                role = guild.get_role(689613566403149862)
+            elif payload.emoji.name == '\U0001f44b':
+                role = guild.get_role(750436218755350568)
+            else:
+                return
+            await payload.member.add_roles(role, reason='Reaction Role')
+
+    @commands.Cog.listener()
+    async def on_raw_reaction_remove(self, payload):
+        if payload.message_id == 800881558881566731:
+            guild = self.bot.get_guild(665378018310488065)
+            member = guild.get_member(int(payload.user_id))
+            if member is None:
+                return
+            elif payload.emoji.name == '\U0001f4e3':
+                role = guild.get_role(689611998345822212)
+            elif payload.emoji.name == '\U0001f480':
+                role = guild.get_role(689613566403149862)
+            elif payload.emoji.name == '\U0001f44b':
+                role = guild.get_role(750436218755350568)
+            else:
+                return
+            await member.remove_roles(role, reason='Reaction Role')
+
     @tasks.loop(hours=1.0)
     async def auto_backup(self):
         """ Backup JSON Files in case of JSON Corruption """
