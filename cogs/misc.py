@@ -1,4 +1,4 @@
-import discord, json, time, asyncio, searching
+import discord, json, time, asyncio, searching, aiohttp, tokens
 from discord.ext import commands
 from discord.ext.commands.cooldowns import BucketType
 error_icon = 'https://cdn.discordapp.com/emojis/678014140203401246.png?v=1'
@@ -341,6 +341,27 @@ class Misc(commands.Cog):
     async def privacy(self, ctx):
         """ Read Quacky Support's Privacy Policy """
         await ctx.send('You can view Quacky Support\'s Privacy Policy at https://quacky.xyz/support-privacy')
+
+    @commands.command()
+    async def phook(self, ctx, *, message):
+        """ Send a Message in Promoted Services via a Webhook """
+        await ctx.trigger_typing()
+        guild = self.bot.get_guild(665378018310488065)
+        member = guild.get_member(ctx.author.id)
+        donator_role = guild.get_role(690234363648016443)
+        channel = guild.get_channel(794660260103192596)
+        if donator_role not in member.roles:
+            return await ctx.send(f'<:redx:678014058590502912> You must be a donator in order to use this command!')
+        elif ctx.channel.id != channel.id:
+            return await ctx.send(f'<:redx:678014058590502912> This command can only be used in {channel.mention}!')
+        data = {"content": message, "username": ctx.author.display_name, "avatar_url": ctx.author.avatar_url}
+        async with aiohttp.ClientSession() as session:
+            async with session.post(tokens.webhook, data=data) as r:
+                if r.status == 204:
+                    try:
+                        await ctx.message.delete()
+                    except:
+                        pass
 
     @commands.command()
     async def crole(self, ctx, *, hexcode):
