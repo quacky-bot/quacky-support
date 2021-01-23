@@ -92,7 +92,7 @@ class Misc(commands.Cog):
         File = open('/home/container/Quacky/Files/misc.json').read()
         data = json.loads(File)
         if ctx.author.id not in data['sapply']:
-            return await ctx.send('<:redx:678014058590502912> You\'re not eligible to apply for Support Team.')
+            return await ctx.send('<:redx:678014058590502912> You\'re not eligible to apply for Support Team.\nIf you are looking to apply for staff, use `-apply`')
         if ctx.guild is not None:
             embed = discord.Embed(title='OOPS! An error has occurred >.<', colour=discord.Colour(0xff0000), description=f'This command must be used in DMs!')
             embed.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
@@ -370,7 +370,8 @@ class Misc(commands.Cog):
         guild = self.bot.get_guild(665378018310488065)
         member = guild.get_member(ctx.author.id)
         mega = guild.get_role(690234610462097504)
-        if mega not in member.roles:
+        community_figure = guild.get_role(801495865352781864)
+        if mega not in member.roles and community_figure not in member.roles:
             return await ctx.send('<:redx:678014058590502912> You must be a MEGA Donator to use this command!\nYou can donate at: <https://quacky.xyz/donate>')
         try:
             hexcode = int(f'0x{hexcode}', 16)

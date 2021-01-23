@@ -110,7 +110,7 @@ async def channel_logging(self, ctx, reason):
     file = discord.File(BytesIO(msg_file.encode("utf-8")), filename=f"{ctx.channel.name}.txt")
 
     ticket_owner = await self.bot.try_user(int(ctx.channel.topic.split(': ')[1]))
-    log_channel = quacky_guild.get_channel(794991285835399188)
+    log_channel = quacky_guild.get_channel(801451931520204811 if ctx.channel.name.startswith(('staff-', 'break-', 'meeting-')) else 794991285835399188)
     embed = discord.Embed(title="Ticket Closed :lock:", description=f'Channel: {ctx.channel.name} ({ctx.channel.id})\nUser: {ticket_owner} ({ticket_owner.id})\nModerator: {ctx.author} ({ctx.author.id})\nReason: {reason}', color=discord.Color.blurple())
     embed_message = await log_channel.send(embed=embed)
     log_message = await log_channel.send(file=file)
