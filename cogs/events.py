@@ -103,10 +103,11 @@ class Events(commands.Cog):
         File = open('/home/container/Support/Files/misc.json').read()
         data = json.loads(File)
         if data['activity'] != []:
-            if datetime.datetime.strptime(data['activity'][1], "%m/%d %H:%M") <= datetime.datetime.strptime(datetime.datetime.now().strftime("%m/%d %H:%M"), "%m/%d %H:%M"):
+            if datetime.datetime.strptime(data['activity'][2], "%m/%d %H:%M") <= datetime.datetime.strptime(datetime.datetime.now().strftime("%m/%d %H:%M"), "%m/%d %H:%M"):
                 guild = self.bot.get_guild(665378018310488065)
-                channel = guild.get_channel(665426967692181514)
-                msg = await channel.fetch_message(data['activity'][0])
+                channel = guild.get_channel(data['activity'][0])
+                staff_channel = guild.get_channel(665426967692181514)
+                msg = await channel.fetch_message(data['activity'][1])
                 reaction = msg.reactions.pop(0)
                 users = await reaction.users().flatten()
                 role = guild.get_role(665423057430511626)
@@ -123,13 +124,14 @@ class Events(commands.Cog):
                 else:
                     failed = '\n> '.join(failed)
                     embed = discord.Embed(title='Activity Test Results', description=f"The Following Staff Members Failed the [Activity Test:]({msg.jump_url})\n> {failed}", color=discord.Colour.red())
-                msg1 = await channel.send(embed=embed)
+                msg1 = await staff_channel.send(embed=embed)
 
-                oembed = discord.Embed(title='Old Activity Test', description=f'This activity test has ended. [Results Message]({msg1.jump_url})', color=discord.Colour.dark_orange())
-                oembed.set_thumbnail(url="https://quacky.elixi.re/i/fhvc.png?raw=1")
-                await msg.edit(embed=oembed)
-                await msg.unpin()
-                await msg.clear_reactions()
+                # oembed = discord.Embed(title='Old Activity Test', description=f'This activity test has ended. [Results Message]({msg1.jump_url})', color=discord.Colour.dark_orange())
+                # oembed.set_thumbnail(url="https://quacky.elixi.re/i/fhvc.png?raw=1")
+                # await msg.edit(embed=oembed)
+                # await msg.unpin()
+                # await msg.clear_reactions()
+                await channel.delete()
                 data['activity'] = []
                 with open('/home/container/Support/Files/misc.json', 'w') as f:
                     json.dump(data, f, indent=2)
