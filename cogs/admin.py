@@ -136,6 +136,7 @@ class Admin(commands.Cog):
         mod = ctx.guild.get_role(665423380207370240)
         staff = ctx.guild.get_role(665423057430511626)
         staff_chat = ctx.guild.get_channel(665426967692181514)
+        feedback_pings = ctx.guild.get_role(799318494469423124)
         promotion_msg = f"Let's all congratulate **{user.display_name}**! They got promoted to: "
         warn = ''
         if mod in user.roles:
@@ -165,7 +166,8 @@ class Admin(commands.Cog):
             new_rank = 'Helper'
             promotion_msg += new_rank
             await staff_chat.send(promotion_msg)
-            await user.add_roles(helper, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
+            await user.add_roles(helper, feedback_pings, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
+            await user.remove_roles(trial_staff, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
             embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Helper!\n[Please Read about Being How to be a Helper.](https://quacky.js.org/staff/helper)\nThanks and Congradulations :smiley:')
         elif staff in user.roles:
             await user.add_roles(trial_staff, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
