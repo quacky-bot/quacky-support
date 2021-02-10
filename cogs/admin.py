@@ -146,14 +146,14 @@ class Admin(commands.Cog):
             promotion_msg += new_rank
             await staff_chat.send(promotion_msg)
             await user.add_roles(mod, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
-            await user.remove_roles(helper, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
-            embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Moderator!\n[Please Read about Being How to be a Moderator.](https://quacky.js.org/staff/moderator)\nThanks and Congradulations :smiley:')
+            embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Color.blurple(), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Moderator!\n[Please Read about Being How to be a Moderator.](https://quacky.js.org/staff/moderator)\nThanks and Congradulations :smiley:')
         elif helper in user.roles:
             new_rank = 'Support Team'
             promotion_msg += new_rank
             await staff_chat.send(promotion_msg)
             await user.add_roles(support, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
-            embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Support Team!\n[Please Read about Being How to be a Support Team Member.](https://quacky.js.org/staff/support-team)\nThanks and Congradulations :smiley:')
+            await user.remove_roles(helper, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
+            embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Color.blurple(), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Support Team!\n[Please Read about Being How to be a Support Team Member.](https://quacky.js.org/staff/support-team)\nThanks and Congradulations :smiley:')
         elif trial_staff in user.roles:
             File = open('/home/container/Quacky/Files/misc.json').read()
             data = json.loads(File)
@@ -168,7 +168,7 @@ class Admin(commands.Cog):
             await staff_chat.send(promotion_msg)
             await user.add_roles(helper, feedback_pings, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
             await user.remove_roles(trial_staff, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
-            embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Colour(7506394), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Helper!\n[Please Read about Being How to be a Helper.](https://quacky.js.org/staff/helper)\nThanks and Congradulations :smiley:')
+            embed = discord.Embed(title='You\'ve Been Promoted :tada:', colour=discord.Color.blurple(), description=f'Hey {user.name} :tada:\nThe Quacky Administrators have decided that you deserve a promotion!\nYou\'ve been promoted to Helper!\n[Please Read about Being How to be a Helper.](https://quacky.js.org/staff/helper)\nThanks and Congradulations :smiley:')
         elif staff in user.roles:
             await user.add_roles(trial_staff, reason=f'Promoted by {ctx.author} ({ctx.author.id})')
             return await ctx.send(f'<:check:678014104111284234> Added the Trial Staff Role to **{user.display_name}**.')
