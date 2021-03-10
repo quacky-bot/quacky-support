@@ -190,7 +190,7 @@ class Misc(commands.Cog):
         except asyncio.TimeoutError:
             return await ctx.author.send('<:redx:678014058590502912>  You took too long to answer the question!')
         else:
-            embed_description = f'__**Question - Apply for Staff**__\n**Quacky:** how do i apply for staff\n**You:** {msg3.content}\n__**Report - DM Advertising**__\n**Quacky:** hi DuckMasterAl was dm advertising me\n**You:** {msg4.content}\n**Quacky:** Ok, here you go [Image](https://quacky.xyz/files/support_example.png)\n**You:** {msg5.content}\n__**Other - Your bot sucks**__\n**Quacky:** ur box sux\n**You:** {msg6.content}\n__**Question - How do I setup a mod-log?**__\n**You:** {msg7.content}'
+            embed_description = f'__**Question - Apply for Staff**__\n**Quacky:** how do i apply for staff\n**You:** {msg3.content}\n__**Report - DM Advertising**__\n**Quacky:** hi DuckMasterAl was dm advertising me\n**You:** {msg4.content}\n**Quacky:** Ok, here you go [Image](https://quacky.elixi.re/i/z5il.png?raw=true)\n**You:** {msg5.content}\n__**Other - Your bot sucks**__\n**Quacky:** ur box sux\n**You:** {msg6.content}\n__**Question - How do I setup a mod-log?**__\n**You:** {msg7.content}'
             embed_confirm = discord.Embed(title='Quacky Staff Application', colour=discord.Colour(7506394), description=f'Your questions and answers are below.\n\n{embed_description}')
             embed_confirm.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
             embed_confirm.set_footer(text=f'Note: Making False Applications can get you Demoted and/or Blacklisted!')
