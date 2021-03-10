@@ -51,7 +51,7 @@ class Admin(commands.Cog):
         with open('/home/container/Quacky/Files/misc.json', 'w') as f:
             json.dump(data, f, indent=4)
         embed = discord.Embed(title='You\'ve Been Promoted!', description=f'Hello {user.name} :tada:\nYou now have the chance to Apply to be a Support Team Member!\nIf you would like to apply DM Me the `!sapply` command and we will begin the application process.', color=discord.Colour(0x00BDFF))
-        embed.set_author(name='Quacky Bot Administrators', icon_url='https://quacky.js.org/files/avatar.png')
+        embed.set_author(name='Quacky Bot Administrators', icon_url='https://quacky.xyz/files/avatar.png')
         warn = ''
         try:
             await user.send(embed=embed)
@@ -92,7 +92,7 @@ class Admin(commands.Cog):
         elif helper in user.roles or trial_staff in user.roles:
             await user.remove_roles(staff, helper, trial_staff, reason=f'{ctx.author} - Demote Command • Reason: {reason}')
             embed = discord.Embed(title='You\'ve Been Demoted', description=f'Hello {user.name},\nSadly, the Quacky Administrators have decided to remove you from the Staff Team.\n**Reason:** {reason}', color=discord.Colour(0xC70039))
-            embed.set_author(name='Quacky Bot Administrators', icon_url='https://quacky.js.org/files/avatar.png')
+            embed.set_author(name='Quacky Bot Administrators', icon_url='https://quacky.xyz/files/avatar.png')
             try:
                 await user.send(embed=embed)
                 demotion_msg += "Normal User"
@@ -115,7 +115,7 @@ class Admin(commands.Cog):
             json.dump(data, f, indent=2)
 
         embed = discord.Embed(title='You\'ve Been Demoted', description=f'Hello {user.name},\nSadly, the Quacky Administrators have decided to demote you from {old_rank} to {new_rank}.\n**Reason:** {reason}', color=discord.Colour(0xC70039))
-        embed.set_author(name='Quacky Bot Administrators', icon_url='https://quacky.js.org/files/avatar.png')
+        embed.set_author(name='Quacky Bot Administrators', icon_url='https://quacky.xyz/files/avatar.png')
         try:
             await user.send(embed=embed)
         except discord.errors.HTTPException:
@@ -175,8 +175,8 @@ class Admin(commands.Cog):
         else:
             return await ctx.send(f'<:redx:678014058590502912> {user.display_name} is not a Staff Member!')
 
-        embed.set_author(name=f'Quacky Bot Administrators', icon_url=f'https://quacky.js.org/files/avatar.png')
-        embed.set_image(url=f'https://quacky.js.org/files/eevee-evolve.gif')
+        embed.set_author(name=f'Quacky Bot Administrators', icon_url=f'https://quacky.xyz/files/avatar.png')
+        embed.set_image(url=f'https://quacky.xyz/files/eevee-evolve.gif')
         try:
             await user.send(embed=embed)
         except discord.errors.HTTPException:
