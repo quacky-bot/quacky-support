@@ -162,7 +162,7 @@ class Misc(commands.Cog):
             await asyncio.sleep(2)
             await ctx.author.send('Sure, 1 second.')
             await asyncio.sleep(10)
-        await ctx.author.send(f'{ctx.author.mention} here you go https://quacky.xyz/files/support_example.png')
+        await ctx.author.send(f'{ctx.author.mention} here you go https://quacky.elixi.re/i/z5il.png?raw=true')
         try:
             msg5 = await self.bot.wait_for('message', check=check_msg, timeout=300.0)
         except asyncio.TimeoutError:
@@ -239,8 +239,7 @@ class Misc(commands.Cog):
         """ Parntership Terms """
         msg = """ Please confirm that you agree to following terms.
         By Partnering with Quacky you agree to these terms:
-        > Bot Terms - https://quacky.xyz/partner-bterms
-        > Server/Other Product Terms - https://quacky.xyz/partner-sterms """
+        > https://quacky.xyz/partner/terms """
         embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Partner Terms')
         await ctx.send(embed=embed)
 
@@ -340,7 +339,7 @@ class Misc(commands.Cog):
     @commands.command()
     async def privacy(self, ctx):
         """ Read Quacky Support's Privacy Policy """
-        await ctx.send('You can view Quacky Support\'s Privacy Policy at https://quacky.xyz/support-privacy')
+        await ctx.send('You can view Quacky Support\'s Privacy Policy at https://quacky.xyz/privacy/support')
 
     @commands.command()
     async def phook(self, ctx, *, message):
