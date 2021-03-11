@@ -33,6 +33,33 @@ class Events(commands.Cog):
             ctx = await self.bot.get_context(after)
             msg = await self.bot.invoke(ctx)
 
+    @commands.Cog.listener('on_member_update')
+    async def status_role(self, before, after):
+        if after.bot is True or before.activities == after.activities:
+            return
+        has_status = False
+        for x in after.activities:
+            if type(x) == discord.CustomActivity and x.name is not None and [a for a in ['quacky.xyz', 'dbots.cc/quacky', 'discord.gg/DGpVppf', 'discord.ly/quacky'] if a in x.name]:
+                has_status = True
+                break
+            elif type(x) == discord.CustomActivity:
+                break
+        guild = self.bot.get_guild(665378018310488065)
+        role = guild.get_role(665422896813834292)
+        member = guild.get_member(after.id)
+        if member is None:
+            return
+        if has_status is True:
+            await member.add_roles(role, reason='Has Quacky in Status')
+        else:
+            File = open('/home/container/Support/Files/vote.json').read()
+            data = json.loads(File)
+            try:
+                data[str(after.id)]
+            except KeyError:
+                await member.remove_roles(role, reason='No Longer has Quacky in Status')
+
+
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         if payload.message_id == 800881558881566731 and isinstance(payload.member, discord.Member) and payload.member.bot is False:
@@ -148,25 +175,19 @@ class Events(commands.Cog):
             await member.add_roles(vote_role, reason='Voted for Quacky Bot')
             File = open('/home/container/Support/Files/vote.json').read()
             data = json.loads(File)
-            for x in data:
-                if x['id'] == member.id:
-                    x['dt'] = (datetime.datetime.now() + datetime.timedelta(days=1, hours=12)).strftime("%m/%d %H:%M")
-                    with open('/home/container/Support/Files/vote.json', 'w') as f:
-                        return json.dump(data, f, indent=2)
-
-            data.append({"id": member.id, "dt": (datetime.datetime.now() + datetime.timedelta(days=1, hours=12)).strftime("%m/%d %H:%M")})
+            data[str(member.id)] = (datetime.datetime.now() + datetime.timedelta(days=1, hours=12)).strftime("%m/%d %H:%M")
             with open('/home/container/Support/Files/vote.json', 'w') as f:
-                json.dump(data, f, indent=2)
+                return json.dump(data, f, indent=2)
 
     @tasks.loop(minutes=30.0)
     async def take_vote_role(self):
         File = open('/home/container/Support/Files/vote.json').read()
         data = json.loads(File)
         for x in data:
-            if datetime.datetime.strptime(x['dt'], "%m/%d %H:%M") <= datetime.datetime.strptime(datetime.datetime.now().strftime("%m/%d %H:%M"), "%m/%d %H:%M"):
+            if datetime.datetime.strptime(data[x], "%m/%d %H:%M") <= datetime.datetime.strptime(datetime.datetime.now().strftime("%m/%d %H:%M"), "%m/%d %H:%M"):
                 guild = self.bot.get_guild(665378018310488065)
                 vote_role = guild.get_role(665422896813834292)
-                member = guild.get_member(int(x['id']))
+                member = guild.get_member(int(x))
                 if member is not None:
                     await member.remove_roles(vote_role, reason='Vote Role Time Expired')
                 data.remove(x)
@@ -207,15 +228,15 @@ class Events(commands.Cog):
                 vip = guild.get_role(665423079454801930)
                 await member.add_roles(vip, donator, reason='Has VIP Badge')
             # Sending Join Message
-            if member.bot == True or member.id == 475117152106446849:
-                return
-            File = open('/home/container/Quacky/Files/misc.json').read()
-            data = json.loads(File)
-            channel = guild.get_channel(665378018809741324)
-            msg = await channel.send(f'<@&750436218755350568>, Welcome **{member.name}** to the Quacky Support Server <:Quacky:665378357021638656>', allowed_mentions=discord.AllowedMentions(roles=True))
-            data['member'] = msg.id
-            with open('/home/container/Quacky/Files/misc.json', 'w') as f:
-                json.dump(data, f, indent=2)
+            # if member.bot == True or member.id == 475117152106446849:
+            #     return
+            # File = open('/home/container/Quacky/Files/misc.json').read()
+            # data = json.loads(File)
+            # channel = guild.get_channel(665378018809741324)
+            # msg = await channel.send(f'<@&750436218755350568>, Welcome **{member.name}** to the Quacky Support Server <:Quacky:665378357021638656>', allowed_mentions=discord.AllowedMentions(roles=True))
+            # data['member'] = msg.id
+            # with open('/home/container/Quacky/Files/misc.json', 'w') as f:
+            #     json.dump(data, f, indent=2)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
@@ -237,51 +258,69 @@ class Events(commands.Cog):
                     with open('/home/container/Support/Files/misc.json', 'w') as f:
                         json.dump(data, f, indent=2)
 
-            if member.bot == True or member.id == 475117152106446849:# LEFT SERVER ALERTS
-                return
-            channel = guild.get_channel(665378018809741324)
-            File = open('/home/container/Quacky/Files/misc.json', 'r').read()
-            data = json.loads(File)
-            File = data['member']
-            msg = await channel.fetch_message(int(File))
-            content = msg.content
-            content = content.replace('<@&750436218755350568>, Welcome **', '')
-            content = content.replace('** to the Quacky Support Server <:Quacky:665378357021638656>', '')
-            if member.name == content:
-                await msg.edit(content=f'~~{msg.content}~~ They left <a:RIPBlob:478001829397921824>')
+            # if member.bot == True or member.id == 475117152106446849:# LEFT SERVER ALERTS
+            #     return
+            # channel = guild.get_channel(665378018809741324)
+            # File = open('/home/container/Quacky/Files/misc.json', 'r').read()
+            # data = json.loads(File)
+            # File = data['member']
+            # msg = await channel.fetch_message(int(File))
+            # content = msg.content
+            # content = content.replace('<@&750436218755350568>, Welcome **', '')
+            # content = content.replace('** to the Quacky Support Server <:Quacky:665378357021638656>', '')
+            # if member.name == content:
+            #     await msg.edit(content=f'~~{msg.content}~~ They left <a:RIPBlob:478001829397921824>')
 
-    """@commands.Cog.listener()
+    @commands.Cog.listener('on_voice_state_update')
+    async def vc_chat(self, member, before, after):
+        if before.channel == after.channel:
+            return
+        if after.channel is None:
+            channel = member.guild.get_channel(812528486475890688)
+            await channel.set_permissions(member, read_messages=False, reason='Left a Voice Channel')
+        elif before.channel is None or after.channel is not None:
+            channel = member.guild.get_channel(812528486475890688)
+            await channel.set_permissions(member, read_messages=True, reason='Joined a Voice Channel')
+
+    @commands.Cog.listener()
     async def on_member_update(self, before, after):
         if after.guild.id != 665378018310488065 or before.roles == after.roles:
             return
         guild = self.bot.get_guild(665378018310488065)
-        roles = after.roles
-        booster = guild.get_role(736007066556039170)
-        donators = guild.get_role(690234363648016443)
-        mega = guild.get_role(690234610462097504)
-        mvp = guild.get_role(690234421294530657)
-        vip = guild.get_role(665423079454801930)
-        donatorchat = guild.get_channel(665426877841670166)
-        File = open('/home/container/Quacky/Files/badges.json').read()
-        data = json.loads(File)
-        if booster in roles:
-            y = {"id": after.id, "rank": 2}
-            data['donator'].append(y)
-            with open('/home/container/Quacky/Files/badges.json', 'w') as f:
-                json.dump(data, f, indent=4)
-            await after.add_roles(mvp, reason='Boosted the Quacky Support Server')
-            await donatorchat.send(f'<:join:659881573012865084> {after.mention} is now a Booster!')
-        elif booster in before.roles and booster not in after.roles:
-            for x in data['donator']:
-                if x.id == after.id:
-                    data['donator'].remove(x)
-            with open('/home/container/Quacky/Files/badges.json', 'w') as f:
-                json.dump(data, f, indent=4)
-            await after.remove_roles(mvp, reason='No longer Boosting the Quacky Support Server')
-            await donatorchat.send(f'<a:RIPBlob:478001829397921824> {after.mention} is no longer a Booster!')
-        if vip in roles or mvp in roles or mega in roles:
-            await after.add_roles(donators, reason='Given a Donator Role')
-            await donatorchat.send(f'<:join:659881573012865084> {after.mention} is now a Donator!')"""
+        boost_role = guild.get_role(736007066556039170)
+        if boost_role in after.roles or boost_role in before.roles:
+            donator = guild.get_role(690234363648016443)
+            mvp = guild.get_role(690234421294530657)
+            vip = guild.get_role(665423079454801930)
+            File = open('/home/container/Quacky/Files/donator.json').read()
+            data = json.loads(File)
+            exists = False
+            if boost_role in after.roles and boost_role not in before.roles:# Boosted the Server
+                for x in data['user']:
+                    if x['id'] == after.id:
+                        exists = True
+                        if x['rank'] == 3:
+                            return
+                        else:
+                            x['rank'] = 2
+                if exists is False:
+                    data['user'].append({"id": after.id, "banner": None, "rank": 2})
+                await after.add_roles(mvp, donator, reason='Boosted the server!')
+                await after.remove_roles(vip, reason='Boosted the server!')
+            elif boost_role in before.roles and boost_role not in after.roles:# Unboosted the Server
+                for x in data['user']:
+                    if x['id'] == after.id:
+                        exists = True
+                        if x['rank'] == 3:
+                            return
+                        else:
+                            x['rank'] = 1
+                if exists is False:
+                    data['user'].append({"id": after.id, "banner": None, "rank": 1})
+                await after.remove_roles(mvp, reason='Unboosted the server!')
+                await after.add_roles(vip, reason='Unboosted the server!')
+            with open('/home/container/Quacky/Files/donator.json', 'w') as f:
+                json.dump(data, f, indent=2)
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
