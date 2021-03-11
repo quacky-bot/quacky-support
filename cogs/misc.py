@@ -370,7 +370,8 @@ class Misc(commands.Cog):
         member = guild.get_member(ctx.author.id)
         mega = guild.get_role(690234610462097504)
         community_figure = guild.get_role(801495865352781864)
-        if mega not in member.roles and community_figure not in member.roles:
+        booster = guild.get_role(736007066556039170)
+        if mega not in member.roles and community_figure not in member.roles and booster not in member.roles:
             return await ctx.send('<:redx:678014058590502912> You must be a MEGA Donator to use this command!\nYou can donate at: <https://quacky.xyz/donate>')
         try:
             hexcode = int(f'0x{hexcode}', 16)

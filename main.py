@@ -5,9 +5,13 @@ Client = discord.Client()
 
 initial_extensions = ['cogs.admin', 'cogs.moderation', 'cogs.misc', 'cogs.ticket', 'cogs.events', 'jishaku']
 
-intents = discord.Intents.default()
-intents.members = True
-client = commands.Bot(command_prefix=commands.when_mentioned_or('!'), case_insensitive=True, allowed_mentions=discord.AllowedMentions(roles=False, everyone=False, users=False), intents=intents)
+client = commands.Bot(
+                    command_prefix=commands.when_mentioned_or('!'),
+                    case_insensitive=True,
+                    allowed_mentions=discord.AllowedMentions(roles=False, everyone=False, users=False, replied_user=True),
+                    reconnect=True,
+                    intents=discord.Intents.all()
+                    )
 
 if __name__ == '__main__':
     for extension in initial_extensions:
