@@ -162,7 +162,7 @@ class Misc(commands.Cog):
             await asyncio.sleep(2)
             await ctx.author.send('Sure, 1 second.')
             await asyncio.sleep(10)
-        await ctx.author.send(f'{ctx.author.mention} here you go https://quacky.xyz/files/support_example.png')
+        await ctx.author.send(f'{ctx.author.mention} here you go https://quacky.elixi.re/i/z5il.png?raw=true')
         try:
             msg5 = await self.bot.wait_for('message', check=check_msg, timeout=300.0)
         except asyncio.TimeoutError:
@@ -190,7 +190,7 @@ class Misc(commands.Cog):
         except asyncio.TimeoutError:
             return await ctx.author.send('<:redx:678014058590502912>  You took too long to answer the question!')
         else:
-            embed_description = f'__**Question - Apply for Staff**__\n**Quacky:** how do i apply for staff\n**You:** {msg3.content}\n__**Report - DM Advertising**__\n**Quacky:** hi DuckMasterAl was dm advertising me\n**You:** {msg4.content}\n**Quacky:** Ok, here you go [Image](https://quacky.xyz/files/support_example.png)\n**You:** {msg5.content}\n__**Other - Your bot sucks**__\n**Quacky:** ur box sux\n**You:** {msg6.content}\n__**Question - How do I setup a mod-log?**__\n**You:** {msg7.content}'
+            embed_description = f'__**Question - Apply for Staff**__\n**Quacky:** how do i apply for staff\n**You:** {msg3.content}\n__**Report - DM Advertising**__\n**Quacky:** hi DuckMasterAl was dm advertising me\n**You:** {msg4.content}\n**Quacky:** Ok, here you go [Image](https://quacky.elixi.re/i/z5il.png?raw=true)\n**You:** {msg5.content}\n__**Other - Your bot sucks**__\n**Quacky:** ur box sux\n**You:** {msg6.content}\n__**Question - How do I setup a mod-log?**__\n**You:** {msg7.content}'
             embed_confirm = discord.Embed(title='Quacky Staff Application', colour=discord.Colour(7506394), description=f'Your questions and answers are below.\n\n{embed_description}')
             embed_confirm.set_author(name=f'{ctx.author}', icon_url=f'{ctx.author.avatar_url}')
             embed_confirm.set_footer(text=f'Note: Making False Applications can get you Demoted and/or Blacklisted!')
@@ -239,8 +239,7 @@ class Misc(commands.Cog):
         """ Parntership Terms """
         msg = """ Please confirm that you agree to following terms.
         By Partnering with Quacky you agree to these terms:
-        > Bot Terms - https://quacky.xyz/partner-bterms
-        > Server/Other Product Terms - https://quacky.xyz/partner-sterms """
+        > https://quacky.xyz/partner/terms """
         embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Partner Terms')
         await ctx.send(embed=embed)
 
@@ -340,7 +339,7 @@ class Misc(commands.Cog):
     @commands.command()
     async def privacy(self, ctx):
         """ Read Quacky Support's Privacy Policy """
-        await ctx.send('You can view Quacky Support\'s Privacy Policy at https://quacky.xyz/support-privacy')
+        await ctx.send('You can view Quacky Support\'s Privacy Policy at https://quacky.xyz/privacy/support')
 
     @commands.command()
     async def phook(self, ctx, *, message):
