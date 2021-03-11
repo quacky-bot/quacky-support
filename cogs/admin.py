@@ -176,7 +176,7 @@ class Admin(commands.Cog):
             return await ctx.send(f'<:redx:678014058590502912> {user.display_name} is not a Staff Member!')
 
         embed.set_author(name=f'Quacky Bot Administrators', icon_url=f'https://quacky.xyz/files/avatar.png')
-        embed.set_image(url=f'https://quacky.xyz/files/eevee-evolve.gif')
+        embed.set_image(url='https://quacky.elixi.re/i/z3gu.gif?raw=1')
         try:
             await user.send(embed=embed)
         except discord.errors.HTTPException:
