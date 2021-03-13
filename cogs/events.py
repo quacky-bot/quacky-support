@@ -181,6 +181,7 @@ class Events(commands.Cog):
 
     @tasks.loop(minutes=30.0)
     async def take_vote_role(self):
+        await self.bot.wait_until_ready()
         File = open('/home/container/Support/Files/vote.json').read()
         data = json.loads(File)
         for x in data:
