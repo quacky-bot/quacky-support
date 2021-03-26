@@ -39,7 +39,7 @@ class Events(commands.Cog):
             return
         has_status = False
         for x in after.activities:
-            if type(x) == discord.CustomActivity and x.name is not None and [a for a in ['quacky.xyz', 'dbots.cc/quacky', 'discord.gg/DGpVppf', 'discord.ly/quacky'] if a in x.name]:
+            if type(x) == discord.CustomActivity and x.name is not None and [a for a in ['quacky.xyz', 'dbots.cc/quacky', 'discord.gg/DGpVppf', 'discord.ly/quacky', 'dsc.gg/quacky'] if a in x.name]:
                 has_status = True
                 break
             elif type(x) == discord.CustomActivity:
