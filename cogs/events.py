@@ -195,39 +195,39 @@ class Events(commands.Cog):
         with open('/home/container/Support/Files/vote.json', 'w') as f:
             json.dump(data, f, indent=2)
 
-    @commands.Cog.listener()
-    async def on_member_join(self, member):
-        guild = member.guild
-        if guild.id == 665378018310488065:
-            # Doing Rank Check
-            File = open('/home/container/Quacky/Files/badges.json').read()
-            data = json.loads(File)
-            rank = 0
-            for a in data['donator']:
-                if a['id'] == member.id:
-                    rank = a['rank']
-            if member.id in data['partner']:
-                partner = guild.get_role(741701822032379944)
-                await member.add_roles(partner, reason='Has Partner Badge')
-            if member.id in data['early_supporter']:
-                early_supporter = guild.get_role(764569252111187988)
-                await member.add_roles(early_supporter, reason='Has Early Supporter Badge')
-            if member.id in data['bug_hunter']:
-                bug_hunter = guild.get_role(761340790869065729)
-                await member.add_roles(bug_hunter, reason='Has Bug Hunter Badge')
-            if member.id in data['special']:
-                special = guild.get_role(689520201259417682)
-                await member.add_roles(special, reason='Has Special Badge')
-            donator = guild.get_role(690234363648016443)
-            if rank == 3:
-                mega = guild.get_role(690234610462097504)
-                await member.add_roles(mega, donator, reason='Has MEGA Badge')
-            elif rank == 2:
-                mvp = guild.get_role(690234421294530657)
-                await member.add_roles(mvp, donator, reason='Has MVP Badge')
-            elif rank == 1:
-                vip = guild.get_role(665423079454801930)
-                await member.add_roles(vip, donator, reason='Has VIP Badge')
+    # @commands.Cog.listener()
+    # async def on_member_join(self, member):
+    #     guild = member.guild
+    #     if guild.id == 665378018310488065:
+    #         # Doing Rank Check
+    #         File = open('/home/container/Quacky/Files/badges.json').read()
+    #         data = json.loads(File)
+    #         rank = 0
+    #         for a in data['donator']:
+    #             if a['id'] == member.id:
+    #                 rank = a['rank']
+    #         if member.id in data['partner']:
+    #             partner = guild.get_role(741701822032379944)
+    #             await member.add_roles(partner, reason='Has Partner Badge')
+    #         if member.id in data['early_supporter']:
+    #             early_supporter = guild.get_role(764569252111187988)
+    #             await member.add_roles(early_supporter, reason='Has Early Supporter Badge')
+    #         if member.id in data['bug_hunter']:
+    #             bug_hunter = guild.get_role(761340790869065729)
+    #             await member.add_roles(bug_hunter, reason='Has Bug Hunter Badge')
+    #         if member.id in data['special']:
+    #             special = guild.get_role(689520201259417682)
+    #             await member.add_roles(special, reason='Has Special Badge')
+    #         donator = guild.get_role(690234363648016443)
+    #         if rank == 3:
+    #             mega = guild.get_role(690234610462097504)
+    #             await member.add_roles(mega, donator, reason='Has MEGA Badge')
+    #         elif rank == 2:
+    #             mvp = guild.get_role(690234421294530657)
+    #             await member.add_roles(mvp, donator, reason='Has MVP Badge')
+    #         elif rank == 1:
+    #             vip = guild.get_role(665423079454801930)
+                # await member.add_roles(vip, donator, reason='Has VIP Badge')
             # Sending Join Message
             # if member.bot == True or member.id == 475117152106446849:
             #     return

@@ -53,7 +53,7 @@ async def channel_logging(self, ctx, reason):
     username_list = []
     file_attachments = []
     quacky_guild = self.bot.get_guild(665378018310488065)
-    async for message in ctx.channel.history(oldest_first=True):
+    async for message in ctx.channel.history(limit=10000, oldest_first=True):
         if message.author.id not in user_list and message.author.id != self.bot.user.id:
             user_list.append(message.author.id)
 

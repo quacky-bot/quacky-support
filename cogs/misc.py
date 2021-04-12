@@ -34,49 +34,6 @@ class Misc(commands.Cog):
         end = time.perf_counter()
         await message.edit(content=f"{message.content}\nEdit Message <:Edit_Feature:690660539373846549> {round((end - start) * 1000)}ms")
 
-    @commands.command(aliases=['updaterank'])
-    @commands.cooldown(1, 300.0, BucketType.user)
-    async def rankupdate(self, ctx):
-        """ Updates your Roles in the Quacky Support Server to Match your Quacky Badges. """
-        guild = self.bot.get_guild(665378018310488065)
-        member = await guild.fetch_member(ctx.author.id)
-        File = open('/home/container/Quacky/Files/badges.json').read()
-        data = json.loads(File)
-        rank = 0
-        for a in data['donator']:
-            if a['id'] == member.id:
-                rank = a['rank']
-        PFile = open('/home/container/Quacky/Files/partner.json').read()
-        pdata = json.loads(PFile)
-        for x in pdata['server']:
-            if x['owner'] == member.id:
-                partner = guild.get_role(741701822032379944)
-                await member.add_roles(partner, reason='Has Partner Badge')
-        for x in pdata['bot']:
-            if x['owner'] == member.id:
-                partner = guild.get_role(741701822032379944)
-                await member.add_roles(partner, reason='Has Partner Badge')
-        if member.id in data['early_supporter']:
-            early_supporter = guild.get_role(764569252111187988)
-            await member.add_roles(early_supporter, reason='Has Early Supporter Badge')
-        if member.id in data['bug_hunter']:
-            bug_hunter = guild.get_role(761340790869065729)
-            await member.add_roles(bug_hunter, reason='Has Bug Hunter Badge')
-        if member.id in data['special']:
-            special = guild.get_role(689520201259417682)
-            await member.add_roles(special, reason='Has Special Badge')
-        donator = guild.get_role(690234363648016443)
-        if rank == 3:
-            mega = guild.get_role(690234610462097504)
-            await member.add_roles(mega, donator, reason='Has MEGA Badge')
-        elif rank == 2:
-            mvp = guild.get_role(690234421294530657)
-            await member.add_roles(mvp, donator, reason='Has MVP Badge')
-        elif rank == 1:
-            vip = guild.get_role(665423079454801930)
-            await member.add_roles(vip, donator, reason='Has VIP Badge')
-        await ctx.send('<:check:678014104111284234> Updated your Roles in the Quacky Support Server.')
-
     @commands.command()
     @commands.cooldown(1, 300.0, BucketType.user)
     async def sapply(self, ctx):
@@ -243,7 +200,7 @@ class Misc(commands.Cog):
         embed = discord.Embed(colour=discord.Colour(16750848), description=msg, title='Quacky Partner Terms')
         await ctx.send(embed=embed)
 
-    @partner.command(aliases=['bapprove', 'bot-approve'])
+    @partner.command()
     @commands.guild_only()
     @admin()
     async def approve(self, ctx, *, member):
@@ -264,7 +221,7 @@ class Misc(commands.Cog):
     @partner.command()
     async def link(self, ctx):
         """ Show our Partnership Message """
-        await ctx.send('You can find our partner message at: https://quacky.xyz/partner.txt')
+        await ctx.send('You can find our partner message at: <https://quacky.xyz/partner.txt>')
 
     @partner.command()
     @commands.guild_only()
@@ -339,7 +296,7 @@ class Misc(commands.Cog):
     @commands.command()
     async def privacy(self, ctx):
         """ Read Quacky Support's Privacy Policy """
-        await ctx.send('You can view Quacky Support\'s Privacy Policy at https://quacky.xyz/privacy/support')
+        await ctx.send('You can view Quacky Support\'s Privacy Policy at <https://quacky.xyz/privacy/support>')
 
     @commands.command()
     async def phook(self, ctx, *, message):
