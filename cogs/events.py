@@ -73,6 +73,30 @@ class Events(commands.Cog):
             else:
                 return
             await payload.member.add_roles(role, reason='Reaction Role')
+        elif payload.message_id == 831968689561403392 and isinstance(payload.member, discord.Member) and payload.member.bot is False:
+            guild = self.bot.get_guild(665378018310488065)
+            if payload.emoji.id == 785197089332264970:
+                staff_role = guild.get_role(690239278277591043)
+                role = guild.get_role(831967020001656838)
+            elif payload.emoji.id == 785197089595457606:
+                staff_role = guild.get_role(729735292734406669)
+                role = guild.get_role(831967289036505119)
+            elif payload.emoji.name == '\U0001f525':
+                role1 = guild.get_role(831967020001656838)
+                role2 = guild.get_role(831967289036505119)
+                await payload.member.remove_roles(role1, role2, reason='Staff Reaction Role')
+                channel = guild.get_channel(payload.channel_id)
+                message = await channel.fetch_message(payload.message_id)
+                return await message.remove_reaction(payload.emoji, payload.member)
+            else:
+                channel = guild.get_channel(payload.channel_id)
+                message = await channel.fetch_message(payload.message_id)
+                return await message.remove_reaction(payload.emoji, payload.member)
+            if staff_role in payload.member.roles:
+                await payload.member.add_roles(role, reason='Staff Reaction Role')
+            channel = guild.get_channel(payload.channel_id)
+            message = await channel.fetch_message(payload.message_id)
+            await message.remove_reaction(payload.emoji, payload.member)
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
