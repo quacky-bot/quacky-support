@@ -3,7 +3,7 @@ name: Python Linting
 on: [push, pull_request]
 
 jobs:
-  Lint Code:
+  lint-code:
 
     runs-on: ubuntu-latest
 
