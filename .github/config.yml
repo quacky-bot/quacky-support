@@ -1,2 +1,4 @@
-todo:
-  keyword: "@todo"
+contact_links:
+  - name: Discord Server
+    url: https://quacky.xyz/support
+    about: You can ask bot questions and features here!
