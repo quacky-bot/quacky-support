@@ -354,6 +354,11 @@ class Misc(commands.Cog):
             json.dump(data, f, indent=2)
         await ctx.send('<:check:678014104111284234> Created your Donator Role!')
 
+    @crole.error
+    async def crole_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            return await ctx.send("<:redx:678014058590502912> Please provide a hex code for your role colour")
+
     @commands.command()
     async def quota(self, ctx):
         """ Check your Suggestion Quota Status (Trial Staff Only) """
